@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { Eye, EyeOff, Music2 } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+import AuthLogo from '../../components/auth/AuthLogo';
 
 export const Route = createFileRoute('/auth/signup')({
   component: SignUpPage,
@@ -23,105 +24,93 @@ function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col px-6 py-12">
-      {/* Logo */}
-      <div className="flex flex-col items-center mb-10">
-        <div className="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mb-3">
-          <Music2 size={32} className="text-white" />
-        </div>
-        <h1 className="text-white text-3xl font-bold">LumiTune</h1>
-        <p className="text-muted text-sm mt-1">Музика, яка надихає</p>
-      </div>
+    <div className="auth-page-bg min-h-screen px-4 py-6 sm:py-8 flex items-center justify-center">
+      <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
+        <AuthLogo heading="Створити акаунт у LumiTune" />
 
-      <h2 className="text-white text-2xl font-bold mb-6">Створити акаунт</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="text-muted text-sm mb-1.5 block">Ім'я</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Ваше ім'я"
-            required
-            className="w-full bg-surface-alt text-white placeholder-muted rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-brand/50 text-sm"
-          />
-        </div>
-
-        <div>
-          <label className="text-muted text-sm mb-1.5 block">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-            className="w-full bg-surface-alt text-white placeholder-muted rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-brand/50 text-sm"
-          />
-        </div>
-
-        <div>
-          <label className="text-muted text-sm mb-1.5 block">Пароль</label>
-          <div className="relative">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          <div>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Ім&apos;я</label>
             <input
-              type={showPwd ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Мінімум 8 символів"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ваше ім'я"
               required
-              minLength={8}
-              className="w-full bg-surface-alt text-white placeholder-muted rounded-xl px-4 py-3.5 pr-12 outline-none focus:ring-2 focus:ring-brand/50 text-sm"
+              className="w-full auth-input rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-brand/45 text-[33px] sm:text-[15px]"
             />
-            <button
-              type="button"
-              onClick={() => setShowPwd(!showPwd)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2"
-            >
-              {showPwd ? (
-                <EyeOff size={18} className="text-muted" />
-              ) : (
-                <Eye size={18} className="text-muted" />
-              )}
-            </button>
           </div>
-        </div>
 
-        <p className="text-muted text-xs leading-relaxed">
-          Реєструючись, ви погоджуєтесь з нашими{' '}
-          <span className="text-brand">Умовами використання</span> та{' '}
-          <span className="text-brand">Політикою конфіденційності</span>.
+          <div>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="@gmail.com"
+              required
+              className="w-full auth-input rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-brand/45 text-[33px] sm:text-[15px]"
+            />
+          </div>
+
+          <div>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Пароль</label>
+            <div className="relative">
+              <input
+                type={showPwd ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="************"
+                required
+                minLength={8}
+                className="w-full auth-input rounded-xl px-4 py-3 pr-11 outline-none focus:ring-2 focus:ring-brand/45 text-[33px] sm:text-[15px]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPwd(!showPwd)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2"
+              >
+                {showPwd ? (
+                  <EyeOff size={18} className="text-[#79A9E4]" />
+                ) : (
+                  <Eye size={18} className="text-[#79A9E4]" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <p className="text-[#769CCF] text-xs leading-relaxed">
+            Реєструючись, ви погоджуєтесь з нашими{' '}
+            <span className="text-[#8AB8F0] underline">Умовами використання</span> та{' '}
+            <span className="text-[#8AB8F0] underline">Політикою конфіденційності</span>.
+          </p>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-[#1CA2EA] text-[#041325] py-3 rounded-xl font-semibold text-[34px] sm:text-[17px] mt-4 disabled:opacity-60"
+          >
+            {loading ? 'Реєстрація...' : 'Зареєструватись'}
+          </button>
+        </form>
+
+        <div className="auth-muted-line mt-6 mb-5" />
+
+        <button className="w-full h-11 rounded-xl border border-[#2f73bf] bg-[#041325]/45 text-[#8AB8F0] hover:text-[#9fc4f1] transition-colors flex items-center justify-center gap-3">
+          <span className="text-[30px] leading-none w-7 text-center">G</span>
+          <span className="text-[32px] sm:text-[15px] font-medium">Продовжити з Google</span>
+        </button>
+
+        <p className="text-center text-[#769CCF] text-[30px] sm:text-[15px] mt-6">
+          Вже є акаунт?{' '}
+          <button
+            onClick={() => navigate({ to: '/auth/signin' })}
+            className="text-[#8AB8F0] font-semibold underline underline-offset-4"
+          >
+            Увійти
+          </button>
         </p>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-brand text-white py-3.5 rounded-xl font-semibold text-sm mt-2 disabled:opacity-60"
-        >
-          {loading ? 'Реєстрація...' : 'Зареєструватись'}
-        </button>
-      </form>
-
-      {/* Divider */}
-      <div className="flex items-center gap-3 my-6">
-        <div className="flex-1 h-px bg-white/10" />
-        <span className="text-muted text-xs">або</span>
-        <div className="flex-1 h-px bg-white/10" />
       </div>
-
-      <button className="w-full border border-white/20 text-white py-3.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2">
-        <span className="text-lg">G</span>
-        Продовжити з Google
-      </button>
-
-      <p className="text-center text-muted text-sm mt-8">
-        Вже є акаунт?{' '}
-        <button
-          onClick={() => navigate({ to: '/auth/signin' })}
-          className="text-brand font-semibold"
-        >
-          Увійти
-        </button>
-      </p>
     </div>
   );
 }
