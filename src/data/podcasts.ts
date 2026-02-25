@@ -1,7 +1,7 @@
 import type { Podcast } from '../types';
-import bulbCover from '../assets/media/bulb.png';
-import monsterCover from '../assets/media/monster.png';
-import bunnyCover from '../assets/media/bunny.png';
+import bulbCover from '../assets/media/bulb.jpg';
+import monsterCover from '../assets/media/monster.jpg';
+import bunnyCover from '../assets/media/bunny.jpg';
 
 export const podcasts: Podcast[] = [
   {
