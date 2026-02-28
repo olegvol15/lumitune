@@ -1,24 +1,24 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
-import { Heart, SortAsc } from 'lucide-react';
-import { tracks } from '../data/tracks';
-import TrackRow from '../components/ui/TrackRow';
-import { usePlayerStore } from '../store/playerStore';
-import Button from '../components/ui/Button';
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { Heart, SortAsc } from "lucide-react";
+import { tracks } from "../data/tracks";
+import TrackRow from "../components/ui/TrackRow";
+import { usePlayerStore } from "../store/playerStore";
+import Button from "../components/ui/Button";
 
-type SortKey = 'recent' | 'az' | 'artist';
+type SortKey = "recent" | "az" | "artist";
 
-export const Route = createFileRoute('/favorite')({ component: FavoritePage });
+export const Route = createFileRoute("/favorite")({ component: FavoritePage });
 
 function FavoritePage() {
-  const [sort, setSort] = useState<SortKey>('recent');
+  const [sort, setSort] = useState<SortKey>("recent");
   const play = usePlayerStore((s) => s.play);
 
   const likedTracks = tracks.filter((t) => t.liked);
 
   const sorted = [...likedTracks].sort((a, b) => {
-    if (sort === 'az') return a.title.localeCompare(b.title);
-    if (sort === 'artist') return a.artistName.localeCompare(b.artistName);
+    if (sort === "az") return a.title.localeCompare(b.title);
+    if (sort === "artist") return a.artistName.localeCompare(b.artistName);
     return 0; // recent = original order
   });
 
@@ -41,7 +41,12 @@ function FavoritePage() {
 
       {/* Controls */}
       <div className="flex items-center justify-between mt-4 mb-4">
-        <Button variant="secondary" shape="pill" onClick={playAll} className="px-6">
+        <Button
+          variant="secondary"
+          shape="pill"
+          onClick={playAll}
+          className="px-6"
+        >
           Відтворити все
         </Button>
         <div className="relative">
@@ -53,16 +58,16 @@ function FavoritePage() {
 
       {/* Sort pills */}
       <div className="flex gap-2 mb-4">
-        {(['recent', 'az', 'artist'] as SortKey[]).map((s) => (
+        {(["recent", "az", "artist"] as SortKey[]).map((s) => (
           <Button
             key={s}
-            variant={sort === s ? 'secondary' : 'ghost'}
+            variant={sort === s ? "secondary" : "ghost"}
             shape="pill"
             size="sm"
             onClick={() => setSort(s)}
-            className={sort !== s ? 'bg-surface-alt' : ''}
+            className={sort !== s ? "bg-surface-alt" : ""}
           >
-            {s === 'recent' ? 'Нещодавні' : s === 'az' ? 'А — Я' : 'Виконавець'}
+            {s === "recent" ? "Нещодавні" : s === "az" ? "А — Я" : "Виконавець"}
           </Button>
         ))}
       </div>
@@ -78,7 +83,9 @@ function FavoritePage() {
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <Heart size={48} className="text-muted mb-4" />
           <p className="text-white font-semibold">Немає улюблених треків</p>
-          <p className="text-muted text-sm mt-1">Натисніть ❤️ поруч із треком</p>
+          <p className="text-muted text-sm mt-1">
+            Натисніть ❤️ поруч із треком
+          </p>
         </div>
       )}
     </div>

@@ -1,25 +1,33 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
-import { FaFacebook, FaApple } from 'react-icons/fa';
-import { FcGoogle } from 'react-icons/fc';
-import AuthLogo from '../../components/auth/AuthLogo';
-import Button from '../../components/ui/Button';
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { FaFacebook, FaApple } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import AuthLogo from "../../components/auth/AuthLogo";
+import Button from "../../components/ui/Button";
 
-export const Route = createFileRoute('/auth/signin')({
+export const Route = createFileRoute("/auth/signin")({
   component: SignInPage,
 });
 
 const socialButtons = [
-  { id: 'facebook', icon: <FaFacebook size={22} color="#1877F2" />, label: 'Увійти з Facebook' },
-  { id: 'google',   icon: <FcGoogle size={22} />,                   label: 'Увійти з Google'  },
-  { id: 'apple',    icon: <FaApple size={22} color="#fff" />,        label: 'Увійти з Apple'   },
+  {
+    id: "facebook",
+    icon: <FaFacebook size={22} color="#1877F2" />,
+    label: "Увійти з Facebook",
+  },
+  { id: "google", icon: <FcGoogle size={22} />, label: "Увійти з Google" },
+  {
+    id: "apple",
+    icon: <FaApple size={22} color="#fff" />,
+    label: "Увійти з Apple",
+  },
 ];
 
 function SignInPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +36,7 @@ function SignInPage() {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 800));
     setLoading(false);
-    navigate({ to: '/' });
+    navigate({ to: "/" });
   };
 
   return (
@@ -44,7 +52,11 @@ function SignInPage() {
               size="lg"
               shape="rect"
               fullWidth
-              leftIcon={<div className="w-7 flex flex-col sm:items-center sm:justify-center">{icon}</div>}
+              leftIcon={
+                <div className="w-7 flex flex-col sm:items-center sm:justify-center">
+                  {icon}
+                </div>
+              }
             >
               <span className="flex-1 text-center">{label}</span>
             </Button>
@@ -75,7 +87,7 @@ function SignInPage() {
                 variant="ghost"
                 size="sm"
                 type="button"
-                onClick={() => navigate({ to: '/auth/forgot-password' })}
+                onClick={() => navigate({ to: "/auth/forgot-password" })}
                 className="text-[#79A9E4] !px-0 underline"
               >
                 Забули пароль?
@@ -83,7 +95,7 @@ function SignInPage() {
             </div>
             <div className="relative">
               <input
-                type={showPwd ? 'text' : 'password'}
+                type={showPwd ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="************"
@@ -95,9 +107,11 @@ function SignInPage() {
                 onClick={() => setShowPwd(!showPwd)}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2"
               >
-                {showPwd
-                  ? <EyeOff size={18} className="text-[#79A9E4]" />
-                  : <Eye size={18} className="text-[#79A9E4]" />}
+                {showPwd ? (
+                  <EyeOff size={18} className="text-[#79A9E4]" />
+                ) : (
+                  <Eye size={18} className="text-[#79A9E4]" />
+                )}
               </button>
             </div>
           </div>
@@ -118,11 +132,11 @@ function SignInPage() {
         <div className="auth-muted-line w-4/5 mx-auto mt-6 mb-5" />
 
         <p className="text-center text-[#769CCF] text-[15px]">
-          Немає акаунта?{' '}
+          Немає акаунта?{" "}
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate({ to: '/auth/signup' })}
+            onClick={() => navigate({ to: "/auth/signup" })}
             className="text-[#8AB8F0] font-semibold underline underline-offset-4 !px-0"
           >
             Реєстрація у LumiTune

@@ -1,4 +1,4 @@
-import { Link, useRouterState, useNavigate } from '@tanstack/react-router';
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Home,
   Library,
@@ -8,9 +8,9 @@ import {
   RefreshCw,
   Clock,
   Music2,
-} from 'lucide-react';
-import { usePlayerStore } from '../../store/playerStore';
-import { usePlaylistStore } from '../../store/playlistStore';
+} from "lucide-react";
+import { usePlayerStore } from "../../store/playerStore";
+import { usePlaylistStore } from "../../store/playlistStore";
 
 export default function Sidebar() {
   const { location } = useRouterState();
@@ -21,7 +21,7 @@ export default function Sidebar() {
 
   const handleCreatePlaylist = () => {
     const id = createPlaylist();
-    navigate({ to: '/playlist/$id', params: { id } });
+    navigate({ to: "/playlist/$id", params: { id } });
   };
 
   return (
@@ -33,9 +33,9 @@ export default function Sidebar() {
         <Link
           to="/"
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-            pathname === '/'
-              ? 'bg-[#0d2a4a] text-white'
-              : 'text-white/70 hover:text-white hover:bg-white/5'
+            pathname === "/"
+              ? "bg-[#0d2a4a] text-white"
+              : "text-white/70 hover:text-white hover:bg-white/5"
           }`}
         >
           <Home size={18} />
@@ -45,9 +45,9 @@ export default function Sidebar() {
         <Link
           to="/library"
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors mt-1 ${
-            pathname.startsWith('/library')
-              ? 'bg-[#0d2a4a] text-white'
-              : 'text-white/70 hover:text-white hover:bg-white/5'
+            pathname.startsWith("/library")
+              ? "bg-[#0d2a4a] text-white"
+              : "text-white/70 hover:text-white hover:bg-white/5"
           }`}
         >
           <Library size={18} />
@@ -64,9 +64,9 @@ export default function Sidebar() {
         <Link
           to="/favorite"
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-            pathname.startsWith('/favorite')
-              ? 'bg-[#0d2a4a] text-white'
-              : 'text-white/70 hover:text-white hover:bg-white/5'
+            pathname.startsWith("/favorite")
+              ? "bg-[#0d2a4a] text-white"
+              : "text-white/70 hover:text-white hover:bg-white/5"
           }`}
         >
           <Heart size={18} />
@@ -83,7 +83,9 @@ export default function Sidebar() {
 
         {/* Ваші плейлисти header */}
         <div className="flex items-center justify-between px-3 mt-5 mb-1">
-          <span className="text-white text-sm font-semibold">Ваші плейлисти</span>
+          <span className="text-white text-sm font-semibold">
+            Ваші плейлисти
+          </span>
           <AlignJustify size={15} className="text-white/50" />
         </div>
 
@@ -93,19 +95,25 @@ export default function Sidebar() {
           playlists.map((playlist) => (
             <button
               key={playlist.id}
-              onClick={() => navigate({ to: '/playlist/$id', params: { id: playlist.id } })}
+              onClick={() =>
+                navigate({ to: "/playlist/$id", params: { id: playlist.id } })
+              }
               className={`flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-left transition-colors ${
                 pathname === `/playlist/${playlist.id}`
-                  ? 'bg-[#0d2a4a]'
-                  : 'hover:bg-white/5'
+                  ? "bg-[#0d2a4a]"
+                  : "hover:bg-white/5"
               }`}
             >
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0">
                 <Music2 size={16} className="text-[#1CA2EA]/70" />
               </div>
               <div className="min-w-0">
-                <p className="text-white text-sm font-medium truncate">{playlist.title}</p>
-                <p className="text-white/40 text-xs">{playlist.trackIds.length} треків</p>
+                <p className="text-white text-sm font-medium truncate">
+                  {playlist.title}
+                </p>
+                <p className="text-white/40 text-xs">
+                  {playlist.trackIds.length} треків
+                </p>
               </div>
             </button>
           ))
@@ -117,7 +125,9 @@ export default function Sidebar() {
       {/* Нещодавно прослухані */}
       <div className="px-5 pt-5 pb-6">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-white text-sm font-semibold">Нещодавно прослухані</span>
+          <span className="text-white text-sm font-semibold">
+            Нещодавно прослухані
+          </span>
           <RefreshCw size={15} className="text-white/50" />
         </div>
 
@@ -133,8 +143,12 @@ export default function Sidebar() {
                 className="w-10 h-10 rounded-full object-cover flex-shrink-0"
               />
               <div className="min-w-0">
-                <p className="text-white text-sm font-medium truncate">{track.title}</p>
-                <p className="text-white/40 text-xs truncate">{track.artistName}</p>
+                <p className="text-white text-sm font-medium truncate">
+                  {track.title}
+                </p>
+                <p className="text-white/40 text-xs truncate">
+                  {track.artistName}
+                </p>
               </div>
             </div>
           ))

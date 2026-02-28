@@ -1,22 +1,57 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Search, Mic, X } from 'lucide-react';
-import { useSearch } from '../hooks/useSearch';
-import TrackRow from '../components/ui/TrackRow';
-import MediaCard from '../components/ui/MediaCard';
-import { tracks } from '../data/tracks';
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Search, Mic, X } from "lucide-react";
+import { useSearch } from "../hooks/useSearch";
+import TrackRow from "../components/ui/TrackRow";
+import MediaCard from "../components/ui/MediaCard";
+import { tracks } from "../data/tracks";
 
 const genres = [
-  { id: 'pop', label: 'Поп', color: 'from-pink-500 to-rose-600', emoji: '🎵' },
-  { id: 'rock', label: 'Рок', color: 'from-orange-500 to-red-600', emoji: '🎸' },
-  { id: 'hiphop', label: 'Хіп-хоп', color: 'from-yellow-500 to-orange-500', emoji: '🎤' },
-  { id: 'electronic', label: 'Електронна', color: 'from-cyan-500 to-blue-600', emoji: '🎛️' },
-  { id: 'kpop', label: 'K-Pop', color: 'from-purple-500 to-pink-600', emoji: '✨' },
-  { id: 'jazz', label: 'Джаз', color: 'from-amber-600 to-yellow-500', emoji: '🎷' },
-  { id: 'classical', label: 'Класика', color: 'from-emerald-500 to-teal-600', emoji: '🎹' },
-  { id: 'rnb', label: 'R&B', color: 'from-indigo-500 to-purple-600', emoji: '🎙️' },
+  { id: "pop", label: "Поп", color: "from-pink-500 to-rose-600", emoji: "🎵" },
+  {
+    id: "rock",
+    label: "Рок",
+    color: "from-orange-500 to-red-600",
+    emoji: "🎸",
+  },
+  {
+    id: "hiphop",
+    label: "Хіп-хоп",
+    color: "from-yellow-500 to-orange-500",
+    emoji: "🎤",
+  },
+  {
+    id: "electronic",
+    label: "Електронна",
+    color: "from-cyan-500 to-blue-600",
+    emoji: "🎛️",
+  },
+  {
+    id: "kpop",
+    label: "K-Pop",
+    color: "from-purple-500 to-pink-600",
+    emoji: "✨",
+  },
+  {
+    id: "jazz",
+    label: "Джаз",
+    color: "from-amber-600 to-yellow-500",
+    emoji: "🎷",
+  },
+  {
+    id: "classical",
+    label: "Класика",
+    color: "from-emerald-500 to-teal-600",
+    emoji: "🎹",
+  },
+  {
+    id: "rnb",
+    label: "R&B",
+    color: "from-indigo-500 to-purple-600",
+    emoji: "🎙️",
+  },
 ];
 
-export const Route = createFileRoute('/search')({ component: SearchPage });
+export const Route = createFileRoute("/search")({ component: SearchPage });
 
 function SearchPage() {
   const { query, setQuery, results, hasResults } = useSearch();
@@ -29,7 +64,10 @@ function SearchPage() {
 
       {/* Search bar */}
       <div className="relative mb-5">
-        <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+        <Search
+          size={18}
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"
+        />
         <input
           type="text"
           placeholder="Виконавці, треки, альбоми..."
@@ -39,7 +77,7 @@ function SearchPage() {
         />
         {query ? (
           <button
-            onClick={() => setQuery('')}
+            onClick={() => setQuery("")}
             className="absolute right-3.5 top-1/2 -translate-y-1/2"
           >
             <X size={18} className="text-muted" />
@@ -75,7 +113,9 @@ function SearchPage() {
                     title={a.name}
                     subtitle={a.genre}
                     rounded
-                    onClick={() => navigate({ to: '/artist/$id', params: { id: a.id } })}
+                    onClick={() =>
+                      navigate({ to: "/artist/$id", params: { id: a.id } })
+                    }
                   />
                 ))}
               </div>
@@ -91,7 +131,9 @@ function SearchPage() {
                     image={al.coverUrl}
                     title={al.title}
                     subtitle={al.artistName}
-                    onClick={() => navigate({ to: '/album/$id', params: { id: al.id } })}
+                    onClick={() =>
+                      navigate({ to: "/album/$id", params: { id: al.id } })
+                    }
                   />
                 ))}
               </div>
@@ -113,8 +155,12 @@ function SearchPage() {
                 key={g.id}
                 className={`bg-gradient-to-br ${g.color} rounded-2xl h-24 flex items-end p-3 overflow-hidden relative`}
               >
-                <span className="absolute top-2 right-3 text-3xl">{g.emoji}</span>
-                <span className="text-white font-bold text-base">{g.label}</span>
+                <span className="absolute top-2 right-3 text-3xl">
+                  {g.emoji}
+                </span>
+                <span className="text-white font-bold text-base">
+                  {g.label}
+                </span>
               </button>
             ))}
           </div>

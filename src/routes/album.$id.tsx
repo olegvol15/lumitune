@@ -1,13 +1,17 @@
-import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router';
-import { ChevronLeft, Play, Shuffle, MoreHorizontal } from 'lucide-react';
-import { getAlbum } from '../data/albums';
-import { tracks } from '../data/tracks';
-import { getArtist } from '../data/artists';
-import TrackRow from '../components/ui/TrackRow';
-import { usePlayerStore } from '../store/playerStore';
-import Button from '../components/ui/Button';
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
+import { ChevronLeft, Play, Shuffle, MoreHorizontal } from "lucide-react";
+import { getAlbum } from "../data/albums";
+import { tracks } from "../data/tracks";
+import { getArtist } from "../data/artists";
+import TrackRow from "../components/ui/TrackRow";
+import { usePlayerStore } from "../store/playerStore";
+import Button from "../components/ui/Button";
 
-export const Route = createFileRoute('/album/$id')({
+export const Route = createFileRoute("/album/$id")({
   component: AlbumPage,
 });
 
@@ -73,7 +77,9 @@ function AlbumPage() {
         <div className="flex items-center gap-2 mt-1">
           {artist && (
             <button
-              onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
+              onClick={() =>
+                navigate({ to: "/artist/$id", params: { id: artist.id } })
+              }
               className="flex items-center gap-1.5"
             >
               <img
@@ -81,13 +87,17 @@ function AlbumPage() {
                 alt={artist.name}
                 className="w-5 h-5 rounded-full object-cover"
               />
-              <span className="text-white text-sm font-medium">{artist.name}</span>
+              <span className="text-white text-sm font-medium">
+                {artist.name}
+              </span>
             </button>
           )}
           <span className="text-muted text-sm">·</span>
           <span className="text-muted text-sm">{album.year}</span>
           <span className="text-muted text-sm">·</span>
-          <span className="text-muted text-sm">{albumTracks.length} треків</span>
+          <span className="text-muted text-sm">
+            {albumTracks.length} треків
+          </span>
           <span className="text-muted text-sm">·</span>
           <span className="text-muted text-sm">{fmtTotal(totalDuration)}</span>
         </div>
@@ -114,7 +124,13 @@ function AlbumPage() {
         {/* Track list */}
         <div className="space-y-1">
           {albumTracks.map((t, i) => (
-            <TrackRow key={t.id} track={t} index={i} queue={albumTracks} showIndex />
+            <TrackRow
+              key={t.id}
+              track={t}
+              index={i}
+              queue={albumTracks}
+              showIndex
+            />
           ))}
         </div>
 
@@ -129,7 +145,9 @@ function AlbumPage() {
             <div>
               <p className="text-muted text-xs">Виконавець</p>
               <button
-                onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
+                onClick={() =>
+                  navigate({ to: "/artist/$id", params: { id: artist.id } })
+                }
                 className="text-white font-semibold hover:text-brand transition-colors"
               >
                 {artist.name}

@@ -1,33 +1,33 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
-import { tracks } from '../data/tracks';
-import { artists } from '../data/artists';
-import { albums } from '../data/albums';
-import HeroBanner from '../components/home/HeroBanner';
-import MoodSection from '../components/home/MoodSection';
-import HorizontalSection from '../components/home/HorizontalSection';
-import ArtistSection from '../components/home/ArtistSection';
-import PodcastSection from '../components/home/PodcastSection';
-import AudiobookSection from '../components/home/AudiobookSection';
-import type { Album, Track } from '../types';
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { tracks } from "../data/tracks";
+import { artists } from "../data/artists";
+import { albums } from "../data/albums";
+import HeroBanner from "../components/home/HeroBanner";
+import MoodSection from "../components/home/MoodSection";
+import HorizontalSection from "../components/home/HorizontalSection";
+import ArtistSection from "../components/home/ArtistSection";
+import PodcastSection from "../components/home/PodcastSection";
+import AudiobookSection from "../components/home/AudiobookSection";
+import type { Album, Track } from "../types";
 
-const FILTER_TABS = ['Всі', 'Треки', 'Інше'] as const;
+const FILTER_TABS = ["Всі", "Треки", "Інше"] as const;
 type FilterTab = (typeof FILTER_TABS)[number];
 
-export const Route = createFileRoute('/')({ component: HomePage });
+export const Route = createFileRoute("/")({ component: HomePage });
 
 function HomePage() {
-  const [activeTab, setActiveTab] = useState<FilterTab>('Всі');
+  const [activeTab, setActiveTab] = useState<FilterTab>("Всі");
   const navigate = useNavigate();
 
   const handleAlbumClick = (item: Album | Track) => {
-    if ('coverUrl' in item) {
-      navigate({ to: '/album/$id', params: { id: item.id } });
+    if ("coverUrl" in item) {
+      navigate({ to: "/album/$id", params: { id: item.id } });
     }
   };
 
   const handleArtistClick = (item: (typeof artists)[0]) => {
-    navigate({ to: '/artist/$id', params: { id: item.id } });
+    navigate({ to: "/artist/$id", params: { id: item.id } });
   };
 
   return (
@@ -40,8 +40,8 @@ function HomePage() {
             onClick={() => setActiveTab(tab)}
             className={`px-5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
               activeTab === tab
-                ? 'bg-[#0a1929] border-white/40 text-white'
-                : 'border-[#1a3050] text-white/60 hover:text-white hover:border-white/30'
+                ? "bg-[#0a1929] border-white/40 text-white"
+                : "border-[#1a3050] text-white/60 hover:text-white hover:border-white/30"
             }`}
           >
             {tab}

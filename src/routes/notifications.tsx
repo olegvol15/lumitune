@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { notifications } from '../data/notifications';
-import type { Notification } from '../types';
-import { Bell, Music, UserPlus, ListMusic, Mic } from 'lucide-react';
+import { createFileRoute } from "@tanstack/react-router";
+import { notifications } from "../data/notifications";
+import type { Notification } from "../types";
+import { Bell, Music, UserPlus, ListMusic, Mic } from "lucide-react";
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -13,7 +13,7 @@ function timeAgo(iso: string): string {
   return `${days} дн тому`;
 }
 
-const typeIcon: Record<Notification['type'], React.ReactNode> = {
+const typeIcon: Record<Notification["type"], React.ReactNode> = {
   new_release: <Music size={16} className="text-brand" />,
   follow: <UserPlus size={16} className="text-emerald-400" />,
   playlist: <ListMusic size={16} className="text-purple-400" />,
@@ -24,11 +24,15 @@ function NotificationItem({ n }: { n: Notification }) {
   return (
     <div
       className={`flex items-start gap-3 p-3 rounded-xl transition-colors ${
-        n.read ? '' : 'bg-surface-alt'
+        n.read ? "" : "bg-surface-alt"
       }`}
     >
       <div className="relative flex-shrink-0">
-        <img src={n.imageUrl} alt="" className="w-12 h-12 rounded-xl object-cover" />
+        <img
+          src={n.imageUrl}
+          alt=""
+          className="w-12 h-12 rounded-xl object-cover"
+        />
         <span className="absolute -bottom-1 -right-1 bg-surface p-0.5 rounded-full">
           {typeIcon[n.type]}
         </span>
@@ -45,7 +49,9 @@ function NotificationItem({ n }: { n: Notification }) {
   );
 }
 
-export const Route = createFileRoute('/notifications')({ component: NotificationsPage });
+export const Route = createFileRoute("/notifications")({
+  component: NotificationsPage,
+});
 
 function NotificationsPage() {
   const todayThreshold = Date.now() - 24 * 60 * 60 * 1000;
@@ -94,7 +100,9 @@ function NotificationsPage() {
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <Bell size={48} className="text-muted mb-4" />
           <p className="text-white font-semibold">Немає сповіщень</p>
-          <p className="text-muted text-sm mt-1">Ми повідомимо вас про нові релізи</p>
+          <p className="text-muted text-sm mt-1">
+            Ми повідомимо вас про нові релізи
+          </p>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { audiobooks } from '../../data/audiobooks';
+import { audiobooks } from "../../data/audiobooks";
 
 export default function AudiobookSection() {
   return (
@@ -12,7 +12,7 @@ export default function AudiobookSection() {
           <div
             key={book.id}
             className={`flex gap-5 p-5 hover:bg-white/5 cursor-pointer transition-colors ${
-              i > 0 ? 'border-t border-[#1a3050]' : ''
+              i > 0 ? "border-t border-[#1a3050]" : ""
             }`}
           >
             <img
@@ -30,7 +30,9 @@ export default function AudiobookSection() {
               </div>
 
               {/* Genre — plain text, no chip */}
-              <p className="text-white/50 text-xs font-medium mb-2">{book.genre}</p>
+              <p className="text-white/50 text-xs font-medium mb-2">
+                {book.genre}
+              </p>
 
               {/* Description — more lines visible */}
               <p className="text-white/30 text-xs leading-relaxed line-clamp-3 mb-3">
@@ -40,7 +42,8 @@ export default function AudiobookSection() {
               {/* Date + Duration on separate lines */}
               <p className="text-white/25 text-xs">{book.publishedAt}</p>
               <p className="text-white/25 text-xs">
-                {Math.floor(book.duration / 3600)} год, {Math.floor((book.duration % 3600) / 60)} хв.
+                {Math.floor(book.duration / 3600)} год,{" "}
+                {Math.floor((book.duration % 3600) / 60)} хв.
               </p>
             </div>
           </div>

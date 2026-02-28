@@ -13,7 +13,13 @@
     margin: 0;
     background-color: #232323;
     color: #ffffff;
-    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-family:
+      Inter,
+      system-ui,
+      -apple-system,
+      Segoe UI,
+      Roboto,
+      sans-serif;
   }
 
   input,
@@ -43,7 +49,7 @@
 
   .auth-page-bg::before,
   .auth-page-bg::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: -40%;
     pointer-events: none;
@@ -52,14 +58,46 @@
 
   .auth-page-bg::before {
     background:
-      radial-gradient(520px 520px at 18% 28%, rgba(47, 111, 243, 0.43), transparent 72%),
-      radial-gradient(560px 560px at 34% 46%, rgba(47, 174, 243, 0.2), transparent 76%),
-      radial-gradient(300px 300px at 44% 40%, rgba(47, 142, 243, 0.62), transparent 72%),
-      radial-gradient(300px 300px at 28% 54%, rgba(47, 119, 243, 0.62), transparent 72%),
-      radial-gradient(260px 260px at 66% 40%, rgba(47, 187, 243, 0.32), transparent 70%),
-      radial-gradient(270px 270px at 76% 22%, rgba(47, 243, 181, 0.5), transparent 72%),
-      radial-gradient(320px 320px at 22% 22%, rgba(47, 138, 243, 0.43), transparent 72%),
-      radial-gradient(280px 280px at 8% 18%, rgba(47, 187, 243, 0.55), transparent 74%),
+      radial-gradient(
+        520px 520px at 18% 28%,
+        rgba(47, 111, 243, 0.43),
+        transparent 72%
+      ),
+      radial-gradient(
+        560px 560px at 34% 46%,
+        rgba(47, 174, 243, 0.2),
+        transparent 76%
+      ),
+      radial-gradient(
+        300px 300px at 44% 40%,
+        rgba(47, 142, 243, 0.62),
+        transparent 72%
+      ),
+      radial-gradient(
+        300px 300px at 28% 54%,
+        rgba(47, 119, 243, 0.62),
+        transparent 72%
+      ),
+      radial-gradient(
+        260px 260px at 66% 40%,
+        rgba(47, 187, 243, 0.32),
+        transparent 70%
+      ),
+      radial-gradient(
+        270px 270px at 76% 22%,
+        rgba(47, 243, 181, 0.5),
+        transparent 72%
+      ),
+      radial-gradient(
+        320px 320px at 22% 22%,
+        rgba(47, 138, 243, 0.43),
+        transparent 72%
+      ),
+      radial-gradient(
+        280px 280px at 8% 18%,
+        rgba(47, 187, 243, 0.55),
+        transparent 74%
+      ),
       linear-gradient(
         100deg,
         rgba(0, 0, 0, 0.95) 8%,
@@ -77,14 +115,46 @@
 
   .auth-page-bg::after {
     background:
-      radial-gradient(220px 220px at 13% 67%, rgba(82, 185, 244, 0.72), transparent 74%),
-      radial-gradient(220px 220px at 25% 52%, rgba(112, 222, 241, 0.58), transparent 74%),
-      radial-gradient(220px 220px at 82% 36%, rgba(82, 185, 244, 0.5), transparent 72%),
-      radial-gradient(220px 220px at 88% 40%, rgba(47, 111, 243, 0.48), transparent 72%),
-      radial-gradient(200px 200px at 86% 30%, rgba(112, 241, 213, 0.2), transparent 74%),
-      radial-gradient(190px 190px at 8% 18%, rgba(82, 185, 244, 0.72), transparent 72%),
-      radial-gradient(190px 190px at 11% 14%, rgba(47, 111, 243, 0.68), transparent 72%),
-      radial-gradient(190px 190px at 5% 22%, rgba(112, 241, 213, 0.45), transparent 74%),
+      radial-gradient(
+        220px 220px at 13% 67%,
+        rgba(82, 185, 244, 0.72),
+        transparent 74%
+      ),
+      radial-gradient(
+        220px 220px at 25% 52%,
+        rgba(112, 222, 241, 0.58),
+        transparent 74%
+      ),
+      radial-gradient(
+        220px 220px at 82% 36%,
+        rgba(82, 185, 244, 0.5),
+        transparent 72%
+      ),
+      radial-gradient(
+        220px 220px at 88% 40%,
+        rgba(47, 111, 243, 0.48),
+        transparent 72%
+      ),
+      radial-gradient(
+        200px 200px at 86% 30%,
+        rgba(112, 241, 213, 0.2),
+        transparent 74%
+      ),
+      radial-gradient(
+        190px 190px at 8% 18%,
+        rgba(82, 185, 244, 0.72),
+        transparent 72%
+      ),
+      radial-gradient(
+        190px 190px at 11% 14%,
+        rgba(47, 111, 243, 0.68),
+        transparent 72%
+      ),
+      radial-gradient(
+        190px 190px at 5% 22%,
+        rgba(112, 241, 213, 0.45),
+        transparent 74%
+      ),
       linear-gradient(
         -179.6deg,
         transparent 0%,
@@ -98,8 +168,12 @@
   }
 
   @media (max-width: 639px) {
-    .auth-page-bg::before { opacity: 0.38; }
-    .auth-page-bg::after  { opacity: 0.28; }
+    .auth-page-bg::before {
+      opacity: 0.38;
+    }
+    .auth-page-bg::after {
+      opacity: 0.28;
+    }
   }
 
   .auth-modal {
@@ -111,7 +185,11 @@
       border-radius: 24px;
       border: 1px solid rgba(70, 134, 196, 0.65);
       background:
-        radial-gradient(70% 80% at 50% 15%, rgba(11, 53, 104, 0.32) 0%, rgba(3, 14, 30, 0.92) 60%),
+        radial-gradient(
+          70% 80% at 50% 15%,
+          rgba(11, 53, 104, 0.32) 0%,
+          rgba(3, 14, 30, 0.92) 60%
+        ),
         rgba(2, 11, 24, 0.88);
       box-shadow:
         0 40px 80px rgba(0, 0, 0, 0.6),

@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import type { Track } from '../types';
+import { create } from "zustand";
+import type { Track } from "../types";
 
 interface PlayerState {
   currentTrack: Track | null;
@@ -8,7 +8,7 @@ interface PlayerState {
   volume: number;
   progress: number; // 0–1
   shuffle: boolean;
-  repeat: 'off' | 'all' | 'one';
+  repeat: "off" | "all" | "one";
   // Actions
   play: (track: Track, queue?: Track[]) => void;
   pause: () => void;
@@ -30,7 +30,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   volume: 0.8,
   progress: 0,
   shuffle: false,
-  repeat: 'off',
+  repeat: "off",
 
   play: (track, queue) =>
     set({
@@ -53,7 +53,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     let nextIdx: number;
     if (shuffle) {
       nextIdx = Math.floor(Math.random() * queue.length);
-    } else if (repeat === 'one') {
+    } else if (repeat === "one") {
       nextIdx = idx;
     } else {
       nextIdx = (idx + 1) % queue.length;
@@ -82,8 +82,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   toggleRepeat: () =>
     set((s) => ({
-      repeat:
-        s.repeat === 'off' ? 'all' : s.repeat === 'all' ? 'one' : 'off',
+      repeat: s.repeat === "off" ? "all" : s.repeat === "all" ? "one" : "off",
     })),
 
   toggleLike: () =>

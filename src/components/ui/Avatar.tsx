@@ -5,7 +5,12 @@ interface AvatarProps {
   className?: string;
 }
 
-export default function Avatar({ src, alt = '', size = 40, className = '' }: AvatarProps) {
+export default function Avatar({
+  src,
+  alt = "",
+  size = 40,
+  className = "",
+}: AvatarProps) {
   const style = { width: size, height: size };
   if (src) {
     return (
@@ -18,10 +23,10 @@ export default function Avatar({ src, alt = '', size = 40, className = '' }: Ava
     );
   }
   const initials = alt
-    .split(' ')
+    .split(" ")
     .map((w) => w[0])
     .slice(0, 2)
-    .join('')
+    .join("")
     .toUpperCase();
   return (
     <div

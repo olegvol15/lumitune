@@ -1,11 +1,18 @@
-import { Play, Pause, SkipForward, Heart } from 'lucide-react';
-import { useNavigate } from '@tanstack/react-router';
-import { usePlayerStore } from '../../store/playerStore';
-import ProgressBar from '../player/ProgressBar';
+import { Play, Pause, SkipForward, Heart } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { usePlayerStore } from "../../store/playerStore";
+import ProgressBar from "../player/ProgressBar";
 
 export default function MiniPlayer() {
-  const { currentTrack, isPlaying, togglePlay, next, seek, progress, toggleLike } =
-    usePlayerStore();
+  const {
+    currentTrack,
+    isPlaying,
+    togglePlay,
+    next,
+    seek,
+    progress,
+    toggleLike,
+  } = usePlayerStore();
   const navigate = useNavigate();
 
   if (!currentTrack) return null;
@@ -16,7 +23,7 @@ export default function MiniPlayer() {
         <ProgressBar progress={progress} onSeek={seek} className="px-0" />
         <div className="flex items-center gap-3 px-3 py-2.5">
           <button
-            onClick={() => navigate({ to: '/player' })}
+            onClick={() => navigate({ to: "/player" })}
             className="flex-shrink-0"
           >
             <img
@@ -27,28 +34,43 @@ export default function MiniPlayer() {
           </button>
 
           <button
-            onClick={() => navigate({ to: '/player' })}
+            onClick={() => navigate({ to: "/player" })}
             className="flex-1 min-w-0 text-left"
           >
-            <p className="text-white text-sm font-semibold truncate">{currentTrack.title}</p>
-            <p className="text-muted text-xs truncate">{currentTrack.artistName}</p>
+            <p className="text-white text-sm font-semibold truncate">
+              {currentTrack.title}
+            </p>
+            <p className="text-muted text-xs truncate">
+              {currentTrack.artistName}
+            </p>
           </button>
 
           <div className="flex items-center gap-1 flex-shrink-0">
-            <button onClick={toggleLike} className="p-2 hover:bg-white/10 rounded-full">
+            <button
+              onClick={toggleLike}
+              className="p-2 hover:bg-white/10 rounded-full"
+            >
               <Heart
                 size={18}
-                className={currentTrack.liked ? 'text-brand fill-brand' : 'text-muted'}
+                className={
+                  currentTrack.liked ? "text-brand fill-brand" : "text-muted"
+                }
               />
             </button>
-            <button onClick={togglePlay} className="p-2 hover:bg-white/10 rounded-full">
+            <button
+              onClick={togglePlay}
+              className="p-2 hover:bg-white/10 rounded-full"
+            >
               {isPlaying ? (
                 <Pause size={20} className="text-white" fill="white" />
               ) : (
                 <Play size={20} className="text-white" fill="white" />
               )}
             </button>
-            <button onClick={next} className="p-2 hover:bg-white/10 rounded-full">
+            <button
+              onClick={next}
+              className="p-2 hover:bg-white/10 rounded-full"
+            >
               <SkipForward size={20} className="text-white" fill="white" />
             </button>
           </div>

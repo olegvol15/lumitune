@@ -1,22 +1,22 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Settings, Edit3 } from 'lucide-react';
-import { tracks } from '../data/tracks';
-import { albums } from '../data/albums';
-import { artists } from '../data/artists';
-import TrackRow from '../components/ui/TrackRow';
-import MediaCard from '../components/ui/MediaCard';
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Settings, Edit3 } from "lucide-react";
+import { tracks } from "../data/tracks";
+import { albums } from "../data/albums";
+import { artists } from "../data/artists";
+import TrackRow from "../components/ui/TrackRow";
+import MediaCard from "../components/ui/MediaCard";
 
 const user = {
-  id: 'user1',
-  name: 'Олег Волостних',
-  username: '@oleg_music',
-  avatarUrl: 'https://picsum.photos/seed/user1/200/200',
+  id: "user1",
+  name: "Олег Волостних",
+  username: "@oleg_music",
+  avatarUrl: "https://picsum.photos/seed/user1/200/200",
   followers: 1_240,
   following: 487,
   totalStreams: 23_400,
 };
 
-export const Route = createFileRoute('/profile')({ component: ProfilePage });
+export const Route = createFileRoute("/profile")({ component: ProfilePage });
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ function ProfilePage() {
             />
             <div className="flex gap-2 mb-2">
               <button
-                onClick={() => navigate({ to: '/settings' })}
+                onClick={() => navigate({ to: "/settings" })}
                 className="p-2.5 bg-surface-alt rounded-full"
               >
                 <Settings size={18} className="text-white" />
@@ -55,15 +55,21 @@ function ProfilePage() {
           {/* Stats */}
           <div className="flex gap-6 mt-4">
             <div className="text-center">
-              <p className="text-white font-bold">{user.followers.toLocaleString('uk')}</p>
+              <p className="text-white font-bold">
+                {user.followers.toLocaleString("uk")}
+              </p>
               <p className="text-muted text-xs">Підписники</p>
             </div>
             <div className="text-center">
-              <p className="text-white font-bold">{user.following.toLocaleString('uk')}</p>
+              <p className="text-white font-bold">
+                {user.following.toLocaleString("uk")}
+              </p>
               <p className="text-muted text-xs">Підписки</p>
             </div>
             <div className="text-center">
-              <p className="text-white font-bold">{user.totalStreams.toLocaleString('uk')}</p>
+              <p className="text-white font-bold">
+                {user.totalStreams.toLocaleString("uk")}
+              </p>
               <p className="text-muted text-xs">Прослухань</p>
             </div>
           </div>
@@ -90,7 +96,9 @@ function ProfilePage() {
               image={al.coverUrl}
               title={al.title}
               subtitle={al.artistName}
-              onClick={() => navigate({ to: '/album/$id', params: { id: al.id } })}
+              onClick={() =>
+                navigate({ to: "/album/$id", params: { id: al.id } })
+              }
             />
           ))}
         </div>
@@ -98,7 +106,9 @@ function ProfilePage() {
 
       {/* Favorite artists */}
       <div className="px-4 mt-6">
-        <h2 className="text-white font-bold text-lg mb-3">Улюблені виконавці</h2>
+        <h2 className="text-white font-bold text-lg mb-3">
+          Улюблені виконавці
+        </h2>
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
           {favArtists.map((a) => (
             <MediaCard
@@ -107,7 +117,9 @@ function ProfilePage() {
               title={a.name}
               subtitle={a.genre}
               rounded
-              onClick={() => navigate({ to: '/artist/$id', params: { id: a.id } })}
+              onClick={() =>
+                navigate({ to: "/artist/$id", params: { id: a.id } })
+              }
             />
           ))}
         </div>

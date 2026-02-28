@@ -1,16 +1,36 @@
-import { useRef } from 'react';
+import { useRef } from "react";
 import {
-  Heart, Plus, Volume2, Repeat, Repeat1,
-  Shuffle, SkipBack, Play, Pause, SkipForward, Maximize2,
-} from 'lucide-react';
-import { usePlayerStore } from '../../store/playerStore';
-import { formatDuration } from '../../utils/format';
+  Heart,
+  Plus,
+  Volume2,
+  Repeat,
+  Repeat1,
+  Shuffle,
+  SkipBack,
+  Play,
+  Pause,
+  SkipForward,
+  Maximize2,
+} from "lucide-react";
+import { usePlayerStore } from "../../store/playerStore";
+import { formatDuration } from "../../utils/format";
 
 export default function DesktopPlayer() {
   const {
-    currentTrack, isPlaying, togglePlay, next, prev,
-    seek, progress, toggleLike, shuffle, repeat,
-    toggleShuffle, toggleRepeat, volume, setVolume,
+    currentTrack,
+    isPlaying,
+    togglePlay,
+    next,
+    prev,
+    seek,
+    progress,
+    toggleLike,
+    shuffle,
+    repeat,
+    toggleShuffle,
+    toggleRepeat,
+    volume,
+    setVolume,
   } = usePlayerStore();
 
   const barRef = useRef<HTMLDivElement>(null);
@@ -28,7 +48,6 @@ export default function DesktopPlayer() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 h-[72px] bg-[#060d19] border-t border-[#1a3050] flex items-center px-5 gap-6">
-
       {/* Left: album art + track info + actions */}
       <div className="flex items-center gap-3 w-64 flex-shrink-0">
         <img
@@ -52,8 +71,8 @@ export default function DesktopPlayer() {
             size={16}
             className={
               currentTrack.liked
-                ? 'text-[#1CA2EA] fill-[#1CA2EA]'
-                : 'text-white/45 hover:text-white'
+                ? "text-[#1CA2EA] fill-[#1CA2EA]"
+                : "text-white/45 hover:text-white"
             }
           />
         </button>
@@ -64,16 +83,17 @@ export default function DesktopPlayer() {
 
       {/* Center: transport controls + progress row */}
       <div className="flex-1 min-w-0 flex flex-col items-center gap-2">
-
         {/* Transport controls */}
         <div className="flex items-center gap-5">
           <button
             onClick={toggleRepeat}
             className={`transition-colors ${
-              repeat !== 'off' ? 'text-[#1CA2EA]' : 'text-white/45 hover:text-white'
+              repeat !== "off"
+                ? "text-[#1CA2EA]"
+                : "text-white/45 hover:text-white"
             }`}
           >
-            {repeat === 'one' ? <Repeat1 size={15} /> : <Repeat size={15} />}
+            {repeat === "one" ? <Repeat1 size={15} /> : <Repeat size={15} />}
           </button>
 
           <button
@@ -105,7 +125,7 @@ export default function DesktopPlayer() {
           <button
             onClick={toggleShuffle}
             className={`transition-colors ${
-              shuffle ? 'text-[#1CA2EA]' : 'text-white/45 hover:text-white'
+              shuffle ? "text-[#1CA2EA]" : "text-white/45 hover:text-white"
             }`}
           >
             <Shuffle size={15} />

@@ -1,13 +1,12 @@
-import { MapPin, Phone, Mail } from 'lucide-react';
-import { FaFacebook, FaTwitter, FaPinterest, FaRss } from 'react-icons/fa';
-import LogoIcon from '../ui/LogoIcon';
+import { MapPin, Phone, Mail } from "lucide-react";
+import { FaFacebook, FaTwitter, FaPinterest, FaRss } from "react-icons/fa";
+import LogoIcon from "../ui/LogoIcon";
 
 export default function Footer() {
   return (
     <footer className="bg-[#060d19] border-t border-[#1a3050]">
       {/* Main footer content — inset to clear fixed sidebars */}
       <div className="px-12 py-10 flex items-start justify-between gap-10 flex-wrap">
-
         {/* Logo */}
         <div className="flex flex-col items-start">
           <LogoIcon className="w-24 h-auto" />
@@ -54,10 +53,16 @@ export default function Footer() {
       {/* Bottom bar — full width divider + centered links */}
       <div className="px-12 py-4 border-t border-[#1a3050] flex items-center justify-center gap-8 text-xs text-white/30">
         <button className="hover:text-white transition-colors">About us</button>
-        <button className="hover:text-white transition-colors">Contact us</button>
+        <button className="hover:text-white transition-colors">
+          Contact us
+        </button>
         <button className="hover:text-white transition-colors">Help</button>
-        <button className="hover:text-white transition-colors">Privacy Policy</button>
-        <button className="hover:text-white transition-colors">Disclaimer</button>
+        <button className="hover:text-white transition-colors">
+          Privacy Policy
+        </button>
+        <button className="hover:text-white transition-colors">
+          Disclaimer
+        </button>
       </div>
     </footer>
   );

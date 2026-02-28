@@ -1,4 +1,4 @@
-import LogoIcon from '../ui/LogoIcon';
+import LogoIcon from "../ui/LogoIcon";
 
 interface AuthLogoProps {
   heading: string;
@@ -17,7 +17,7 @@ export default function AuthLogo({ heading, brand = false }: AuthLogoProps) {
       {heading && (
         <h2
           className={`text-[#E8EEF8] font-bold tracking-tight text-center whitespace-pre-line ${
-            brand ? 'text-[22px] mt-2' : 'text-[28px] leading-tight'
+            brand ? "text-[22px] mt-2" : "text-[28px] leading-tight"
           }`}
         >
           {heading}

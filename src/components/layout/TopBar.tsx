@@ -1,6 +1,6 @@
-import { Mic, Bell, Search } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
-import LogoIcon from '../ui/LogoIcon';
+import { Mic, Bell, Search } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import LogoIcon from "../ui/LogoIcon";
 
 export default function TopBar() {
   return (
@@ -21,7 +21,10 @@ export default function TopBar() {
           placeholder="Виконавці, треки, подкасти..."
           className="w-full bg-[#0a1929] border border-[#1a3050] rounded-full pl-9 pr-10 py-2 text-sm text-white placeholder:text-white/35 focus:outline-none focus:border-[#1CA2EA]/60"
         />
-        <Mic size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+        <Mic
+          size={15}
+          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40"
+        />
       </div>
 
       {/* Right actions */}

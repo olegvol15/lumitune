@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react';
-import { tracks } from '../data/tracks';
-import { artists } from '../data/artists';
-import { albums } from '../data/albums';
+import { useMemo, useState } from "react";
+import { tracks } from "../data/tracks";
+import { artists } from "../data/artists";
+import { albums } from "../data/albums";
 
 export function useSearch() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
     const q = query.toLowerCase().trim();
@@ -18,7 +18,8 @@ export function useSearch() {
           t.albumTitle.toLowerCase().includes(q),
       ),
       artists: artists.filter(
-        (a) => a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q),
+        (a) =>
+          a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q),
       ),
       albums: albums.filter(
         (a) =>

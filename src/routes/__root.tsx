@@ -1,13 +1,24 @@
-import { createRootRoute, Outlet, useRouterState } from '@tanstack/react-router';
-import BottomNav from '../components/layout/BottomNav';
-import MiniPlayer from '../components/layout/MiniPlayer';
-import TopBar from '../components/layout/TopBar';
-import Sidebar from '../components/layout/Sidebar';
-import RightPanel from '../components/layout/RightPanel';
-import Footer from '../components/layout/Footer';
-import DesktopPlayer from '../components/layout/DesktopPlayer';
+import {
+  createRootRoute,
+  Outlet,
+  useRouterState,
+} from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import BottomNav from "../components/layout/BottomNav";
+import MiniPlayer from "../components/layout/MiniPlayer";
+import TopBar from "../components/layout/TopBar";
+import Sidebar from "../components/layout/Sidebar";
+import RightPanel from "../components/layout/RightPanel";
+import Footer from "../components/layout/Footer";
+import DesktopPlayer from "../components/layout/DesktopPlayer";
 
-const HIDDEN_NAV_ROUTES = ['/player', '/auth/signin', '/auth/signup', '/auth/forgot-password'];
+const HIDDEN_NAV_ROUTES = [
+  "/player",
+  "/auth/signin",
+  "/auth/signup",
+  "/auth/forgot-password",
+  "/admin",
+];
 
 function RootLayout() {
   const { location } = useRouterState();
@@ -67,5 +78,12 @@ function RootLayout() {
 }
 
 export const Route = createRootRoute({
-  component: RootLayout,
+  component: () => (
+    <>
+      <RootLayout />
+      {import.meta.env.DEV && (
+        <TanStackRouterDevtools position="bottom-right" />
+      )}
+    </>
+  ),
 });

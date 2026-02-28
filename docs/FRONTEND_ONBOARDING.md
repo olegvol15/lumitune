@@ -1,6 +1,7 @@
 # Frontend Onboarding
 
 ## Stack
+
 - React 19 + TypeScript
 - Vite 7
 - Tailwind CSS 3
@@ -11,6 +12,7 @@
 - Icons: `lucide-react`, `react-icons`
 
 ## Project Structure
+
 ```txt
 src/
   assets/
@@ -33,6 +35,7 @@ src/
 ```
 
 ## Routing: Where to Add Pages
+
 - Add new pages inside `src/routes`.
 - Auth pages go in `src/routes/auth`.
 - Use `createFileRoute('/path')({ component: Page })`.
@@ -40,34 +43,40 @@ src/
 - `src/routeTree.gen.ts` is auto-generated: never edit manually.
 
 ## Components: Where to Add UI
+
 - Reusable primitives (buttons, cards, generic form controls): `src/components/ui`.
 - Route/domain-specific sections: nearest domain folder (`home`, `auth`, `player`, etc.).
 - Layout shell elements: `src/components/layout`.
 - Keep components small and composable; move repeated JSX into shared components quickly.
 
 ## Hooks: Where to Add Logic
+
 - Put custom hooks in `src/hooks`.
 - Keep hooks pure and focused (`useSearch`, `usePlayer` style).
 - Avoid creating nested component definitions inside render logic.
 
 ## State and Data
+
 - Global interactive state: Zustand stores in `src/store`.
 - Server/cache state: TanStack Query (already configured in `src/main.tsx`).
 - Shared TS models: `src/types/index.ts`.
 - Temporary mock content belongs in `src/data`; replace with API layer gradually.
 
 ## Media Best Practices
+
 - Put product media in `src/assets/media`.
 - Prefer local assets over random external image URLs.
 - Use SVG for logos/icons when possible; PNG/WebP for artwork.
 - Name files clearly (`podcast-shadow-cases.png`, `logo-mark.svg`).
 
 ## Styling Conventions
+
 - Tailwind-first approach.
 - Global tokens/helpers live in `src/index.css` under `@layer base/components`.
 - Reuse existing utility patterns (`auth-modal`, `auth-input`, section styles) before adding new ones.
 
 ## Commands
+
 - Install: `npm install`
 - Run dev: `npm run dev`
 - Lint: `npm run lint`
@@ -75,6 +84,7 @@ src/
 - Preview production build: `npm run preview`
 
 ## Delivery Checklist (Before PR)
+
 1. `npm run lint` passes.
 2. `npm run build` passes.
 3. New routes are added via `src/routes/*`.

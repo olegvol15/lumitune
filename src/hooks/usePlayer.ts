@@ -1,3 +1,3 @@
-import { usePlayerStore } from '../store/playerStore';
+import { usePlayerStore } from "../store/playerStore";
 
 export const usePlayer = () => usePlayerStore();

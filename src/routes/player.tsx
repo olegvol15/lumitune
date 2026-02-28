@@ -1,13 +1,19 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { ChevronDown, Heart, ListMusic, Share2, MoreHorizontal } from 'lucide-react';
-import { usePlayerStore } from '../store/playerStore';
-import PlayerControls from '../components/player/PlayerControls';
-import ProgressBar from '../components/player/ProgressBar';
-import TrackRow from '../components/ui/TrackRow';
-import { useState } from 'react';
-import Button from '../components/ui/Button';
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  ChevronDown,
+  Heart,
+  ListMusic,
+  Share2,
+  MoreHorizontal,
+} from "lucide-react";
+import { usePlayerStore } from "../store/playerStore";
+import PlayerControls from "../components/player/PlayerControls";
+import ProgressBar from "../components/player/ProgressBar";
+import TrackRow from "../components/ui/TrackRow";
+import { useState } from "react";
+import Button from "../components/ui/Button";
 
-export const Route = createFileRoute('/player')({ component: PlayerPage });
+export const Route = createFileRoute("/player")({ component: PlayerPage });
 
 function PlayerPage() {
   const navigate = useNavigate();
@@ -18,7 +24,12 @@ function PlayerPage() {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-surface px-4 text-center">
         <p className="text-muted mb-4">Немає активного треку</p>
-        <Button variant="secondary" shape="pill" onClick={() => navigate({ to: '/' })} className="px-6">
+        <Button
+          variant="secondary"
+          shape="pill"
+          onClick={() => navigate({ to: "/" })}
+          className="px-6"
+        >
           Перейти на головну
         </Button>
       </div>
@@ -38,7 +49,9 @@ function PlayerPage() {
           <ChevronDown size={28} className="text-white" />
         </button>
         <div className="text-center">
-          <p className="text-white/60 text-xs uppercase tracking-widest">Відтворення</p>
+          <p className="text-white/60 text-xs uppercase tracking-widest">
+            Відтворення
+          </p>
           <p className="text-white text-sm font-medium truncate max-w-[180px]">
             {currentTrack.albumTitle}
           </p>
@@ -63,14 +76,22 @@ function PlayerPage() {
           <div className="px-6 pb-2">
             <div className="flex items-center justify-between mb-4">
               <div className="flex-1 min-w-0">
-                <h1 className="text-white text-2xl font-bold truncate">{currentTrack.title}</h1>
-                <p className="text-white/60 text-base mt-0.5">{currentTrack.artistName}</p>
+                <h1 className="text-white text-2xl font-bold truncate">
+                  {currentTrack.title}
+                </h1>
+                <p className="text-white/60 text-base mt-0.5">
+                  {currentTrack.artistName}
+                </p>
               </div>
               <div className="flex gap-2 flex-shrink-0 ml-3">
                 <button onClick={toggleLike} className="p-2">
                   <Heart
                     size={24}
-                    className={currentTrack.liked ? 'text-brand fill-brand' : 'text-white/60'}
+                    className={
+                      currentTrack.liked
+                        ? "text-brand fill-brand"
+                        : "text-white/60"
+                    }
                   />
                 </button>
                 <button className="p-2">
@@ -112,13 +133,23 @@ function PlayerPage() {
         <div className="flex-1 flex flex-col px-4 pb-4 overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-white font-bold text-lg">Черга відтворення</h2>
-            <Button variant="ghost" size="sm" onClick={() => setShowQueue(false)} className="text-sm font-medium text-brand">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowQueue(false)}
+              className="text-sm font-medium text-brand"
+            >
               Закрити
             </Button>
           </div>
           <div className="overflow-y-auto space-y-1 flex-1">
             {queue.map((t, i) => (
-              <TrackRow key={`${t.id}-${i}`} track={t} index={i} queue={queue} />
+              <TrackRow
+                key={`${t.id}-${i}`}
+                track={t}
+                index={i}
+                queue={queue}
+              />
             ))}
           </div>
         </div>

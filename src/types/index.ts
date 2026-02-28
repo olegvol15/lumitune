@@ -54,7 +54,7 @@ export interface Episode {
 
 export interface Notification {
   id: string;
-  type: 'new_release' | 'follow' | 'playlist' | 'podcast';
+  type: "new_release" | "follow" | "playlist" | "podcast";
   title: string;
   body: string;
   imageUrl: string;

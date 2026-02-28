@@ -1,7 +1,7 @@
-import { useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { Artist } from '../../types';
-import { formatListeners } from '../../utils/format';
+import { useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Artist } from "../../types";
+import { formatListeners } from "../../utils/format";
 
 interface ArtistSectionProps {
   title: string;
@@ -18,14 +18,18 @@ export default function ArtistSection({
 }: ArtistSectionProps) {
   const rowRef = useRef<HTMLDivElement>(null);
 
-  const scroll = (dir: 'left' | 'right') => {
+  const scroll = (dir: "left" | "right") => {
     if (!rowRef.current) return;
-    rowRef.current.scrollBy({ left: dir === 'right' ? 200 : -200, behavior: 'smooth' });
+    rowRef.current.scrollBy({
+      left: dir === "right" ? 200 : -200,
+      behavior: "smooth",
+    });
   };
 
   const accentIdx = title.indexOf(accentWord);
   const before = accentIdx > -1 ? title.slice(0, accentIdx) : title;
-  const after = accentIdx > -1 ? title.slice(accentIdx + accentWord.length) : '';
+  const after =
+    accentIdx > -1 ? title.slice(accentIdx + accentWord.length) : "";
 
   return (
     <section className="mb-10">
@@ -37,13 +41,13 @@ export default function ArtistSection({
         </h2>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => scroll('left')}
+            onClick={() => scroll("left")}
             className="w-7 h-7 rounded-full border border-[#1a3050] flex items-center justify-center text-white/50 hover:text-white hover:border-[#1CA2EA] transition-colors"
           >
             <ChevronLeft size={13} />
           </button>
           <button
-            onClick={() => scroll('right')}
+            onClick={() => scroll("right")}
             className="w-7 h-7 rounded-full border border-[#1a3050] flex items-center justify-center text-white/50 hover:text-white hover:border-[#1CA2EA] transition-colors"
           >
             <ChevronRight size={13} />
@@ -51,7 +55,10 @@ export default function ArtistSection({
         </div>
       </div>
 
-      <div ref={rowRef} className="flex gap-6 overflow-x-auto pb-3 scrollbar-none">
+      <div
+        ref={rowRef}
+        className="flex gap-6 overflow-x-auto pb-3 scrollbar-none"
+      >
         {artists.map((artist) => (
           <button
             key={artist.id}

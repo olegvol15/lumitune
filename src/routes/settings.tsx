@@ -1,19 +1,25 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Button from '../components/ui/Button';
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Button from "../components/ui/Button";
 
-function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+function Toggle({
+  value,
+  onChange,
+}: {
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
   return (
     <button
       onClick={() => onChange(!value)}
       className={`w-11 h-6 rounded-full transition-colors ${
-        value ? 'bg-brand' : 'bg-surface-alt'
+        value ? "bg-brand" : "bg-surface-alt"
       } relative`}
     >
       <span
         className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all ${
-          value ? 'left-[22px]' : 'left-0.5'
+          value ? "left-[22px]" : "left-0.5"
         }`}
       />
     </button>
@@ -51,7 +57,7 @@ function SettingsRow({
   );
 }
 
-export const Route = createFileRoute('/settings')({ component: SettingsPage });
+export const Route = createFileRoute("/settings")({ component: SettingsPage });
 
 function SettingsPage() {
   const navigate = useNavigate();
@@ -64,7 +70,10 @@ function SettingsPage() {
     <div className="px-4 pt-4">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate({ to: '/profile' })} className="p-2 -ml-2">
+        <button
+          onClick={() => navigate({ to: "/profile" })}
+          className="p-2 -ml-2"
+        >
           <ChevronLeft size={24} className="text-white" />
         </button>
         <h1 className="text-white text-2xl font-bold">Налаштування</h1>
@@ -75,7 +84,10 @@ function SettingsPage() {
         <p className="text-muted text-xs font-semibold uppercase tracking-wider mb-2">
           Акаунт
         </p>
-        <SettingsRow label="Профіль" onPress={() => navigate({ to: '/profile' })} />
+        <SettingsRow
+          label="Профіль"
+          onPress={() => navigate({ to: "/profile" })}
+        />
         <SettingsRow label="Підписка" value="Premium" onPress={() => {}} />
         <SettingsRow label="Пристрої" onPress={() => {}} />
       </div>

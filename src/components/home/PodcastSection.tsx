@@ -1,5 +1,5 @@
-import { podcasts } from '../../data/podcasts';
-import { formatLongDuration } from '../../utils/format';
+import { podcasts } from "../../data/podcasts";
+import { formatLongDuration } from "../../utils/format";
 
 export default function PodcastSection() {
   return (
@@ -19,9 +19,10 @@ export default function PodcastSection() {
                 {podcast.title}
               </h3>
               <p className="text-[#8FA8C5] text-sm mt-1 leading-none">
-                {podcast.podcastName}{' '}
-                <span className="text-[#6C87A8]">·</span>{' '}
-                <span className="text-[#C4D7EC]">Consectetur adipiscing elit quisque faucib...</span>
+                {podcast.podcastName} <span className="text-[#6C87A8]">·</span>{" "}
+                <span className="text-[#C4D7EC]">
+                  Consectetur adipiscing elit quisque faucib...
+                </span>
               </p>
             </div>
 
@@ -35,7 +36,8 @@ export default function PodcastSection() {
 
             <div className="h-[120px] overflow-hidden">
               <p className="text-[#C2D2E8] text-sm leading-[1.45]">
-                {podcast.publishedAt} • {formatLongDuration(podcast.duration)} • {podcast.description}
+                {podcast.publishedAt} • {formatLongDuration(podcast.duration)} •{" "}
+                {podcast.description}
               </p>
             </div>
           </div>

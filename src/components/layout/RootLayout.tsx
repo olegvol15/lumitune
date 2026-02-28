@@ -1,8 +1,8 @@
-import { Outlet, useRouterState } from '@tanstack/react-router';
-import BottomNav from './BottomNav';
-import MiniPlayer from './MiniPlayer';
+import { Outlet, useRouterState } from "@tanstack/react-router";
+import BottomNav from "./BottomNav";
+import MiniPlayer from "./MiniPlayer";
 
-const HIDDEN_NAV_ROUTES = ['/player', '/auth/signin', '/auth/signup'];
+const HIDDEN_NAV_ROUTES = ["/player", "/auth/signin", "/auth/signup"];
 
 export default function RootLayout() {
   const { location } = useRouterState();
@@ -11,7 +11,7 @@ export default function RootLayout() {
 
   return (
     <div className="min-h-screen bg-surface text-white">
-      <main className={hideNav ? '' : 'pb-32'}>
+      <main className={hideNav ? "" : "pb-32"}>
         <Outlet />
       </main>
       {!hideNav && (
