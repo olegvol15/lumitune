@@ -1,18 +1,31 @@
-import { Link, useRouterState } from '@tanstack/react-router';
-import { Home, Library, Heart, ListPlus, AlignJustify, RefreshCw, Clock } from 'lucide-react';
-import { artists } from '../../data/artists';
+import { Link, useRouterState, useNavigate } from '@tanstack/react-router';
+import {
+  Home,
+  Library,
+  Heart,
+  ListPlus,
+  AlignJustify,
+  RefreshCw,
+  Clock,
+  Music2,
+} from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
+import { usePlaylistStore } from '../../store/playlistStore';
 
 export default function Sidebar() {
   const { location } = useRouterState();
   const pathname = location.pathname;
+  const navigate = useNavigate();
   const queue = usePlayerStore((s) => s.queue);
+  const { playlists, createPlaylist } = usePlaylistStore();
 
-  const playlistItems = artists.slice(0, 5);
+  const handleCreatePlaylist = () => {
+    const id = createPlaylist();
+    navigate({ to: '/playlist/$id', params: { id } });
+  };
 
   return (
     <aside className="sticky top-16 h-[calc(100vh-4rem)] w-64 bg-[#060d19] border-r border-[#1a3050] overflow-y-auto flex flex-col flex-shrink-0">
-
       {/* Меню */}
       <div className="px-5 pt-6 pb-5">
         <h2 className="text-white text-xl font-bold mb-4">Меню</h2>
@@ -48,12 +61,22 @@ export default function Sidebar() {
       <div className="px-5 pt-6 pb-4">
         <h2 className="text-white text-xl font-bold mb-4">Плейлисти</h2>
 
-        <Link to="/favorite" className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+        <Link
+          to="/favorite"
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+            pathname.startsWith('/favorite')
+              ? 'bg-[#0d2a4a] text-white'
+              : 'text-white/70 hover:text-white hover:bg-white/5'
+          }`}
+        >
           <Heart size={18} />
           Улюблені треки
         </Link>
 
-        <button className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors mt-1">
+        <button
+          onClick={handleCreatePlaylist}
+          className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors mt-1"
+        >
           <ListPlus size={18} />
           Створити плейлист
         </button>
@@ -64,25 +87,29 @@ export default function Sidebar() {
           <AlignJustify size={15} className="text-white/50" />
         </div>
 
-        {/* Playlist items */}
-        {playlistItems.map((artist, i) => (
-          <div
-            key={artist.id}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors ${
-              i === 0 ? 'bg-[#0d2a4a]' : 'hover:bg-white/5'
-            }`}
-          >
-            <img
-              src={artist.image}
-              alt={artist.name}
-              className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-            />
-            <div className="min-w-0">
-              <p className="text-white text-sm font-medium truncate">{artist.name}</p>
-              <p className="text-white/40 text-xs">Виконавець</p>
-            </div>
-          </div>
-        ))}
+        {playlists.length === 0 ? (
+          <p className="text-muted text-xs px-3 py-2">Ще немає плейлистів</p>
+        ) : (
+          playlists.map((playlist) => (
+            <button
+              key={playlist.id}
+              onClick={() => navigate({ to: '/playlist/$id', params: { id: playlist.id } })}
+              className={`flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-left transition-colors ${
+                pathname === `/playlist/${playlist.id}`
+                  ? 'bg-[#0d2a4a]'
+                  : 'hover:bg-white/5'
+              }`}
+            >
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0">
+                <Music2 size={16} className="text-[#1CA2EA]/70" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-white text-sm font-medium truncate">{playlist.title}</p>
+                <p className="text-white/40 text-xs">{playlist.trackIds.length} треків</p>
+              </div>
+            </button>
+          ))
+        )}
       </div>
 
       <div className="h-px bg-[#1a3050] mx-5" />
