@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { notifications } from "../data/notifications";
+import { useAuthStore } from "../store/authStore";
 import type { Notification } from "../types";
 import { Bell, Music, UserPlus, ListMusic, Mic } from "lucide-react";
 
@@ -50,6 +51,9 @@ function NotificationItem({ n }: { n: Notification }) {
 }
 
 export const Route = createFileRoute("/notifications")({
+  beforeLoad: () => {
+    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+  },
   component: NotificationsPage,
 });
 

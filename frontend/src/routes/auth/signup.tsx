@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff, ChevronDown } from "lucide-react";
 import { FaFacebook, FaApple } from "react-icons/fa";
@@ -7,8 +7,13 @@ import AuthLogo from "../../components/auth/AuthLogo";
 import Button from "../../components/ui/Button";
 import StepBar from "../../components/ui/StepBar";
 import PasswordRequirement from "../../components/ui/PasswordRequirement";
+import authApi from "../../api/authApi";
+import { useAuthStore } from "../../store/authStore";
 
 export const Route = createFileRoute("/auth/signup")({
+  beforeLoad: () => {
+    if (useAuthStore.getState().token) throw redirect({ to: "/" });
+  },
   component: SignUpPage,
 });
 
@@ -61,6 +66,7 @@ function SignUpPage() {
   const [city, setCity] = useState("");
   const [role, setRole] = useState<"user" | "artist">("user");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const hasLetter = /[a-zA-Zа-яА-ЯіІїЇєЄ]/.test(password);
   const hasNumberOrSpecial = /[0-9!?_&#]/.test(password);
@@ -69,9 +75,17 @@ function SignUpPage() {
 
   const handleFinalSubmit = async () => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setLoading(false);
-    navigate({ to: "/" });
+    setError(null);
+    try {
+      const { data } = await authApi.register(email, password, name);
+      useAuthStore.getState().setAuth(data.token, data.user);
+      navigate({ to: "/" });
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
+      setError(axiosErr.response?.data?.message ?? "Помилка реєстрації");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ─── Step 0: email + social ───────────────────────────────────────────────
@@ -412,6 +426,10 @@ function SignUpPage() {
             </div>
           </div>
         </div>
+
+        {error && (
+          <p className="text-red-400 text-sm text-center mt-3">{error}</p>
+        )}
 
         <Button
           variant="primary"

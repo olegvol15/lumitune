@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import {
   ChevronDown,
   Heart,
@@ -7,13 +7,19 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { usePlayerStore } from "../store/playerStore";
+import { useAuthStore } from "../store/authStore";
 import PlayerControls from "../components/player/PlayerControls";
 import ProgressBar from "../components/player/ProgressBar";
 import TrackRow from "../components/ui/TrackRow";
 import { useState } from "react";
 import Button from "../components/ui/Button";
 
-export const Route = createFileRoute("/player")({ component: PlayerPage });
+export const Route = createFileRoute("/player")({
+  beforeLoad: () => {
+    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+  },
+  component: PlayerPage,
+});
 
 function PlayerPage() {
   const navigate = useNavigate();

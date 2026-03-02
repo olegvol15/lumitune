@@ -1,14 +1,20 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Plus, Music2 } from "lucide-react";
 import { albums } from "../data/albums";
 import { artists } from "../data/artists";
 import Button from "../components/ui/Button";
 import { usePlaylistStore } from "../store/playlistStore";
+import { useAuthStore } from "../store/authStore";
 
 type Tab = "playlists" | "albums" | "artists";
 
-export const Route = createFileRoute("/library")({ component: LibraryPage });
+export const Route = createFileRoute("/library")({
+  beforeLoad: () => {
+    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+  },
+  component: LibraryPage,
+});
 
 function LibraryPage() {
   const [tab, setTab] = useState<Tab>("playlists");

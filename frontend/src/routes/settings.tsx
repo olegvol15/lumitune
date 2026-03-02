@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../components/ui/Button";
+import { useAuthStore } from "../store/authStore";
 
 function Toggle({
   value,
@@ -57,7 +58,12 @@ function SettingsRow({
   );
 }
 
-export const Route = createFileRoute("/settings")({ component: SettingsPage });
+export const Route = createFileRoute("/settings")({
+  beforeLoad: () => {
+    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+  },
+  component: SettingsPage,
+});
 
 function SettingsPage() {
   const navigate = useNavigate();

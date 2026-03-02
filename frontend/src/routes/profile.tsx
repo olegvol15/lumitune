@@ -1,10 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Settings, Edit3 } from "lucide-react";
 import { tracks } from "../data/tracks";
 import { albums } from "../data/albums";
 import { artists } from "../data/artists";
 import TrackRow from "../components/ui/TrackRow";
 import MediaCard from "../components/ui/MediaCard";
+import { useAuthStore } from "../store/authStore";
 
 const user = {
   id: "user1",
@@ -16,7 +17,12 @@ const user = {
   totalStreams: 23_400,
 };
 
-export const Route = createFileRoute("/profile")({ component: ProfilePage });
+export const Route = createFileRoute("/profile")({
+  beforeLoad: () => {
+    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+  },
+  component: ProfilePage,
+});
 
 function ProfilePage() {
   const navigate = useNavigate();

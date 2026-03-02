@@ -1,13 +1,17 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Search, Plus, X, ChevronLeft, Music2 } from "lucide-react";
 import { usePlaylistStore } from "../store/playlistStore";
+import { useAuthStore } from "../store/authStore";
 import { usePlayerStore } from "../store/playerStore";
 import { tracks } from "../data/tracks";
 import { formatDuration, formatPlayCount } from "../utils/format";
 import Button from "../components/ui/Button";
 
 export const Route = createFileRoute("/playlist/$id")({
+  beforeLoad: () => {
+    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+  },
   component: PlaylistPage,
 });
 
