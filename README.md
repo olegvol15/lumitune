@@ -1,4 +1,4 @@
-# Spotify Clone
+# Lumitune (Spotify clone)
 
 A full-stack music streaming application built with React and Express in a pnpm monorepo.
 
