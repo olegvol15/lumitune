@@ -35,32 +35,12 @@ pnpm install
 
 ### 2. Configure environment variables
 
-**Backend:**
 ```bash
 cp backend/.env.example backend/.env
-```
-
-Edit `backend/.env`:
-```env
-PORT=3000
-NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/spotify-clone
-JWT_SECRET=your-super-secret-jwt-key-change-this
-JWT_EXPIRES_IN=7d
-CORS_ORIGIN=http://localhost:5173
-UPLOAD_PATH=uploads/
-MAX_FILE_SIZE=524288000
-```
-
-**Frontend:**
-```bash
 cp frontend/.env.example frontend/.env
 ```
 
-`frontend/.env` (default works for local dev):
-```env
-VITE_API_URL=http://localhost:3000/api
-```
+Fill in the values in `backend/.env` — see `backend/.env.example` for all required keys.
 
 ### 3. Start development servers
 
