@@ -3,15 +3,14 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
-import playlistRoutes from './routes/playlist.routes';
 
 // Load environment variables
 dotenv.config();
 
-// Import routes (we'll create these next)
+// Import routes
 import authRoutes from './routes/auth.routes';
 import songRoutes from './routes/song.routes';
-// import playlistRoutes from './routes/playlist.routes';
+import playlistRoutes from './routes/playlist.routes';
 
 // Import middleware
 import { errorHandler } from './middleware/error.middleware';
@@ -20,13 +19,12 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
-app.use('/api/playlists', playlistRoutes);
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://yourfrontend.com' 
-    : 'http://localhost:3000',
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.CORS_ORIGIN || 'http://localhost:5173'
+    : 'http://localhost:5173',
   credentials: true
 }));
 
@@ -47,7 +45,7 @@ app.use('/uploads', express.static('uploads'));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/songs', songRoutes);
-// app.use('/api/playlists', playlistRoutes);
+app.use('/api/playlists', playlistRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
