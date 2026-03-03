@@ -36,7 +36,7 @@ export const uploadSong = async (req: AuthRequest, res: Response) => {
       genre: req.body.genre,
       duration: Math.round(duration),
       filePath: req.file.path,
-      uploadedBy: req.user._id
+      uploadedBy: req.user!._id
     });
 
     res.status(201).json({

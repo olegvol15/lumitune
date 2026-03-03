@@ -1,7 +1,15 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\backend",
+    "\\backend\\src",
+    "\\backend\\src\\config",
+    "\\backend\\src\\controllers",
+    "\\backend\\src\\middleware",
+    "\\backend\\src\\models",
+    "\\backend\\src\\routes",
+    "\\backend\\src\\types",
+    "\\backend\\src\\utils"
   ],
-  "SelectedNode": "\\C:\\Users\\Eugene\\source\\repos\\lumitune",
   "PreviewInSolutionExplorer": false
 }

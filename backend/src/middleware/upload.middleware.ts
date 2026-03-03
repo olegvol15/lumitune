@@ -18,23 +18,22 @@ const storage = multer.diskStorage({
   }
 });
 
+// FIX: Check extension only — mimetypes vary by OS/browser (e.g. audio/mpeg, audio/wav, application/octet-stream)
 const fileFilter = (req: any, file: any, cb: any) => {
-  // Accept audio files only
-  const allowedTypes = /mp3|wav|m4a|flac|aac/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  const allowedExtensions = /\.(mp3|wav|m4a|flac|aac)$/i;
+  const isValidExt = allowedExtensions.test(path.extname(file.originalname));
 
-  if (mimetype && extname) {
+  if (isValidExt) {
     return cb(null, true);
   } else {
-    cb(new Error('Only audio files are allowed'));
+    cb(new Error('Only audio files are allowed (mp3, wav, m4a, flac, aac)'));
   }
 };
 
 export const upload = multer({
   storage: storage,
   limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE || '524288000')
+    fileSize: parseInt(process.env.MAX_FILE_SIZE || '524288000') // 500MB default
   },
   fileFilter: fileFilter
 });

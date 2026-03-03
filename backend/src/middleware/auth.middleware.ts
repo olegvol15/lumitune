@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt.utils';
-import { User } from '../models/user.model';
+import { User, IUser } from '../models/user.model';
 
 export interface AuthRequest extends Request {
-  user?: any;
+  user?: IUser; // FIX: was typed as `any`, now properly typed as IUser
 }
 
 export const protect = async (
@@ -12,7 +12,7 @@ export const protect = async (
   next: NextFunction
 ) => {
   try {
-    let token;
+    let token: string | undefined;
 
     if (req.headers.authorization?.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];

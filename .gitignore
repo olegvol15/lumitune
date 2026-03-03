@@ -38,3 +38,11 @@ package-lock.json
 # Cache
 .eslintcache
 .pnpm-store/
+
+# Postman
+.postman/
+*.postman_collection.json
+*.postman_environment.json
+
+# Visual Studio
+.vs/
