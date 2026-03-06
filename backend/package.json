@@ -4,10 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts",
-    "build": "tsc",
-    "clean": "rm -rf dist"
+    "dev": "nodemon --exec npx ts-node src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -32,9 +29,21 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/mongoose": "^5.11.97",
     "@types/multer": "^2.0.0",
-    "@types/node": "^25.3.2",
+    "@types/node": "^25.3.5",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "typeRoots": [ "./node_modules/@types", "./src/types" ],
+    "types": [ "node" ]
   }
 }
