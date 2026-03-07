@@ -12,9 +12,16 @@ export default function TrackModal() {
   const { open, mode, track } = modal;
 
   const [form, setForm] = useState<AdminTrack | null>(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (track) setForm({ ...track });
+    if (track) {
+      setForm({ ...track });
+      setAudioFile(null);
+      setError(null);
+    }
   }, [track]);
 
   if (!open || !form) return null;
@@ -36,9 +43,15 @@ export default function TrackModal() {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.title.trim()) return;
-    saveTrack(form);
+    setIsSaving(true);
+    setError(null);
+    const result = await saveTrack(form, audioFile);
+    if (!result.ok) {
+      setError(result.error ?? 'Failed to save track');
+    }
+    setIsSaving(false);
   };
 
   const handleReset = () => {
@@ -172,11 +185,16 @@ export default function TrackModal() {
           {/* Import Track + Import Picture */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass}>Import Track</label>
+              <label className={labelClass}>Import Track {mode === 'new' ? '*' : ''}</label>
               <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
                 <Upload size={14} />
-                <span>Choose file</span>
-                <input type="file" accept="audio/*" className="hidden" />
+                <span>{audioFile ? audioFile.name : 'Choose file'}</span>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  className="hidden"
+                  onChange={(e) => setAudioFile(e.target.files?.[0] ?? null)}
+                />
               </label>
             </div>
             <div>
@@ -222,6 +240,9 @@ export default function TrackModal() {
 
         {/* Footer buttons */}
         <div className="px-6 py-4 border-t border-[#2a3a52] flex justify-end gap-3">
+          {error && (
+            <p className="mr-auto text-xs text-red-400 self-center">{error}</p>
+          )}
           {mode === 'edit' && (
             <button
               onClick={handleReset}
@@ -232,9 +253,10 @@ export default function TrackModal() {
           )}
           <button
             onClick={handleSave}
+            disabled={isSaving}
             className="px-5 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] transition-colors"
           >
-            Save
+            {isSaving ? 'Saving…' : 'Save'}
           </button>
         </div>
       </div>

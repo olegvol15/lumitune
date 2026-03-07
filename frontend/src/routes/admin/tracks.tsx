@@ -19,6 +19,8 @@ function AdminTracksPage() {
 
   const {
     tracks,
+    isLoading,
+    error,
     selected,
     search,
     page,
@@ -29,11 +31,18 @@ function AdminTracksPage() {
     toggleSelect,
     selectAll,
     clearSelection,
+    fetchTracks,
     openNew,
     openEdit,
     deleteTrack,
     deleteSelected,
   } = useAdminTracksStore();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchTracks();
+    }
+  }, [isAuthenticated, fetchTracks]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -91,7 +100,9 @@ function AdminTracksPage() {
         </div>
         {selected.size > 0 && (
           <button
-            onClick={deleteSelected}
+            onClick={async () => {
+              await deleteSelected();
+            }}
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
           >
             <Trash2 size={14} />
@@ -102,6 +113,11 @@ function AdminTracksPage() {
 
       {/* Table */}
       <div className="bg-[#1e2638] rounded-xl border border-[#2a3a52] overflow-hidden">
+        {error && (
+          <div className="px-4 py-3 text-sm text-red-300 border-b border-[#2a3a52]">
+            {error}
+          </div>
+        )}
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px]">
             <thead className="border-b border-[#2a3a52]">
@@ -131,7 +147,7 @@ function AdminTracksPage() {
               {paginated.length === 0 && (
                 <tr>
                   <td colSpan={12} className="text-center py-10 text-[#7a8faa] text-sm">
-                    No tracks found
+                    {isLoading ? 'Loading tracks…' : 'No tracks found'}
                   </td>
                 </tr>
               )}
@@ -196,7 +212,9 @@ function AdminTracksPage() {
                       </button>
                       <button
                         title="Delete"
-                        onClick={() => deleteTrack(track.id)}
+                        onClick={async () => {
+                          await deleteTrack(track.id);
+                        }}
                         className="p-1.5 rounded-lg text-[#7a8faa] hover:text-[#f07282] hover:bg-[#2a3a52] transition-colors"
                       >
                         <Trash2 size={14} />

@@ -8,15 +8,17 @@ import { parseRangeHeader, toPositiveInt } from '../utils/song.utils';
 import {
   SongListResult,
   SongQueryInput,
+  SongUpdateInput,
   SongUploadInput,
   StreamSongResult,
 } from '../types/song/song-service.types';
+import { ensureObjectId } from '../utils/mongoose.utils';
 
 export const songService = {
   async uploadSong(input: SongUploadInput) {
-    const { file, body, uploadedBy } = input;
+    const { file, body, uploadedBy, allowEmptyUploader } = input;
 
-    if (!uploadedBy) {
+    if (!uploadedBy && !allowEmptyUploader) {
       throw new ServiceError(401, 'Not authorized to access this route');
     }
 
@@ -39,7 +41,7 @@ export const songService = {
         genre: body.genre,
         duration: Math.round(duration),
         filePath: file.path,
-        uploadedBy,
+        ...(uploadedBy ? { uploadedBy } : {}),
       });
 
       return { song };
@@ -83,6 +85,7 @@ export const songService = {
   },
 
   async getSongById(songId: string) {
+    ensureObjectId(songId, 'songId');
     const song = await Song.findById(songId).populate('uploadedBy', 'username');
     if (!song) {
       throw new ServiceError(404, 'Song not found');
@@ -90,7 +93,49 @@ export const songService = {
     return { song };
   },
 
+  async updateSong(songId: string, input: SongUpdateInput) {
+    ensureObjectId(songId, 'songId');
+
+    const updateData: SongUpdateInput = {};
+    if (typeof input.title === 'string') updateData.title = input.title.trim();
+    if (typeof input.artist === 'string') updateData.artist = input.artist.trim();
+    if (typeof input.album === 'string') updateData.album = input.album.trim();
+    if (typeof input.genre === 'string') updateData.genre = input.genre.trim();
+    if (typeof input.coverImage === 'string') updateData.coverImage = input.coverImage.trim();
+
+    if (updateData.title !== undefined && updateData.title.length === 0) {
+      throw new ServiceError(400, 'Song title cannot be empty');
+    }
+
+    if (updateData.artist !== undefined && updateData.artist.length === 0) {
+      throw new ServiceError(400, 'Artist name cannot be empty');
+    }
+
+    const song = await Song.findByIdAndUpdate(songId, updateData, {
+      new: true,
+      runValidators: true,
+    }).populate('uploadedBy', 'username');
+
+    if (!song) {
+      throw new ServiceError(404, 'Song not found');
+    }
+
+    return { song };
+  },
+
+  async deleteSong(songId: string) {
+    ensureObjectId(songId, 'songId');
+
+    const song = await Song.findByIdAndDelete(songId);
+    if (!song) {
+      throw new ServiceError(404, 'Song not found');
+    }
+
+    safeUnlink(song.filePath);
+  },
+
   async streamSong(songId: string, rangeHeader?: string): Promise<StreamSongResult> {
+    ensureObjectId(songId, 'songId');
     const song = await Song.findById(songId);
     if (!song) {
       throw new ServiceError(404, 'Song not found');

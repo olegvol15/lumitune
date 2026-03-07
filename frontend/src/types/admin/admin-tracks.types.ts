@@ -14,6 +14,13 @@ export interface AdminTrack {
   seqNum: number;
   adult: boolean;
   info: string;
+  backendId?: string;
+  coverImage?: string;
+  genre?: string;
+  artist?: string;
+  album?: string;
+  plays?: number;
+  sourceFilePath?: string;
 }
 
 export interface AdminTrackModalState {
@@ -24,6 +31,8 @@ export interface AdminTrackModalState {
 
 export interface AdminTracksStore {
   tracks: AdminTrack[];
+  isLoading: boolean;
+  error: string | null;
   selected: Set<string>;
   search: string;
   page: number;
@@ -31,13 +40,14 @@ export interface AdminTracksStore {
   modal: AdminTrackModalState;
   setSearch: (q: string) => void;
   setPage: (p: number) => void;
+  fetchTracks: () => Promise<void>;
   toggleSelect: (id: string) => void;
   selectAll: (ids: string[]) => void;
   clearSelection: () => void;
   openNew: () => void;
   openEdit: (track: AdminTrack) => void;
   closeModal: () => void;
-  saveTrack: (track: AdminTrack) => void;
-  deleteTrack: (id: string) => void;
-  deleteSelected: () => void;
+  saveTrack: (track: AdminTrack, audioFile?: File | null) => Promise<{ ok: boolean; error?: string }>;
+  deleteTrack: (id: string) => Promise<{ ok: boolean; error?: string }>;
+  deleteSelected: () => Promise<{ ok: boolean; error?: string }>;
 }
