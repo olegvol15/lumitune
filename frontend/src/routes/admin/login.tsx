@@ -15,19 +15,18 @@ function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    setTimeout(() => {
-      const ok = login(email, password);
-      if (ok) {
-        navigate({ to: "/admin" });
-      } else {
-        setError("Invalid email or password");
-        setLoading(false);
-      }
-    }, 600);
+    const result = await login(email, password);
+    if (result.ok) {
+      navigate({ to: "/admin" });
+      return;
+    }
+
+    setError(result.error ?? "Invalid email or password");
+    setLoading(false);
   };
 
   return (

@@ -1,12 +1,19 @@
 import { Request, Response } from 'express';
 import { Song } from '../models/song.model';
-import { AuthRequest } from '../middleware/auth.middleware';
+import { AuthRequest } from '../types/auth/auth.types';
 import path from 'path';
 import fs from 'fs';
 import * as musicMetadata from 'music-metadata';
 
 export const uploadSong = async (req: AuthRequest, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized to access this route',
+      });
+    }
+
     if (!req.file) {
       return res.status(400).json({
         success: false,

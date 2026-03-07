@@ -9,6 +9,7 @@ dotenv.config();
 
 // Import routes
 import authRoutes from './routes/auth.routes';
+import adminAuthRoutes from './routes/admin-auth.routes';
 import songRoutes from './routes/song.routes';
 import playlistRoutes from './routes/playlist.routes';
 
@@ -44,6 +45,7 @@ app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin/auth', adminAuthRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/playlists', playlistRoutes);
 

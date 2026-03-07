@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { User } from '../models/user.model';
 import { generateToken } from '../utils/jwt.utils';
-import { AuthRequest } from '../middleware/auth.middleware';
+import { AuthRequest } from '../types/auth/auth.types';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -103,7 +103,14 @@ export const login = async (req: Request, res: Response) => {
 
 export const getMe = async (req: AuthRequest, res: Response) => {
   try {
-    const user = await User.findById(req.user!._id).select('-password');
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized to access this route',
+      });
+    }
+
+    const user = await User.findById(req.user._id).select('-password');
 
     res.status(200).json({
       success: true,

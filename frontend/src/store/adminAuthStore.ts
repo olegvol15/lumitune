@@ -1,98 +1,103 @@
-import { create } from "zustand";
+import { create } from 'zustand';
+import axios from 'axios';
+import adminAuthApi, { type AdminAuthUser } from '../api/adminAuthApi';
 
-interface Account {
-  email: string;
-  password: string;
-}
+const ADMIN_TOKEN_KEY = 'admin_token';
+const ADMIN_USER_KEY = 'admin_user';
 
-const STORAGE_KEY = "admin_accounts";
-
-function loadAccounts(): Account[] {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]");
-  } catch {
-    return [];
+const getApiErrorMessage = (error: unknown, fallback: string): string => {
+  if (axios.isAxiosError(error)) {
+    return (error.response?.data as { message?: string } | undefined)?.message || fallback;
   }
+
+  return fallback;
+};
+
+const loadStoredAdminUser = (): AdminAuthUser | null => {
+  try {
+    return JSON.parse(sessionStorage.getItem(ADMIN_USER_KEY) ?? 'null');
+  } catch {
+    return null;
+  }
+};
+
+interface AsyncResult {
+  ok: boolean;
+  error?: string;
 }
 
-function saveAccounts(accounts: Account[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
-}
-
-// Simulated reset codes: email → code (in-memory only)
-const pendingResets = new Map<string, string>();
-
-function generateCode() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+interface ResetCodeResult extends AsyncResult {
+  code?: string;
 }
 
 interface AdminAuthStore {
   isAuthenticated: boolean;
-  login: (email: string, password: string) => boolean;
-  signup: (email: string, password: string) => { ok: boolean; error?: string };
+  token: string | null;
+  admin: AdminAuthUser | null;
+  login: (email: string, password: string) => Promise<AsyncResult>;
+  signup: (email: string, password: string) => Promise<AsyncResult>;
   logout: () => void;
-  sendResetCode: (email: string) => {
-    ok: boolean;
-    code?: string;
-    error?: string;
-  };
-  verifyResetCode: (email: string, code: string) => boolean;
-  resetPassword: (email: string, newPassword: string) => boolean;
+  sendResetCode: (email: string) => Promise<ResetCodeResult>;
+  verifyResetCode: (email: string, code: string) => Promise<AsyncResult>;
+  resetPassword: (email: string, code: string, newPassword: string) => Promise<AsyncResult>;
 }
 
-export const useAdminAuthStore = create<AdminAuthStore>(() => ({
-  isAuthenticated: sessionStorage.getItem("admin_auth") === "1",
+export const useAdminAuthStore = create<AdminAuthStore>((set) => ({
+  token: sessionStorage.getItem(ADMIN_TOKEN_KEY),
+  admin: loadStoredAdminUser(),
+  isAuthenticated: Boolean(sessionStorage.getItem(ADMIN_TOKEN_KEY)),
 
-  login: (email, password) => {
-    const accounts = loadAccounts();
-    const match = accounts.find(
-      (a) => a.email === email && a.password === password,
-    );
-    if (match) {
-      sessionStorage.setItem("admin_auth", "1");
-      useAdminAuthStore.setState({ isAuthenticated: true });
-      return true;
+  login: async (email, password) => {
+    try {
+      const { data } = await adminAuthApi.login(email, password);
+      sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+      sessionStorage.setItem(ADMIN_USER_KEY, JSON.stringify(data.admin));
+      set({ token: data.token, admin: data.admin, isAuthenticated: true });
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: getApiErrorMessage(error, 'Invalid email or password') };
     }
-    return false;
   },
 
-  signup: (email, password) => {
-    const accounts = loadAccounts();
-    if (accounts.find((a) => a.email === email)) {
-      return { ok: false, error: "An account with this email already exists" };
+  signup: async (email, password) => {
+    try {
+      await adminAuthApi.signup(email, password);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: getApiErrorMessage(error, 'Failed to create account') };
     }
-    saveAccounts([...accounts, { email, password }]);
-    return { ok: true };
   },
 
   logout: () => {
-    sessionStorage.removeItem("admin_auth");
-    useAdminAuthStore.setState({ isAuthenticated: false });
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+    sessionStorage.removeItem(ADMIN_USER_KEY);
+    set({ token: null, admin: null, isAuthenticated: false });
   },
 
-  sendResetCode: (email) => {
-    const accounts = loadAccounts();
-    if (!accounts.find((a) => a.email === email)) {
-      return { ok: false, error: "No account found with this email" };
+  sendResetCode: async (email) => {
+    try {
+      const { data } = await adminAuthApi.forgotPassword(email);
+      return { ok: true, code: data.code };
+    } catch (error) {
+      return { ok: false, error: getApiErrorMessage(error, 'Failed to send reset code') };
     }
-    const code = generateCode();
-    pendingResets.set(email, code);
-    // In production this would send an email — for now log to console
-    console.info(`[Admin reset code for ${email}]: ${code}`);
-    return { ok: true, code };
   },
 
-  verifyResetCode: (email, code) => {
-    return pendingResets.get(email) === code;
+  verifyResetCode: async (email, code) => {
+    try {
+      await adminAuthApi.verifyResetCode(email, code);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: getApiErrorMessage(error, 'Invalid code. Please try again.') };
+    }
   },
 
-  resetPassword: (email, newPassword) => {
-    const accounts = loadAccounts();
-    const idx = accounts.findIndex((a) => a.email === email);
-    if (idx === -1) return false;
-    accounts[idx].password = newPassword;
-    saveAccounts(accounts);
-    pendingResets.delete(email);
-    return true;
+  resetPassword: async (email, code, newPassword) => {
+    try {
+      await adminAuthApi.resetPassword(email, code, newPassword);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: getApiErrorMessage(error, 'Failed to reset password') };
+    }
   },
 }));

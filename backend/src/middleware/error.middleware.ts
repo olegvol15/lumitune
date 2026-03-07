@@ -1,9 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-
-interface ErrorWithStatus extends Error {
-  status?: number;
-  code?: number;
-}
+import { ErrorWithStatus } from '../types/error/error.types';
 
 export const errorHandler = (
   err: ErrorWithStatus,

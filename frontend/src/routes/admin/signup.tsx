@@ -16,7 +16,7 @@ function AdminSignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     if (password !== repeat) {
@@ -24,15 +24,14 @@ function AdminSignupPage() {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      const result = signup(email, password);
-      if (result.ok) {
-        navigate({ to: "/admin/login" });
-      } else {
-        setError(result.error ?? "Something went wrong");
-        setLoading(false);
-      }
-    }, 600);
+    const result = await signup(email, password);
+    if (result.ok) {
+      navigate({ to: "/admin/login" });
+      return;
+    }
+
+    setError(result.error ?? "Something went wrong");
+    setLoading(false);
   };
 
   return (
@@ -100,7 +99,7 @@ function AdminSignupPage() {
             {loading ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              "Sign In"
+              "Sign Up"
             )}
           </button>
         </form>

@@ -19,34 +19,37 @@ function ForgotPasswordPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     if (!email) return;
     setError("");
     setSending(true);
-    setTimeout(() => {
-      const result = sendResetCode(email);
-      setSending(false);
-      if (result.ok) {
-        setCodeSent(true);
-      } else {
-        setError(result.error ?? "Failed to send code");
+    const result = await sendResetCode(email);
+    setSending(false);
+    if (result.ok) {
+      setCodeSent(true);
+      if (result.code) {
+        setCode(result.code);
       }
-    }, 700);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    if (!verifyResetCode(email, code)) {
-      setError("Invalid code. Please try again.");
       return;
     }
+
+    setError(result.error ?? "Failed to send code");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
     setLoading(true);
-    setTimeout(() => {
-      // Pass email via sessionStorage to the next step
-      sessionStorage.setItem("reset_email", email);
-      navigate({ to: "/admin/reset-password" });
-    }, 400);
+    const result = await verifyResetCode(email, code);
+    if (!result.ok) {
+      setError(result.error ?? "Invalid code. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    sessionStorage.setItem("reset_email", email);
+    sessionStorage.setItem("reset_code", code);
+    navigate({ to: "/admin/reset-password" });
   };
 
   return (

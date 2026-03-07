@@ -1,10 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt.utils';
-import { User, IUser } from '../models/user.model';
-
-export interface AuthRequest extends Request {
-  user?: IUser; // FIX: was typed as `any`, now properly typed as IUser
-}
+import { User } from '../models/user.model';
+import { AuthRequest } from '../types/auth/auth.types';
 
 export const protect = async (
   req: AuthRequest,

@@ -16,7 +16,7 @@ function ResetPasswordPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     if (password !== repeat) {
@@ -24,16 +24,22 @@ function ResetPasswordPage() {
       return;
     }
     const email = sessionStorage.getItem("reset_email") ?? "";
-    if (!email) {
+    const code = sessionStorage.getItem("reset_code") ?? "";
+    if (!email || !code) {
       setError("Session expired. Please start again.");
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      resetPassword(email, password);
+    const result = await resetPassword(email, code, password);
+    if (result.ok) {
       sessionStorage.removeItem("reset_email");
+      sessionStorage.removeItem("reset_code");
       navigate({ to: "/admin/login" });
-    }, 600);
+      return;
+    }
+
+    setError(result.error ?? "Failed to reset password");
+    setLoading(false);
   };
 
   return (
