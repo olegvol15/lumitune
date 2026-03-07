@@ -11,6 +11,7 @@ import AudiobookSection from "../components/home/AudiobookSection";
 import type { Album, Track } from "../types";
 import type { HomeFilterTab } from "../types/routes/route.types";
 import { useCatalogTracks } from "../hooks/useCatalogTracks";
+import { usePlayerStore } from "../store/playerStore";
 
 const FILTER_TABS: HomeFilterTab[] = ["Всі", "Треки", "Інше"];
 
@@ -20,11 +21,15 @@ function HomePage() {
   const { tracks } = useCatalogTracks();
   const [activeTab, setActiveTab] = useState<HomeFilterTab>("Всі");
   const navigate = useNavigate();
+  const play = usePlayerStore((state) => state.play);
 
-  const handleAlbumClick = (item: Album | Track) => {
+  const handleMediaClick = (item: Album | Track) => {
     if ("coverUrl" in item) {
       navigate({ to: "/album/$id", params: { id: item.id } });
+      return;
     }
+
+    play(item, tracks);
   };
 
   const handleArtistClick = (item: (typeof artists)[0]) => {
@@ -58,14 +63,14 @@ function HomePage() {
         title="Топ ВАША музика сьогодні!"
         accentWord="музика"
         items={tracks.slice(0, 5) as Track[]}
-        onItemClick={handleAlbumClick}
+        onItemClick={handleMediaClick}
       />
 
       <HorizontalSection
         title="Нові музичні релізи"
         accentWord="музичні"
         items={albums.slice(0, 6) as Album[]}
-        onItemClick={handleAlbumClick}
+        onItemClick={handleMediaClick}
       />
 
       <ArtistSection

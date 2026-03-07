@@ -22,7 +22,13 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
   resume: () => set({ isPlaying: true }),
 
-  togglePlay: () => set((s) => ({ isPlaying: !s.isPlaying })),
+  togglePlay: () =>
+    set((s) => {
+      if (!s.currentTrack) {
+        return s;
+      }
+      return { isPlaying: !s.isPlaying };
+    }),
 
   next: () => {
     const { queue, currentTrack, shuffle, repeat } = get();
@@ -52,7 +58,12 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     set({ currentTrack: queue[prevIdx], progress: 0, isPlaying: true });
   },
 
-  seek: (progress) => set({ progress }),
+  seek: (progress) => set({ progress: Math.max(0, Math.min(1, progress)) }),
+
+  setProgress: (progress) =>
+    set({ progress: Math.max(0, Math.min(1, progress)) }),
+
+  setIsPlaying: (isPlaying) => set({ isPlaying }),
 
   setVolume: (volume) => set({ volume }),
 

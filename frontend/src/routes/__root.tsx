@@ -11,6 +11,7 @@ import Sidebar from "../components/layout/Sidebar";
 import RightPanel from "../components/layout/RightPanel";
 import Footer from "../components/layout/Footer";
 import DesktopPlayer from "../components/layout/DesktopPlayer";
+import AudioEngine from "../components/player/AudioEngine";
 
 const HIDDEN_NAV_ROUTES = [
   "/player",
@@ -29,6 +30,7 @@ function RootLayout() {
     return (
       <div className="min-h-screen bg-[#060d19] text-white">
         <Outlet />
+        <AudioEngine />
       </div>
     );
   }
@@ -73,6 +75,7 @@ function RootLayout() {
         <MiniPlayer />
         <BottomNav />
       </div>
+      <AudioEngine />
     </div>
   );
 }

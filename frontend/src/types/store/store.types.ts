@@ -36,6 +36,8 @@ export interface PlayerStore {
   next: () => void;
   prev: () => void;
   seek: (progress: number) => void;
+  setProgress: (progress: number) => void;
+  setIsPlaying: (isPlaying: boolean) => void;
   setVolume: (volume: number) => void;
   toggleShuffle: () => void;
   toggleRepeat: () => void;
