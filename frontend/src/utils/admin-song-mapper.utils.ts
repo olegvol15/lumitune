@@ -1,6 +1,22 @@
 import type { BackendSong } from '../api/adminSongsApi';
 import type { AdminTrack } from '../types/admin/admin-tracks.types';
 
+const toCoverUrl = (coverImage?: string): string => {
+  if (!coverImage || coverImage === 'default-album-cover.jpg') {
+    return '/vite.svg';
+  }
+  if (coverImage.startsWith('http://') || coverImage.startsWith('https://')) {
+    return coverImage;
+  }
+  if (coverImage.startsWith('/uploads/')) {
+    return coverImage;
+  }
+  if (coverImage.startsWith('uploads/')) {
+    return `/${coverImage}`;
+  }
+  return coverImage;
+};
+
 export const mapBackendSongToAdminTrack = (song: BackendSong, index: number): AdminTrack => ({
   id: song._id,
   backendId: song._id,
@@ -9,7 +25,7 @@ export const mapBackendSongToAdminTrack = (song: BackendSong, index: number): Ad
   artistName: song.artist,
   albumId: song.album || '',
   albumTitle: song.album || '',
-  albumCover: song.coverImage && song.coverImage !== 'default-album-cover.jpg' ? song.coverImage : '/vite.svg',
+  albumCover: toCoverUrl(song.coverImage),
   duration: song.duration,
   playCount: song.plays || 0,
   liked: false,

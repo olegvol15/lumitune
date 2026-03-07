@@ -33,22 +33,27 @@ const withAdminAuth = () => {
 const adminSongsApi = {
   list: () => apiClient.get<SongsResponse>('/admin/songs', withAdminAuth()),
 
-  create: (data: FormData) =>
-    apiClient.post<SongResponse>('/admin/songs/upload', data, {
-      ...withAdminAuth(),
+  create: (data: FormData) => {
+    const auth = withAdminAuth();
+    return apiClient.post<SongResponse>('/admin/songs/upload', data, {
+      ...auth,
       headers: {
-        ...withAdminAuth().headers,
+        ...auth.headers,
         'Content-Type': 'multipart/form-data',
       },
-    }),
+    });
+  },
 
-  update: (songId: string, payload: {
-    title?: string;
-    artist?: string;
-    album?: string;
-    genre?: string;
-    coverImage?: string;
-  }) => apiClient.put<SongResponse>(`/admin/songs/${songId}`, payload, withAdminAuth()),
+  update: (songId: string, data: FormData) => {
+    const auth = withAdminAuth();
+    return apiClient.put<SongResponse>(`/admin/songs/${songId}`, data, {
+      ...auth,
+      headers: {
+        ...auth.headers,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
 
   remove: (songId: string) => apiClient.delete(`/admin/songs/${songId}`, withAdminAuth()),
 };

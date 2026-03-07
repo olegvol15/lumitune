@@ -47,7 +47,11 @@ export interface AdminTracksStore {
   openNew: () => void;
   openEdit: (track: AdminTrack) => void;
   closeModal: () => void;
-  saveTrack: (track: AdminTrack, audioFile?: File | null) => Promise<{ ok: boolean; error?: string }>;
+  saveTrack: (
+    track: AdminTrack,
+    audioFile?: File | null,
+    coverFile?: File | null,
+  ) => Promise<{ ok: boolean; error?: string }>;
   deleteTrack: (id: string) => Promise<{ ok: boolean; error?: string }>;
   deleteSelected: () => Promise<{ ok: boolean; error?: string }>;
 }

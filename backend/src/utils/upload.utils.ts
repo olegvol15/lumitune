@@ -1,13 +1,38 @@
 import path from 'path';
 
-export const audioFileFilter = (req: any, file: any, cb: any) => {
-  const allowedTypes = /mp3|wav|m4a|flac|aac/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+const AUDIO_EXTENSIONS = new Set(['.mp3', '.wav', '.m4a', '.flac', '.aac', '.ogg']);
+const AUDIO_MIME_TYPES = new Set([
+  'audio/mpeg',
+  'audio/mp3',
+  'audio/wav',
+  'audio/x-wav',
+  'audio/mp4',
+  'audio/x-m4a',
+  'audio/flac',
+  'audio/x-flac',
+  'audio/aac',
+  'audio/ogg',
+  'application/ogg',
+]);
+const IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']);
 
-  if (mimetype && extname) {
+export const audioFileFilter = (req: any, file: any, cb: any) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+  const isAllowedExtension = AUDIO_EXTENSIONS.has(ext);
+  const isAllowedMime = AUDIO_MIME_TYPES.has(String(file.mimetype).toLowerCase());
+
+  if (isAllowedExtension && isAllowedMime) {
     return cb(null, true);
   }
 
   cb(new Error('Only audio files are allowed'));
+};
+
+export const imageFileFilter = (req: any, file: any, cb: any) => {
+  const isAllowedMime = IMAGE_MIME_TYPES.has(String(file.mimetype).toLowerCase());
+  if (isAllowedMime) {
+    return cb(null, true);
+  }
+
+  cb(new Error('Only image files are allowed for cover'));
 };

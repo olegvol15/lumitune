@@ -13,6 +13,7 @@ export default function TrackModal() {
 
   const [form, setForm] = useState<AdminTrack | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,6 +21,7 @@ export default function TrackModal() {
     if (track) {
       setForm({ ...track });
       setAudioFile(null);
+      setCoverFile(null);
       setError(null);
     }
   }, [track]);
@@ -47,7 +49,7 @@ export default function TrackModal() {
     if (!form.title.trim()) return;
     setIsSaving(true);
     setError(null);
-    const result = await saveTrack(form, audioFile);
+    const result = await saveTrack(form, audioFile, coverFile);
     if (!result.ok) {
       setError(result.error ?? 'Failed to save track');
     }
@@ -55,7 +57,11 @@ export default function TrackModal() {
   };
 
   const handleReset = () => {
-    if (track) setForm({ ...track });
+    if (track) {
+      setForm({ ...track });
+      setAudioFile(null);
+      setCoverFile(null);
+    }
   };
 
   const labelClass = 'block text-[#7a8faa] text-xs font-medium mb-1';
@@ -201,8 +207,13 @@ export default function TrackModal() {
               <label className={labelClass}>Import Picture</label>
               <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
                 <Upload size={14} />
-                <span>Choose file</span>
-                <input type="file" accept="image/*" className="hidden" />
+                <span>{coverFile ? coverFile.name : 'Choose file'}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
+                />
               </label>
             </div>
           </div>

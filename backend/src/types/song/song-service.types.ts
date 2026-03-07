@@ -15,9 +15,11 @@ export interface SongUploadInput {
     artist?: string;
     album?: string;
     genre?: string;
+    coverImage?: string;
   };
   uploadedBy: string;
   allowEmptyUploader?: boolean;
+  coverImage?: string;
 }
 
 export interface SongUpdateInput {

@@ -76,7 +76,7 @@ export const useAdminTracksStore = create<AdminTracksStore>((set, get) => ({
   openEdit: (track) => set({ modal: { open: true, mode: 'edit', track: { ...track } } }),
   closeModal: () => set({ modal: { open: false, mode: 'new', track: null } }),
 
-  saveTrack: async (track, audioFile) => {
+  saveTrack: async (track, audioFile, coverFile) => {
     try {
       set({ error: null });
 
@@ -95,17 +95,22 @@ export const useAdminTracksStore = create<AdminTracksStore>((set, get) => ({
         if (track.genreId || track.genre) {
           formData.append('genre', track.genreId || track.genre || '');
         }
+        if (coverFile) {
+          formData.append('cover', coverFile);
+        }
 
         await adminSongsApi.create(formData);
       } else {
         const songId = track.backendId || track.id;
-        await adminSongsApi.update(songId, {
-          title: track.title,
-          artist: track.artistName || track.artistId || track.artist || '',
-          album: track.albumTitle || track.albumId || track.album || '',
-          genre: track.genreId || track.genre || '',
-          coverImage: track.coverImage || '',
-        });
+        const formData = new FormData();
+        formData.append('title', track.title);
+        formData.append('artist', track.artistName || track.artistId || track.artist || '');
+        formData.append('album', track.albumTitle || track.albumId || track.album || '');
+        formData.append('genre', track.genreId || track.genre || '');
+        if (coverFile) {
+          formData.append('cover', coverFile);
+        }
+        await adminSongsApi.update(songId, formData);
       }
 
       await get().fetchTracks();

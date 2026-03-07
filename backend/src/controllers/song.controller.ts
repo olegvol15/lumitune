@@ -4,6 +4,16 @@ import { ServiceError } from '../types/error/service-error';
 import { getErrorMessage } from '../utils/error.utils';
 import { songService } from '../services/song.service';
 
+const getFileFromField = (req: Request, field: string): Express.Multer.File | undefined => {
+  const files = req.files as Record<string, Express.Multer.File[]> | undefined;
+  if (!files) {
+    return undefined;
+  }
+
+  const target = files[field];
+  return Array.isArray(target) ? target[0] : undefined;
+};
+
 export const uploadSong = async (req: AuthRequest, res: Response) => {
   try {
     const { song } = await songService.uploadSong({
@@ -88,11 +98,15 @@ export const streamSong = async (req: Request, res: Response) => {
 
 export const uploadSongByAdmin = async (req: Request, res: Response) => {
   try {
+    const audioFile = req.file ?? getFileFromField(req, 'audio');
+    const coverFile = getFileFromField(req, 'cover');
+
     const { song } = await songService.uploadSong({
-      file: req.file,
+      file: audioFile,
       body: req.body,
       uploadedBy: '',
       allowEmptyUploader: true,
+      coverImage: coverFile?.path,
     });
 
     res.status(201).json({
@@ -113,7 +127,11 @@ export const uploadSongByAdmin = async (req: Request, res: Response) => {
 
 export const updateSongByAdmin = async (req: Request, res: Response) => {
   try {
-    const { song } = await songService.updateSong(String(req.params.id), req.body);
+    const coverFile = req.file ?? getFileFromField(req, 'cover');
+    const { song } = await songService.updateSong(String(req.params.id), {
+      ...req.body,
+      ...(coverFile?.path ? { coverImage: coverFile.path } : {}),
+    });
     res.status(200).json({
       success: true,
       song,

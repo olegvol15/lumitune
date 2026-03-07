@@ -16,7 +16,7 @@ import { ensureObjectId } from '../utils/mongoose.utils';
 
 export const songService = {
   async uploadSong(input: SongUploadInput) {
-    const { file, body, uploadedBy, allowEmptyUploader } = input;
+    const { file, body, uploadedBy, allowEmptyUploader, coverImage } = input;
 
     if (!uploadedBy && !allowEmptyUploader) {
       throw new ServiceError(401, 'Not authorized to access this route');
@@ -39,6 +39,7 @@ export const songService = {
         artist: body.artist || 'Unknown Artist',
         album: body.album,
         genre: body.genre,
+        coverImage: coverImage || body.coverImage,
         duration: Math.round(duration),
         filePath: file.path,
         ...(uploadedBy ? { uploadedBy } : {}),
@@ -111,6 +112,11 @@ export const songService = {
       throw new ServiceError(400, 'Artist name cannot be empty');
     }
 
+    const existingSong = await Song.findById(songId);
+    if (!existingSong) {
+      throw new ServiceError(404, 'Song not found');
+    }
+
     const song = await Song.findByIdAndUpdate(songId, updateData, {
       new: true,
       runValidators: true,
@@ -118,6 +124,15 @@ export const songService = {
 
     if (!song) {
       throw new ServiceError(404, 'Song not found');
+    }
+
+    if (
+      typeof updateData.coverImage === 'string' &&
+      updateData.coverImage !== existingSong.coverImage &&
+      typeof existingSong.coverImage === 'string' &&
+      existingSong.coverImage.startsWith('uploads/')
+    ) {
+      safeUnlink(existingSong.coverImage);
     }
 
     return { song };
@@ -132,6 +147,9 @@ export const songService = {
     }
 
     safeUnlink(song.filePath);
+    if (typeof song.coverImage === 'string' && song.coverImage.startsWith('uploads/')) {
+      safeUnlink(song.coverImage);
+    }
   },
 
   async streamSong(songId: string, rangeHeader?: string): Promise<StreamSongResult> {
