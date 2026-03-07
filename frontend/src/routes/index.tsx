@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { tracks } from "../data/tracks";
 import { artists } from "../data/artists";
 import { albums } from "../data/albums";
 import HeroBanner from "../components/home/HeroBanner";
@@ -11,12 +10,14 @@ import PodcastSection from "../components/home/PodcastSection";
 import AudiobookSection from "../components/home/AudiobookSection";
 import type { Album, Track } from "../types";
 import type { HomeFilterTab } from "../types/routes/route.types";
+import { useCatalogTracks } from "../hooks/useCatalogTracks";
 
 const FILTER_TABS: HomeFilterTab[] = ["Всі", "Треки", "Інше"];
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
 function HomePage() {
+  const { tracks } = useCatalogTracks();
   const [activeTab, setActiveTab] = useState<HomeFilterTab>("Всі");
   const navigate = useNavigate();
 

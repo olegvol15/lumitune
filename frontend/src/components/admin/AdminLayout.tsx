@@ -101,7 +101,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         {/* Header */}
         <header className="h-16 flex items-center px-6 bg-gradient-to-r from-[#1a2030] to-[#1d3548] border-b border-[#2a3a52] shrink-0">
           <div className="flex items-center gap-3 flex-1">
-            <LogoIcon className="w-7 h-auto" />
             <span className="font-semibold text-white text-sm">Admin Dashboard</span>
           </div>
           <div className="w-8 h-8 rounded-full bg-[#3dc9b0] flex items-center justify-center text-[#1a2030] font-bold text-sm select-none">

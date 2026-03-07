@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { tracks } from "../data/tracks";
 import { artists } from "../data/artists";
 import { albums } from "../data/albums";
+import type { Track } from "../types";
 
-export function useSearch() {
+export function useSearch(tracks: Track[]) {
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {

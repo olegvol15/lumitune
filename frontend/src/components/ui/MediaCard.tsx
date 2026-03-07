@@ -1,4 +1,5 @@
 import type { MediaCardProps } from "../../types/props/component-props.types";
+import SongCoverImage from "./SongCoverImage";
 
 const sizes = {
   sm: "w-28",
@@ -19,9 +20,10 @@ export default function MediaCard({
       onClick={onClick}
       className={`${sizes[size]} flex-shrink-0 text-left group`}
     >
-      <img
+      <SongCoverImage
         src={image}
         alt={title}
+        fallbackLabel={title}
         className={`w-full aspect-square object-cover mb-2 ${
           rounded ? "rounded-full" : "rounded-xl"
         } group-hover:opacity-80 transition-opacity`}

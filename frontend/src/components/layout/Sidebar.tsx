@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { usePlayerStore } from "../../store/playerStore";
 import { usePlaylistStore } from "../../store/playlistStore";
+import SongCoverImage from "../ui/SongCoverImage";
 
 export default function Sidebar() {
   const { location } = useRouterState();
@@ -137,7 +138,7 @@ export default function Sidebar() {
               key={track.id}
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 cursor-pointer transition-colors"
             >
-              <img
+              <SongCoverImage
                 src={track.albumCover}
                 alt={track.title}
                 className="w-10 h-10 rounded-full object-cover flex-shrink-0"

@@ -1,11 +1,11 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Settings, Edit3 } from "lucide-react";
-import { tracks } from "../data/tracks";
 import { albums } from "../data/albums";
 import { artists } from "../data/artists";
 import TrackRow from "../components/ui/TrackRow";
 import MediaCard from "../components/ui/MediaCard";
 import { useAuthStore } from "../store/authStore";
+import { useCatalogTracks } from "../hooks/useCatalogTracks";
 
 const user = {
   id: "user1",
@@ -26,6 +26,7 @@ export const Route = createFileRoute("/profile")({
 
 function ProfilePage() {
   const navigate = useNavigate();
+  const { tracks } = useCatalogTracks();
   const topTracks = tracks.filter((t) => t.liked).slice(0, 5);
   const topAlbums = albums.slice(0, 4);
   const favArtists = artists.slice(0, 4);

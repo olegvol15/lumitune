@@ -2,6 +2,7 @@ import { Play, Pause, SkipForward, Heart } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { usePlayerStore } from "../../store/playerStore";
 import ProgressBar from "../player/ProgressBar";
+import SongCoverImage from "../ui/SongCoverImage";
 
 export default function MiniPlayer() {
   const {
@@ -26,7 +27,7 @@ export default function MiniPlayer() {
             onClick={() => navigate({ to: "/player" })}
             className="flex-shrink-0"
           >
-            <img
+            <SongCoverImage
               src={currentTrack.albumCover}
               alt={currentTrack.albumTitle}
               className="w-10 h-10 rounded-lg object-cover"

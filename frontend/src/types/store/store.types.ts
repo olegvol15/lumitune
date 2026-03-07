@@ -41,3 +41,11 @@ export interface PlayerStore {
   toggleRepeat: () => void;
   toggleLike: () => void;
 }
+
+export interface SongsCatalogStore {
+  tracks: Track[];
+  isLoading: boolean;
+  hasLoaded: boolean;
+  error: string | null;
+  fetchTracks: () => Promise<void>;
+}

@@ -2,6 +2,7 @@ import { Heart, MoreVertical, Play } from "lucide-react";
 import { formatDuration, formatPlayCount } from "../../utils/format";
 import { usePlayerStore } from "../../store/playerStore";
 import type { TrackRowProps } from "../../types/props/component-props.types";
+import SongCoverImage from "./SongCoverImage";
 
 export default function TrackRow({
   track,
@@ -29,7 +30,7 @@ export default function TrackRow({
     >
       {/* Index / album art */}
       <div className="relative flex-shrink-0 w-10 h-10">
-        <img
+        <SongCoverImage
           src={track.albumCover}
           alt={track.albumTitle}
           className="w-10 h-10 rounded-lg object-cover"

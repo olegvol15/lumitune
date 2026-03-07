@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { usePlayerStore } from "../../store/playerStore";
 import { formatDuration } from "../../utils/format";
+import SongCoverImage from "../ui/SongCoverImage";
 
 export default function DesktopPlayer() {
   const {
@@ -50,7 +51,7 @@ export default function DesktopPlayer() {
     <div className="fixed bottom-0 left-0 right-0 z-50 h-[72px] bg-[#060d19] border-t border-[#1a3050] flex items-center px-5 gap-6">
       {/* Left: album art + track info + actions */}
       <div className="flex items-center gap-3 w-64 flex-shrink-0">
-        <img
+        <SongCoverImage
           src={currentTrack.albumCover}
           alt={currentTrack.albumTitle}
           className="w-10 h-10 rounded-lg object-cover flex-shrink-0"

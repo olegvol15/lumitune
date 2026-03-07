@@ -5,6 +5,7 @@ import { useAdminAuthStore } from '../../store/adminAuthStore';
 import { useAdminTracksStore } from '../../store/adminTracksStore';
 import AdminLayout from '../../components/admin/AdminLayout';
 import TrackModal from '../../components/admin/TrackModal';
+import SongCoverImage from '../../components/ui/SongCoverImage';
 import { formatDuration } from '../../utils/format';
 
 export const Route = createFileRoute('/admin/tracks')({ component: AdminTracksPage });
@@ -168,7 +169,7 @@ function AdminTracksPage() {
                   </td>
                   <td className={tdClass}>
                     <div className="flex items-center gap-2">
-                      <img
+                      <SongCoverImage
                         src={track.albumCover}
                         alt={track.title}
                         className="w-8 h-8 rounded object-cover shrink-0"

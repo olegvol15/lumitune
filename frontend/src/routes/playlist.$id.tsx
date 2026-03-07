@@ -4,9 +4,10 @@ import { Search, Plus, X, ChevronLeft, Music2 } from "lucide-react";
 import { usePlaylistStore } from "../store/playlistStore";
 import { useAuthStore } from "../store/authStore";
 import { usePlayerStore } from "../store/playerStore";
-import { tracks } from "../data/tracks";
 import { formatDuration, formatPlayCount } from "../utils/format";
 import Button from "../components/ui/Button";
+import { useCatalogTracks } from "../hooks/useCatalogTracks";
+import SongCoverImage from "../components/ui/SongCoverImage";
 
 export const Route = createFileRoute("/playlist/$id")({
   beforeLoad: () => {
@@ -22,6 +23,7 @@ function PlaylistPage() {
   const navigate = useNavigate();
   const { playlists, addTrack, removeTrack } = usePlaylistStore();
   const { play } = usePlayerStore();
+  const { tracks } = useCatalogTracks();
   const [query, setQuery] = useState("");
   const [recsShown, setRecsShown] = useState(RECS_PAGE);
 
@@ -44,7 +46,7 @@ function PlaylistPage() {
 
   const playlistTracks = playlist.trackIds
     .map((tid) => tracks.find((t) => t.id === tid))
-    .filter(Boolean) as (typeof tracks)[0][];
+    .filter(Boolean) as typeof tracks;
 
   const q = query.toLowerCase();
   const recommendations = tracks.filter(
@@ -91,7 +93,7 @@ function PlaylistPage() {
           {/* Cover placeholder */}
           <div className="w-32 h-32 flex-shrink-0 rounded-xl bg-gradient-to-br from-[#1CA2EA]/40 to-[#0a1929] flex items-center justify-center shadow-xl">
             {playlistTracks.length > 0 ? (
-              <img
+              <SongCoverImage
                 src={playlistTracks[0].albumCover}
                 alt={playlist.title}
                 className="w-full h-full object-cover rounded-xl"
@@ -138,12 +140,13 @@ function PlaylistPage() {
                   key={track.id}
                   className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 group transition-colors"
                 >
-                  <img
+                  <SongCoverImage
                     src={track.albumCover}
                     alt={track.albumTitle}
                     className="w-10 h-10 rounded-lg object-cover flex-shrink-0 cursor-pointer"
                     onClick={() => play(track, playlistTracks)}
                   />
+
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-sm font-semibold truncate">
                       {track.title}
@@ -211,7 +214,7 @@ function PlaylistPage() {
                     key={track.id}
                     className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 group transition-colors"
                   >
-                    <img
+                    <SongCoverImage
                       src={track.albumCover}
                       alt={track.albumTitle}
                       className="w-10 h-10 rounded-lg object-cover flex-shrink-0"

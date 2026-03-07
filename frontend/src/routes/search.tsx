@@ -3,7 +3,7 @@ import { Search, Mic, X } from "lucide-react";
 import { useSearch } from "../hooks/useSearch";
 import TrackRow from "../components/ui/TrackRow";
 import MediaCard from "../components/ui/MediaCard";
-import { tracks } from "../data/tracks";
+import { useCatalogTracks } from "../hooks/useCatalogTracks";
 
 const genres = [
   { id: "pop", label: "Поп", color: "from-pink-500 to-rose-600", emoji: "🎵" },
@@ -54,7 +54,8 @@ const genres = [
 export const Route = createFileRoute("/search")({ component: SearchPage });
 
 function SearchPage() {
-  const { query, setQuery, results, hasResults } = useSearch();
+  const { tracks } = useCatalogTracks();
+  const { query, setQuery, results, hasResults } = useSearch(tracks);
   const navigate = useNavigate();
 
   return (

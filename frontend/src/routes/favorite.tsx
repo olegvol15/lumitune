@@ -1,17 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Heart, SortAsc } from "lucide-react";
-import { tracks } from "../data/tracks";
 import TrackRow from "../components/ui/TrackRow";
 import { usePlayerStore } from "../store/playerStore";
 import Button from "../components/ui/Button";
 import type { FavoriteSortKey } from "../types/routes/route.types";
+import { useCatalogTracks } from "../hooks/useCatalogTracks";
 
 export const Route = createFileRoute("/favorite")({ component: FavoritePage });
 
 function FavoritePage() {
   const [sort, setSort] = useState<FavoriteSortKey>("recent");
   const play = usePlayerStore((s) => s.play);
+  const { tracks } = useCatalogTracks();
 
   const likedTracks = tracks.filter((t) => t.liked);
 

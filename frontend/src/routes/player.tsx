@@ -11,6 +11,7 @@ import { useAuthStore } from "../store/authStore";
 import PlayerControls from "../components/player/PlayerControls";
 import ProgressBar from "../components/player/ProgressBar";
 import TrackRow from "../components/ui/TrackRow";
+import SongCoverImage from "../components/ui/SongCoverImage";
 import { useState } from "react";
 import Button from "../components/ui/Button";
 
@@ -71,7 +72,7 @@ function PlayerPage() {
         <>
           {/* Album art */}
           <div className="flex-1 flex flex-col items-center justify-center px-8 py-4">
-            <img
+            <SongCoverImage
               src={currentTrack.albumCover}
               alt={currentTrack.albumTitle}
               className="w-full max-w-sm aspect-square rounded-2xl object-cover shadow-2xl"

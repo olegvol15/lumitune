@@ -4,14 +4,14 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { ChevronLeft, UserCheck, Share2, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { getArtist, artists } from "../data/artists";
-import { tracks } from "../data/tracks";
 import { albums } from "../data/albums";
 import TrackRow from "../components/ui/TrackRow";
 import MediaCard from "../components/ui/MediaCard";
 import SectionHeader from "../components/ui/SectionHeader";
 import Button from "../components/ui/Button";
+import { useCatalogTracks } from "../hooks/useCatalogTracks";
 
 export const Route = createFileRoute("/artist/$id")({
   component: ArtistPage,
@@ -22,8 +22,36 @@ function ArtistPage() {
   const navigate = useNavigate();
   const router = useRouter();
   const [following, setFollowing] = useState(false);
+  const { tracks } = useCatalogTracks();
 
-  const artist = getArtist(id);
+  const staticArtist = getArtist(id);
+  const derivedArtist = useMemo(() => {
+    if (staticArtist) {
+      return null;
+    }
+
+    const firstTrack = tracks.find((track) => track.artistId === id);
+    if (!firstTrack) {
+      return null;
+    }
+
+    const monthlyListeners = tracks
+      .filter((track) => track.artistId === id)
+      .reduce((sum, track) => sum + track.playCount, 0);
+
+    return {
+      id,
+      name: firstTrack.artistName,
+      image: firstTrack.albumCover,
+      genre: 'Unknown',
+      monthlyListeners,
+      followers: 0,
+      bio: `Tracks by ${firstTrack.artistName}`,
+      verified: false,
+    };
+  }, [id, staticArtist, tracks]);
+  const artist = staticArtist ?? derivedArtist;
+
   if (!artist) {
     return (
       <div className="flex items-center justify-center h-screen text-muted">

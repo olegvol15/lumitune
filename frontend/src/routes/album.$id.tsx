@@ -3,13 +3,14 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { ChevronLeft, Play, Shuffle, MoreHorizontal } from "lucide-react";
 import { getAlbum } from "../data/albums";
-import { tracks } from "../data/tracks";
 import { getArtist } from "../data/artists";
 import TrackRow from "../components/ui/TrackRow";
 import { usePlayerStore } from "../store/playerStore";
 import Button from "../components/ui/Button";
+import { useCatalogTracks } from "../hooks/useCatalogTracks";
 
 export const Route = createFileRoute("/album/$id")({
   component: AlbumPage,
@@ -20,8 +21,29 @@ function AlbumPage() {
   const navigate = useNavigate();
   const router = useRouter();
   const play = usePlayerStore((s) => s.play);
+  const { tracks } = useCatalogTracks();
 
-  const album = getAlbum(id);
+  const staticAlbum = getAlbum(id);
+  const albumTracks = tracks.filter((t) => t.albumId === id);
+  const derivedAlbum = useMemo(() => {
+    if (staticAlbum || albumTracks.length === 0) {
+      return null;
+    }
+
+    const firstTrack = albumTracks[0];
+    return {
+      id,
+      title: firstTrack.albumTitle,
+      artistId: firstTrack.artistId,
+      artistName: firstTrack.artistName,
+      coverUrl: firstTrack.albumCover,
+      year: new Date().getFullYear(),
+      genre: 'Unknown',
+      trackIds: albumTracks.map((track) => track.id),
+    };
+  }, [staticAlbum, albumTracks, id]);
+  const album = staticAlbum ?? derivedAlbum;
+
   if (!album) {
     return (
       <div className="flex items-center justify-center h-screen text-muted">
@@ -30,7 +52,6 @@ function AlbumPage() {
     );
   }
 
-  const albumTracks = tracks.filter((t) => t.albumId === id);
   const artist = getArtist(album.artistId);
 
   const totalDuration = albumTracks.reduce((acc, t) => acc + t.duration, 0);
