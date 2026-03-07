@@ -68,6 +68,27 @@ Check the backend is up: `http://localhost:3000/health` → `{"status":"OK"}`
 
 ## API Reference
 
+### Admin Auth — `/api/admin/auth`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/signup` | — | Register admin |
+| POST | `/login` | — | Login admin, returns token |
+| GET | `/me` | Bearer | Get current admin |
+| POST | `/forgot-password` | — | Request reset code |
+| POST | `/verify-reset-code` | — | Verify reset code |
+| POST | `/reset-password` | — | Reset password |
+
+### Admin Songs — `/api/admin/songs`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/` | Admin Bearer | List songs for admin table |
+| GET | `/:id` | Admin Bearer | Get song by ID |
+| POST | `/upload` | Admin Bearer | Create song (`multipart/form-data`, `audio` required, `cover` optional) |
+| PUT | `/:id` | Admin Bearer | Update song metadata and optional `cover` (`multipart/form-data`) |
+| DELETE | `/:id` | Admin Bearer | Delete song and associated local files |
+
 ### Auth — `/api/auth`
 
 | Method | Endpoint | Auth | Description |
@@ -102,7 +123,7 @@ Check the backend is up: `http://localhost:3000/health` → `{"status":"OK"}`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/health` | Health check |
-| GET | `/uploads/*` | Serve uploaded audio files |
+| GET | `/uploads/*` | Serve uploaded audio and cover files |
 
 ## Frontend Routes
 
@@ -129,10 +150,11 @@ Check the backend is up: `http://localhost:3000/health` → `{"status":"OK"}`
 | Store | Responsibility |
 |-------|---------------|
 | `authStore` | User auth state — token, user profile, setAuth/logout |
-| `playerStore` | Playback — current track, queue, volume, shuffle/repeat |
+| `playerStore` | Playback state — current track, queue, play/pause, seek/progress, volume, shuffle/repeat |
 | `playlistStore` | Playlist management |
 | `adminAuthStore` | Admin panel authentication (session-based, separate from user auth) |
 | `adminTracksStore` | Admin track upload/management |
+| `songsCatalogStore` | Public songs catalog loaded from backend (`/api/songs`) |
 
 ## Authentication
 
@@ -140,7 +162,37 @@ JWT-based auth. Tokens are stored in `localStorage` under the key `auth_token` a
 
 ## File Uploads
 
-Audio uploads are handled by Multer. Supported formats: `mp3`, `wav`, `m4a`, `flac`, `aac`. Duration is extracted automatically using `music-metadata`. Files are stored in the `uploads/` directory and served at `/uploads/*`.
+Uploads are handled by Multer.
+
+- Audio formats: `mp3`, `wav`, `m4a`, `flac`, `aac`, `ogg`
+- Cover image formats: `jpg`, `jpeg`, `png`, `webp`, `gif`
+- Duration is extracted automatically using `music-metadata`
+- Files are stored in `uploads/` and served from `/uploads/*`
+
+## Playback Flow (Frontend)
+
+- UI actions call `playerStore` (`play`, `togglePlay`, `seek`, `next`, `prev`)
+- A single global audio engine component (`frontend/src/components/player/AudioEngine.tsx`) is mounted in root layout
+- The audio engine streams current track from `GET /api/songs/:id/stream`
+- Audio element events update store progress and playback state
+- Controls in mini player, desktop player, track rows, and player page stay synchronized through store state
+
+## Catalog Data Flow (Frontend)
+
+- User-facing track pages now load songs from backend (not static `data/tracks.ts`)
+- Mapping layer: `frontend/src/utils/song-catalog.utils.ts` converts backend song payloads to `Track`
+- Cover fallback UI component: `frontend/src/components/ui/SongCoverImage.tsx`
+- Applied in track and media UI so missing/broken cover images render a designed placeholder
+
+## Recent Changes
+
+- Backend architecture normalized to controller/service split for songs
+- Added full admin song CRUD API with auth protection
+- Added admin song create/edit support for optional cover image upload
+- Admin panel now reads/writes real backend songs
+- User-facing app now reads songs from backend catalog
+- Added real streamed audio playback via global audio engine
+- Added reusable song-cover fallback component across UI
 
 ## Database Models
 
