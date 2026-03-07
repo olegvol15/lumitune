@@ -8,10 +8,7 @@ import {
   Repeat1,
 } from "lucide-react";
 import { usePlayerStore } from "../../store/playerStore";
-
-interface PlayerControlsProps {
-  size?: "sm" | "lg";
-}
+import type { PlayerControlsProps } from "../../types/props/component-props.types";
 
 export default function PlayerControls({ size = "lg" }: PlayerControlsProps) {
   const {

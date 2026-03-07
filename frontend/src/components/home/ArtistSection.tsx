@@ -1,14 +1,7 @@
 import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { Artist } from "../../types";
 import { formatListeners } from "../../utils/format";
-
-interface ArtistSectionProps {
-  title: string;
-  accentWord: string;
-  artists: Artist[];
-  onArtistClick?: (artist: Artist) => void;
-}
+import type { ArtistSectionProps } from "../../types/props/component-props.types";
 
 export default function ArtistSection({
   title,

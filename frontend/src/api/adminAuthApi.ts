@@ -1,31 +1,10 @@
 import apiClient from '../lib/apiClient';
-
-export interface AdminAuthUser {
-  id: string;
-  email: string;
-}
-
-export interface AdminLoginResponse {
-  success: boolean;
-  token: string;
-  admin: AdminAuthUser;
-}
-
-export interface AdminAuthResponse {
-  success: boolean;
-  admin: AdminAuthUser;
-}
-
-export interface AdminResetCodeResponse {
-  success: boolean;
-  message: string;
-  code?: string;
-}
-
-export interface BasicAdminResponse {
-  success: boolean;
-  message: string;
-}
+import type {
+  AdminAuthResponse,
+  AdminLoginResponse,
+  AdminResetCodeResponse,
+  BasicAdminResponse,
+} from '../types/admin/admin-auth-api.types';
 
 const adminAuthApi = {
   signup: (email: string, password: string) =>

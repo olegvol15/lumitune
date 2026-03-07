@@ -2,16 +2,8 @@ import { useRef } from "react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import MediaCard from "../ui/MediaCard";
 import type { Track } from "../../types";
-import { isAlbum, type MediaItem } from "../../utils/typeGuards";
-
-type Item = MediaItem;
-
-interface HorizontalSectionProps {
-  title: string;
-  accentWord: string;
-  items: Item[];
-  onItemClick?: (item: Item) => void;
-}
+import { isAlbum } from "../../utils/typeGuards";
+import type { HorizontalSectionProps } from "../../types/props/component-props.types";
 
 export default function HorizontalSection({
   title,

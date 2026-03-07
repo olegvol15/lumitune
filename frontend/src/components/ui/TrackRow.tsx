@@ -1,15 +1,7 @@
 import { Heart, MoreVertical, Play } from "lucide-react";
 import { formatDuration, formatPlayCount } from "../../utils/format";
-import type { Track } from "../../types";
 import { usePlayerStore } from "../../store/playerStore";
-
-interface TrackRowProps {
-  track: Track;
-  index?: number;
-  queue?: Track[];
-  showIndex?: boolean;
-  showPlayCount?: boolean;
-}
+import type { TrackRowProps } from "../../types/props/component-props.types";
 
 export default function TrackRow({
   track,

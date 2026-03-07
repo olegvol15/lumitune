@@ -1,11 +1,4 @@
-import type { ReactNode } from "react";
-
-interface MoodPillProps {
-  icon: ReactNode;
-  label: string;
-  active?: boolean;
-  onClick?: () => void;
-}
+import type { MoodPillProps } from "../../types/props/component-props.types";
 
 export default function MoodPill({
   icon,

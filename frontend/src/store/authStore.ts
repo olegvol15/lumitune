@@ -1,13 +1,5 @@
 import { create } from 'zustand';
-import type { AuthUser } from '../types/auth-types';
-
-
-interface AuthStore {
-  token: string | null;
-  user: AuthUser | null;
-  setAuth: (token: string, user: AuthUser) => void;
-  logout: () => void;
-}
+import type { AuthStore } from '../types/store/store.types';
 
 export const useAuthStore = create<AuthStore>(() => ({
   token: localStorage.getItem('auth_token'),

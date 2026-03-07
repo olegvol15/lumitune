@@ -1,11 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import Button from "./Button";
-
-interface SectionHeaderProps {
-  title: string;
-  showAll?: string; // route path
-  onShowAll?: () => void;
-}
+import type { SectionHeaderProps } from "../../types/props/component-props.types";
 
 export default function SectionHeader({
   title,

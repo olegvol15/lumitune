@@ -1,9 +1,4 @@
-interface AvatarProps {
-  src?: string;
-  alt?: string;
-  size?: number;
-  className?: string;
-}
+import type { AvatarProps } from "../../types/props/component-props.types";
 
 export default function Avatar({
   src,

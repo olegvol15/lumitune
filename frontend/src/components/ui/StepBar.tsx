@@ -1,7 +1,4 @@
-interface StepBarProps {
-  currentStep: number;
-  totalSteps: number;
-}
+import type { StepBarProps } from "../../types/props/component-props.types";
 
 export default function StepBar({ currentStep, totalSteps }: StepBarProps) {
   return (

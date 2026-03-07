@@ -1,17 +1,5 @@
 import { create } from "zustand";
-
-export interface UserPlaylist {
-  id: string;
-  title: string;
-  trackIds: string[];
-}
-
-interface PlaylistStore {
-  playlists: UserPlaylist[];
-  createPlaylist: () => string;
-  addTrack: (playlistId: string, trackId: string) => void;
-  removeTrack: (playlistId: string, trackId: string) => void;
-}
+import type { PlaylistStore } from "../types/store/store.types";
 
 export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
   playlists: [],

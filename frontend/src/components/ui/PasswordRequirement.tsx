@@ -1,7 +1,4 @@
-interface PasswordRequirementProps {
-  met: boolean;
-  label: string;
-}
+import type { PasswordRequirementProps } from "../../types/props/component-props.types";
 
 export default function PasswordRequirement({
   met,

@@ -1,5 +1,5 @@
 import apiClient from '../lib/apiClient';
-import type { AuthResponse, MeResponse } from '../types/auth-types';
+import type { AuthResponse, MeResponse } from '../types/auth/auth-types';
 
 const authApi = {
   login: (email: string, password: string) =>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X, Upload } from 'lucide-react';
-import { type AdminTrack, useAdminTracksStore } from '../../store/adminTracksStore';
+import { useAdminTracksStore } from '../../store/adminTracksStore';
+import type { AdminTrack } from '../../types/admin/admin-tracks.types';
 import { albums } from '../../data/albums';
 
 const GENRES = ['Pop', 'Rock', 'Hip-Hop', 'R&B', 'K-Pop', 'Electronic', 'Jazz', 'Classical', 'Country', 'Latin'];

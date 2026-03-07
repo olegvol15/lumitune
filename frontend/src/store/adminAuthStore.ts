@@ -1,46 +1,12 @@
 import { create } from 'zustand';
-import axios from 'axios';
-import adminAuthApi, { type AdminAuthUser } from '../api/adminAuthApi';
-
-const ADMIN_TOKEN_KEY = 'admin_token';
-const ADMIN_USER_KEY = 'admin_user';
-
-const getApiErrorMessage = (error: unknown, fallback: string): string => {
-  if (axios.isAxiosError(error)) {
-    return (error.response?.data as { message?: string } | undefined)?.message || fallback;
-  }
-
-  return fallback;
-};
-
-const loadStoredAdminUser = (): AdminAuthUser | null => {
-  try {
-    return JSON.parse(sessionStorage.getItem(ADMIN_USER_KEY) ?? 'null');
-  } catch {
-    return null;
-  }
-};
-
-interface AsyncResult {
-  ok: boolean;
-  error?: string;
-}
-
-interface ResetCodeResult extends AsyncResult {
-  code?: string;
-}
-
-interface AdminAuthStore {
-  isAuthenticated: boolean;
-  token: string | null;
-  admin: AdminAuthUser | null;
-  login: (email: string, password: string) => Promise<AsyncResult>;
-  signup: (email: string, password: string) => Promise<AsyncResult>;
-  logout: () => void;
-  sendResetCode: (email: string) => Promise<ResetCodeResult>;
-  verifyResetCode: (email: string, code: string) => Promise<AsyncResult>;
-  resetPassword: (email: string, code: string, newPassword: string) => Promise<AsyncResult>;
-}
+import adminAuthApi from '../api/adminAuthApi';
+import type { AdminAuthStore } from '../types/admin/admin-auth-store.types';
+import { getApiErrorMessage } from '../utils/api-error.utils';
+import {
+  ADMIN_TOKEN_KEY,
+  ADMIN_USER_KEY,
+  loadStoredAdminUser,
+} from '../utils/admin-auth-store.utils';
 
 export const useAdminAuthStore = create<AdminAuthStore>((set) => ({
   token: sessionStorage.getItem(ADMIN_TOKEN_KEY),

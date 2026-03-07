@@ -1,29 +1,7 @@
 import { create } from "zustand";
-import type { Track } from "../types";
+import type { PlayerStore } from "../types/store/store.types";
 
-interface PlayerState {
-  currentTrack: Track | null;
-  queue: Track[];
-  isPlaying: boolean;
-  volume: number;
-  progress: number; // 0–1
-  shuffle: boolean;
-  repeat: "off" | "all" | "one";
-  // Actions
-  play: (track: Track, queue?: Track[]) => void;
-  pause: () => void;
-  resume: () => void;
-  togglePlay: () => void;
-  next: () => void;
-  prev: () => void;
-  seek: (progress: number) => void;
-  setVolume: (volume: number) => void;
-  toggleShuffle: () => void;
-  toggleRepeat: () => void;
-  toggleLike: () => void;
-}
-
-export const usePlayerStore = create<PlayerState>((set, get) => ({
+export const usePlayerStore = create<PlayerStore>((set, get) => ({
   currentTrack: null,
   queue: [],
   isPlaying: false,

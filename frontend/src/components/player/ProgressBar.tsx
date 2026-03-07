@@ -1,12 +1,6 @@
 import { useRef } from "react";
 import { formatDuration } from "../../utils/format";
-
-interface ProgressBarProps {
-  progress: number; // 0–1
-  onSeek?: (progress: number) => void;
-  duration?: number; // seconds, for displaying timestamps
-  className?: string;
-}
+import type { ProgressBarProps } from "../../types/props/component-props.types";
 
 export default function ProgressBar({
   progress,

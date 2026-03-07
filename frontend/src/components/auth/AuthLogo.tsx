@@ -1,9 +1,5 @@
 import LogoIcon from "../ui/LogoIcon";
-
-interface AuthLogoProps {
-  heading: string;
-  brand?: boolean;
-}
+import type { AuthLogoProps } from "../../types/props/component-props.types";
 
 export default function AuthLogo({ heading, brand = false }: AuthLogoProps) {
   return (

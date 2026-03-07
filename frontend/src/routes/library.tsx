@@ -6,8 +6,7 @@ import { artists } from "../data/artists";
 import Button from "../components/ui/Button";
 import { usePlaylistStore } from "../store/playlistStore";
 import { useAuthStore } from "../store/authStore";
-
-type Tab = "playlists" | "albums" | "artists";
+import type { LibraryTab } from "../types/routes/route.types";
 
 export const Route = createFileRoute("/library")({
   beforeLoad: () => {
@@ -17,7 +16,7 @@ export const Route = createFileRoute("/library")({
 });
 
 function LibraryPage() {
-  const [tab, setTab] = useState<Tab>("playlists");
+  const [tab, setTab] = useState<LibraryTab>("playlists");
   const navigate = useNavigate();
   const { playlists, createPlaylist } = usePlaylistStore();
 
@@ -42,7 +41,7 @@ function LibraryPage() {
 
       {/* Tabs */}
       <div className="flex gap-2 mb-5">
-        {(["playlists", "albums", "artists"] as Tab[]).map((t) => (
+        {(["playlists", "albums", "artists"] as LibraryTab[]).map((t) => (
           <Button
             key={t}
             variant={tab === t ? "secondary" : "ghost"}

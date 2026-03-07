@@ -1,11 +1,4 @@
-interface MediaCardProps {
-  image: string;
-  title: string;
-  subtitle?: string;
-  onClick?: () => void;
-  size?: "sm" | "md" | "lg";
-  rounded?: boolean;
-}
+import type { MediaCardProps } from "../../types/props/component-props.types";
 
 const sizes = {
   sm: "w-28",

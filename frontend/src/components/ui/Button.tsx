@@ -1,24 +1,9 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
-
-type Variant =
-  | "primary"
-  | "secondary"
-  | "outline"
-  | "ghost"
-  | "danger"
-  | "auth-outline";
-type Size = "sm" | "md" | "lg";
-type Shape = "pill" | "rect";
-
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: Variant;
-  size?: Size;
-  shape?: Shape;
-  fullWidth?: boolean;
-  loading?: boolean;
-  leftIcon?: ReactNode;
-  children: ReactNode;
-}
+import type {
+  ButtonProps,
+  ButtonShape as Shape,
+  ButtonSize as Size,
+  ButtonVariant as Variant,
+} from "../../types/props/component-props.types";
 
 const variantStyles: Record<Variant, string> = {
   primary: "bg-[#1CA2EA] text-[#041325] font-bold hover:bg-[#1CA2EA]/90",

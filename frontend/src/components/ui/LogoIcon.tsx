@@ -1,6 +1,4 @@
-interface LogoIconProps {
-  className?: string;
-}
+import type { LogoIconProps } from "../../types/props/component-props.types";
 
 export default function LogoIcon({ className }: LogoIconProps) {
   return (

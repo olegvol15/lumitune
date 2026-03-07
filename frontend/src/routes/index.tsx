@@ -10,14 +10,14 @@ import ArtistSection from "../components/home/ArtistSection";
 import PodcastSection from "../components/home/PodcastSection";
 import AudiobookSection from "../components/home/AudiobookSection";
 import type { Album, Track } from "../types";
+import type { HomeFilterTab } from "../types/routes/route.types";
 
-const FILTER_TABS = ["Всі", "Треки", "Інше"] as const;
-type FilterTab = (typeof FILTER_TABS)[number];
+const FILTER_TABS: HomeFilterTab[] = ["Всі", "Треки", "Інше"];
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
 function HomePage() {
-  const [activeTab, setActiveTab] = useState<FilterTab>("Всі");
+  const [activeTab, setActiveTab] = useState<HomeFilterTab>("Всі");
   const navigate = useNavigate();
 
   const handleAlbumClick = (item: Album | Track) => {

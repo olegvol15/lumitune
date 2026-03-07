@@ -5,13 +5,12 @@ import { tracks } from "../data/tracks";
 import TrackRow from "../components/ui/TrackRow";
 import { usePlayerStore } from "../store/playerStore";
 import Button from "../components/ui/Button";
-
-type SortKey = "recent" | "az" | "artist";
+import type { FavoriteSortKey } from "../types/routes/route.types";
 
 export const Route = createFileRoute("/favorite")({ component: FavoritePage });
 
 function FavoritePage() {
-  const [sort, setSort] = useState<SortKey>("recent");
+  const [sort, setSort] = useState<FavoriteSortKey>("recent");
   const play = usePlayerStore((s) => s.play);
 
   const likedTracks = tracks.filter((t) => t.liked);
@@ -58,7 +57,7 @@ function FavoritePage() {
 
       {/* Sort pills */}
       <div className="flex gap-2 mb-4">
-        {(["recent", "az", "artist"] as SortKey[]).map((s) => (
+        {(["recent", "az", "artist"] as FavoriteSortKey[]).map((s) => (
           <Button
             key={s}
             variant={sort === s ? "secondary" : "ghost"}

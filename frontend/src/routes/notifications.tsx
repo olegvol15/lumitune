@@ -3,16 +3,7 @@ import { notifications } from "../data/notifications";
 import { useAuthStore } from "../store/authStore";
 import type { Notification } from "../types";
 import { Bell, Music, UserPlus, ListMusic, Mic } from "lucide-react";
-
-function timeAgo(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diff / 60_000);
-  if (mins < 60) return `${mins} хв тому`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} год тому`;
-  const days = Math.floor(hours / 24);
-  return `${days} дн тому`;
-}
+import { formatNotificationTimeAgo } from "../utils/notification.utils";
 
 const typeIcon: Record<Notification["type"], React.ReactNode> = {
   new_release: <Music size={16} className="text-brand" />,
@@ -41,7 +32,7 @@ function NotificationItem({ n }: { n: Notification }) {
       <div className="flex-1 min-w-0">
         <p className="text-white text-sm font-semibold">{n.title}</p>
         <p className="text-muted text-xs mt-0.5 leading-relaxed">{n.body}</p>
-        <p className="text-muted text-xs mt-1">{timeAgo(n.timestamp)}</p>
+        <p className="text-muted text-xs mt-1">{formatNotificationTimeAgo(n.timestamp)}</p>
       </div>
       {!n.read && (
         <span className="w-2 h-2 bg-brand rounded-full flex-shrink-0 mt-1" />
