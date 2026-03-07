@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev:backend": "pnpm --filter backend dev",
-    "dev:frontend": "pnpm --filter frontend dev",
-    "build:backend": "pnpm --filter backend build",
-    "build:frontend": "pnpm --filter frontend build"
+    "dev:backend": "pnpm --filter @lumitune/backend dev",
+    "dev:frontend": "pnpm --filter @lumitune/frontend dev",
+    "build:backend": "pnpm --filter @lumitune/backend build",
+    "build:frontend": "pnpm --filter @lumitune/frontend build",
+    "typecheck:backend": "pnpm --filter @lumitune/backend typecheck",
+    "typecheck:frontend": "pnpm --filter @lumitune/frontend typecheck",
+    "typecheck": "pnpm -r typecheck",
+    "lint:frontend": "pnpm --filter @lumitune/frontend lint",
+    "build": "pnpm -r build"
   }
 }

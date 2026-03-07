@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IPlaylist } from '../types/playlist/playlist.types';
+import { IPlaylist } from '../types/playlist.types';
 
 const playlistSchema = new mongoose.Schema({
   name: {

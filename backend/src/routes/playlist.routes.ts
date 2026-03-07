@@ -1,35 +1,23 @@
 import express from 'express';
 import { protect } from '../middleware/auth.middleware';
+import {
+  addSongToPlaylist,
+  createPlaylist,
+  deletePlaylist,
+  getPlaylistById,
+  getPlaylists,
+  removeSongFromPlaylist,
+  updatePlaylist,
+} from '../controllers/playlist.controller';
 
 const router = express.Router();
 
-// We'll implement these later
-router.get('/', protect, (req, res) => {
-  res.json({ message: 'Get all playlists - to be implemented' });
-});
-
-router.post('/', protect, (req, res) => {
-  res.json({ message: 'Create playlist - to be implemented' });
-});
-
-router.get('/:id', protect, (req, res) => {
-  res.json({ message: 'Get playlist by id - to be implemented' });
-});
-
-router.put('/:id', protect, (req, res) => {
-  res.json({ message: 'Update playlist - to be implemented' });
-});
-
-router.delete('/:id', protect, (req, res) => {
-  res.json({ message: 'Delete playlist - to be implemented' });
-});
-
-router.post('/:id/songs', protect, (req, res) => {
-  res.json({ message: 'Add song to playlist - to be implemented' });
-});
-
-router.delete('/:id/songs/:songId', protect, (req, res) => {
-  res.json({ message: 'Remove song from playlist - to be implemented' });
-});
+router.get('/', protect, getPlaylists);
+router.post('/', protect, createPlaylist);
+router.get('/:id', protect, getPlaylistById);
+router.put('/:id', protect, updatePlaylist);
+router.delete('/:id', protect, deletePlaylist);
+router.post('/:id/songs', protect, addSongToPlaylist);
+router.delete('/:id/songs/:songId', protect, removeSongFromPlaylist);
 
 export default router;

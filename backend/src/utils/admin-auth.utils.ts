@@ -7,5 +7,3 @@ export const generateResetCode = (): string => {
 export const hashResetCode = (code: string): string => {
   return crypto.createHash('sha256').update(code).digest('hex');
 };
-
-export const normalizeEmail = (email: string): string => email.toLowerCase().trim();

@@ -2,7 +2,8 @@ import { Admin } from '../models/admin.model';
 import { generateAdminToken } from '../utils/admin-jwt.utils';
 import { AdminAuthUser, AdminForgotPasswordResult, AdminLoginResult } from '../types/admin/admin-auth.types';
 import { ServiceError } from '../types/error/service-error';
-import { generateResetCode, hashResetCode, normalizeEmail } from '../utils/admin-auth.utils';
+import { generateResetCode, hashResetCode } from '../utils/admin-auth.utils';
+import { normalizeEmail } from '../utils/email.utils';
 
 export const adminAuthService = {
   async signup(email?: string, password?: string): Promise<AdminAuthUser> {

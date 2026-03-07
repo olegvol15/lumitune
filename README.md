@@ -62,6 +62,9 @@ Check the backend is up: `http://localhost:3000/health` → `{"status":"OK"}`
 | `pnpm dev:frontend` | Start Vite dev server |
 | `pnpm build:backend` | Compile backend TypeScript to `dist/` |
 | `pnpm build:frontend` | Build frontend for production |
+| `pnpm typecheck` | Run TypeScript checks across workspace |
+| `pnpm lint:frontend` | Run frontend ESLint |
+| `pnpm build` | Build all workspace packages |
 
 ## API Reference
 
