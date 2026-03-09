@@ -1,73 +1,69 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Eugene\\source\\repos\\lumitune\\",
+  "WorkspaceRootPath": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\controllers\\song.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\controllers\\song.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\controllers\\auth.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\controllers\\auth.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\auth.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\middleware\\auth.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\upload.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\middleware\\upload.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\models\\playlist.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\models\\playlist.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\.env.example||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\.env.example||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\tsconfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\tsconfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\config\\database.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\song.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\controllers\\song.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\auth.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\controllers\\auth.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\auth.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\middleware\\auth.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\upload.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\middleware\\upload.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\playlist.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\models\\playlist.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\tsconfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\tsconfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\config\\database.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\utils\\jwt.utils.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\jwt.utils.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\utils\\jwt.utils.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\models\\song.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\song.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\models\\song.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\types\\express.d.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\express.d.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\types\\express.d.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\playlist.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\playlist.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\routes\\playlist.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\error.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\error.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\middleware\\error.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\auth.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\auth.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\routes\\auth.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\song.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\routes\\song.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\app.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\app.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\app.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
@@ -78,17 +74,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "song.controller.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\controllers\\song.controller.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\song.controller.ts",
               "RelativeDocumentMoniker": "backend\\src\\controllers\\song.controller.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\controllers\\song.controller.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\song.controller.ts",
               "RelativeToolTip": "backend\\src\\controllers\\song.controller.ts",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABsAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
               "WhenOpened": "2026-03-03T14:36:40.787Z",
               "EditorCaption": ""
@@ -97,209 +93,182 @@
               "$type": "Document",
               "DocumentIndex": 6,
               "Title": "tsconfig.json",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\tsconfig.json",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\tsconfig.json",
               "RelativeDocumentMoniker": "backend\\tsconfig.json",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\tsconfig.json",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\tsconfig.json",
               "RelativeToolTip": "backend\\tsconfig.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-03-03T14:16:44.468Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-03T14:16:44.468Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 0,
               "Title": "package.json",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\package.json",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\package.json",
               "RelativeDocumentMoniker": "backend\\package.json",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\package.json",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\package.json",
               "RelativeToolTip": "backend\\package.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACAAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-03-03T14:16:41.766Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": ".env.example",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\.env.example",
-              "RelativeDocumentMoniker": "backend\\.env.example",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\.env.example",
-              "RelativeToolTip": "backend\\.env.example",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-03-03T14:16:37.811Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "auth.controller.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\controllers\\auth.controller.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\auth.controller.ts",
               "RelativeDocumentMoniker": "backend\\src\\controllers\\auth.controller.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\controllers\\auth.controller.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\auth.controller.ts",
               "RelativeToolTip": "backend\\src\\controllers\\auth.controller.ts",
               "ViewState": "AgIAAFEAAAAAAAAAAAAgwGkAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:12:45.698Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "upload.middleware.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\upload.middleware.ts",
-              "RelativeDocumentMoniker": "backend\\src\\middleware\\upload.middleware.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\upload.middleware.ts",
-              "RelativeToolTip": "backend\\src\\middleware\\upload.middleware.ts",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAoAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:13:59.818Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "auth.middleware.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\auth.middleware.ts",
-              "RelativeDocumentMoniker": "backend\\src\\middleware\\auth.middleware.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\auth.middleware.ts",
-              "RelativeToolTip": "backend\\src\\middleware\\auth.middleware.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:11:54.706Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "database.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\config\\database.ts",
-              "RelativeDocumentMoniker": "backend\\src\\config\\database.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\config\\database.ts",
-              "RelativeToolTip": "backend\\src\\config\\database.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:12:42.593Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "jwt.utils.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\utils\\jwt.utils.ts",
-              "RelativeDocumentMoniker": "backend\\src\\utils\\jwt.utils.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\utils\\jwt.utils.ts",
-              "RelativeToolTip": "backend\\src\\utils\\jwt.utils.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABSAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:16:49.598Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "error.middleware.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\error.middleware.ts",
-              "RelativeDocumentMoniker": "backend\\src\\middleware\\error.middleware.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\middleware\\error.middleware.ts",
-              "RelativeToolTip": "backend\\src\\middleware\\error.middleware.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:11:49.92Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-03T14:12:45.698Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "playlist.model.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\models\\playlist.model.ts",
-              "RelativeDocumentMoniker": "backend\\src\\models\\playlist.model.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\models\\playlist.model.ts",
-              "RelativeToolTip": "backend\\src\\models\\playlist.model.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "upload.middleware.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\upload.middleware.ts",
+              "RelativeDocumentMoniker": "backend\\src\\middleware\\upload.middleware.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\upload.middleware.ts",
+              "RelativeToolTip": "backend\\src\\middleware\\upload.middleware.ts",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAoAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:13:53.916Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-03T14:13:59.818Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "auth.routes.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\auth.routes.ts",
-              "RelativeDocumentMoniker": "backend\\src\\routes\\auth.routes.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\auth.routes.ts",
-              "RelativeToolTip": "backend\\src\\routes\\auth.routes.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "auth.middleware.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\auth.middleware.ts",
+              "RelativeDocumentMoniker": "backend\\src\\middleware\\auth.middleware.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\auth.middleware.ts",
+              "RelativeToolTip": "backend\\src\\middleware\\auth.middleware.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:13:39.35Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-03T14:11:54.706Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "express.d.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\types\\express.d.ts",
-              "RelativeDocumentMoniker": "backend\\src\\types\\express.d.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\types\\express.d.ts",
-              "RelativeToolTip": "backend\\src\\types\\express.d.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "DocumentIndex": 7,
+              "Title": "database.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts",
+              "RelativeDocumentMoniker": "backend\\src\\config\\database.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts",
+              "RelativeToolTip": "backend\\src\\config\\database.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:12:15.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-03T14:12:42.593Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "jwt.utils.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\jwt.utils.ts",
+              "RelativeDocumentMoniker": "backend\\src\\utils\\jwt.utils.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\jwt.utils.ts",
+              "RelativeToolTip": "backend\\src\\utils\\jwt.utils.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABSAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:16:49.598Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 12,
-              "Title": "playlist.routes.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\playlist.routes.ts",
-              "RelativeDocumentMoniker": "backend\\src\\routes\\playlist.routes.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\playlist.routes.ts",
-              "RelativeToolTip": "backend\\src\\routes\\playlist.routes.ts",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "error.middleware.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\error.middleware.ts",
+              "RelativeDocumentMoniker": "backend\\src\\middleware\\error.middleware.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\error.middleware.ts",
+              "RelativeToolTip": "backend\\src\\middleware\\error.middleware.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:12:09.696Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-03T14:11:49.92Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "playlist.model.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\playlist.model.ts",
+              "RelativeDocumentMoniker": "backend\\src\\models\\playlist.model.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\playlist.model.ts",
+              "RelativeToolTip": "backend\\src\\models\\playlist.model.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:13:53.916Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "auth.routes.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\auth.routes.ts",
+              "RelativeDocumentMoniker": "backend\\src\\routes\\auth.routes.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\auth.routes.ts",
+              "RelativeToolTip": "backend\\src\\routes\\auth.routes.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:13:39.35Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 10,
+              "Title": "express.d.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\express.d.ts",
+              "RelativeDocumentMoniker": "backend\\src\\types\\express.d.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\express.d.ts",
+              "RelativeToolTip": "backend\\src\\types\\express.d.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:12:15.307Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "playlist.routes.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\playlist.routes.ts",
+              "RelativeDocumentMoniker": "backend\\src\\routes\\playlist.routes.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\playlist.routes.ts",
+              "RelativeToolTip": "backend\\src\\routes\\playlist.routes.ts",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:12:09.696Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "song.model.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\models\\song.model.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\song.model.ts",
               "RelativeDocumentMoniker": "backend\\src\\models\\song.model.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\models\\song.model.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\song.model.ts",
               "RelativeToolTip": "backend\\src\\models\\song.model.ts",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:12:08.125Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-03T14:12:08.125Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "song.routes.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts",
+              "RelativeDocumentMoniker": "backend\\src\\routes\\song.routes.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts",
+              "RelativeToolTip": "backend\\src\\routes\\song.routes.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:13:30.878Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 15,
-              "Title": "song.routes.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\song.routes.ts",
-              "RelativeDocumentMoniker": "backend\\src\\routes\\song.routes.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\routes\\song.routes.ts",
-              "RelativeToolTip": "backend\\src\\routes\\song.routes.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:13:30.878Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
               "Title": "app.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\app.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\app.ts",
               "RelativeDocumentMoniker": "backend\\src\\app.ts",
-              "ToolTip": "C:\\Users\\Eugene\\source\\repos\\lumitune\\backend\\src\\app.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\app.ts",
               "RelativeToolTip": "backend\\src\\app.ts",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:12:19.015Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-03T14:12:19.015Z"
             }
           ]
         }

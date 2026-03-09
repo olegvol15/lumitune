@@ -4,44 +4,46 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 
-// Load environment variables
 dotenv.config();
 
-// Import routes
+// Routes
 import authRoutes from './routes/auth.routes';
 import adminAuthRoutes from './routes/admin-auth.routes';
 import adminSongRoutes from './routes/admin-song.routes';
 import songRoutes from './routes/song.routes';
 import playlistRoutes from './routes/playlist.routes';
+import likesRoutes from './routes/likes.routes';
+import recentlyPlayedRoutes from './routes/recently-played.routes';
+import searchRoutes from './routes/search.routes';
 
-// Import middleware
+// Middleware
 import { errorHandler } from './middleware/error.middleware';
 
 const app = express();
 
-// Security middleware
+// Security
 app.use(helmet());
 
-// CORS configuration
+// CORS
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     credentials: true,
   }),
 );
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
 });
 app.use('/api', limiter);
 
-// Body parsing middleware
+// Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files (for serving uploaded files)
+// Static uploads
 app.use('/uploads', express.static('uploads'));
 
 // Routes
@@ -50,13 +52,16 @@ app.use('/api/admin/auth', adminAuthRoutes);
 app.use('/api/admin/songs', adminSongRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/playlists', playlistRoutes);
+app.use('/api/likes', likesRoutes);
+app.use('/api/recently-played', recentlyPlayedRoutes);
+app.use('/api/search', searchRoutes);
 
-// Health check route
+// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 
-// Error handling middleware (should be last)
+// Error handler (must be last)
 app.use(errorHandler);
 
 export default app;

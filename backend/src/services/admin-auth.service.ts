@@ -4,6 +4,7 @@ import { AdminAuthUser, AdminForgotPasswordResult, AdminLoginResult } from '../t
 import { ServiceError } from '../types/error/service-error';
 import { generateResetCode, hashResetCode } from '../utils/admin-auth.utils';
 import { normalizeEmail } from '../utils/email.utils';
+import { sendPasswordResetEmail } from '../utils/mailer.utils';
 
 export const adminAuthService = {
   async signup(email?: string, password?: string): Promise<AdminAuthUser> {
@@ -37,15 +38,8 @@ export const adminAuthService = {
       throw new ServiceError(401, 'Invalid email or password');
     }
 
-    const token = generateAdminToken({
-      id: String(admin._id),
-      email: admin.email,
-    });
-
-    return {
-      token,
-      admin: { id: String(admin._id), email: admin.email },
-    };
+    const token = generateAdminToken({ id: String(admin._id), email: admin.email });
+    return { token, admin: { id: String(admin._id), email: admin.email } };
   },
 
   async forgotPassword(email?: string): Promise<AdminForgotPasswordResult> {
@@ -65,6 +59,9 @@ export const adminAuthService = {
     admin.resetCodeHash = hashResetCode(code);
     admin.resetCodeExpiresAt = new Date(Date.now() + expiresMinutes * 60 * 1000);
     await admin.save({ validateBeforeSave: false });
+
+    // Send email (throw if it fails so the caller knows)
+    await sendPasswordResetEmail(normalizedEmail, code, true);
 
     return process.env.NODE_ENV !== 'production' ? { code } : {};
   },

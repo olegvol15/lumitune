@@ -5,6 +5,7 @@ import { Song } from '../models/song.model';
 import { ServiceError } from '../types/error/service-error';
 import { safeUnlink } from '../utils/file.utils';
 import { parseRangeHeader, toPositiveInt } from '../utils/song.utils';
+import { recentlyPlayedService } from './recently-played.service';
 import {
   SongListResult,
   SongQueryInput,
@@ -59,12 +60,8 @@ export const songService = {
     const genre = typeof input.genre === 'string' ? input.genre : undefined;
 
     const query: Record<string, unknown> = {};
-    if (search) {
-      query.$text = { $search: search };
-    }
-    if (genre) {
-      query.genre = genre;
-    }
+    if (search) query.$text = { $search: search };
+    if (genre) query.genre = genre;
 
     const songs = await Song.find(query)
       .populate('uploadedBy', 'username')
@@ -76,21 +73,14 @@ export const songService = {
 
     return {
       songs,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-      },
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) },
     };
   },
 
   async getSongById(songId: string) {
     ensureObjectId(songId, 'songId');
     const song = await Song.findById(songId).populate('uploadedBy', 'username');
-    if (!song) {
-      throw new ServiceError(404, 'Song not found');
-    }
+    if (!song) throw new ServiceError(404, 'Song not found');
     return { song };
   },
 
@@ -107,24 +97,19 @@ export const songService = {
     if (updateData.title !== undefined && updateData.title.length === 0) {
       throw new ServiceError(400, 'Song title cannot be empty');
     }
-
     if (updateData.artist !== undefined && updateData.artist.length === 0) {
       throw new ServiceError(400, 'Artist name cannot be empty');
     }
 
     const existingSong = await Song.findById(songId);
-    if (!existingSong) {
-      throw new ServiceError(404, 'Song not found');
-    }
+    if (!existingSong) throw new ServiceError(404, 'Song not found');
 
     const song = await Song.findByIdAndUpdate(songId, updateData, {
       new: true,
       runValidators: true,
     }).populate('uploadedBy', 'username');
 
-    if (!song) {
-      throw new ServiceError(404, 'Song not found');
-    }
+    if (!song) throw new ServiceError(404, 'Song not found');
 
     if (
       typeof updateData.coverImage === 'string' &&
@@ -142,9 +127,7 @@ export const songService = {
     ensureObjectId(songId, 'songId');
 
     const song = await Song.findByIdAndDelete(songId);
-    if (!song) {
-      throw new ServiceError(404, 'Song not found');
-    }
+    if (!song) throw new ServiceError(404, 'Song not found');
 
     safeUnlink(song.filePath);
     if (typeof song.coverImage === 'string' && song.coverImage.startsWith('uploads/')) {
@@ -152,21 +135,24 @@ export const songService = {
     }
   },
 
-  async streamSong(songId: string, rangeHeader?: string): Promise<StreamSongResult> {
+  async streamSong(songId: string, rangeHeader?: string, userId?: string): Promise<StreamSongResult> {
     ensureObjectId(songId, 'songId');
+
     const song = await Song.findById(songId);
-    if (!song) {
-      throw new ServiceError(404, 'Song not found');
-    }
+    if (!song) throw new ServiceError(404, 'Song not found');
 
     await Song.findByIdAndUpdate(songId, { $inc: { plays: 1 } });
 
-    const filePath = path.resolve(song.filePath);
-    if (!fs.existsSync(filePath)) {
-      throw new ServiceError(404, 'Audio file not found');
+    // Record in recently played if a user is authenticated
+    if (userId) {
+      recentlyPlayedService.recordPlay(userId, songId).catch(() => {});
     }
 
+    const filePath = path.resolve(song.filePath);
+    if (!fs.existsSync(filePath)) throw new ServiceError(404, 'Audio file not found');
+
     const fileSize = fs.statSync(filePath).size;
+
     if (rangeHeader) {
       const { start, end } = parseRangeHeader(rangeHeader, fileSize);
       const chunkSize = end - start + 1;
@@ -184,10 +170,7 @@ export const songService = {
 
     return {
       statusCode: 200,
-      headers: {
-        'Content-Length': fileSize,
-        'Content-Type': 'audio/mpeg',
-      },
+      headers: { 'Content-Length': fileSize, 'Content-Type': 'audio/mpeg' },
       stream: fs.createReadStream(filePath),
     };
   },
