@@ -3,13 +3,13 @@
     "",
     "\\backend",
     "\\backend\\src",
-    "\\backend\\src\\config",
-    "\\backend\\src\\controllers",
-    "\\backend\\src\\middleware",
-    "\\backend\\src\\models",
-    "\\backend\\src\\routes",
+    "\\backend\\src\\services",
     "\\backend\\src\\types",
-    "\\backend\\src\\utils"
+    "\\backend\\src\\types\\admin",
+    "\\backend\\src\\types\\auth",
+    "\\backend\\src\\types\\error",
+    "\\backend\\src\\types\\song",
+    "\\backend\\src\\types\\user"
   ],
   "PreviewInSolutionExplorer": false
 }
