@@ -6,7 +6,7 @@ import {
   streamSong 
 } from '../controllers/song.controller';
 import { protect } from '../middleware/auth.middleware';
-import { upload } from '../middleware/upload.middleware';
+import { adminSongUpload } from '../middleware/upload.middleware';
 
 const router = express.Router();
 
@@ -15,7 +15,15 @@ router.get('/', getAllSongs);
 router.get('/:id', getSongById);
 router.get('/:id/stream', streamSong);
 
-// Protected routes
-router.post('/upload', protect, upload.single('audio'), uploadSong);
+// Protected routes — accept both audio + optional cover
+router.post(
+  '/upload',
+  protect,
+  adminSongUpload.fields([
+    { name: 'audio', maxCount: 1 },
+    { name: 'cover', maxCount: 1 },
+  ]),
+  uploadSong,
+);
 
 export default router;

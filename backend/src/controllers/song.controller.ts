@@ -13,10 +13,14 @@ const getFileFromField = (req: Request, field: string): Express.Multer.File | un
 
 export const uploadSong = async (req: AuthRequest, res: Response) => {
   try {
+    const audioFile = req.file ?? getFileFromField(req, 'audio');
+    const coverFile = getFileFromField(req, 'cover');
+
     const { song } = await songService.uploadSong({
-      file: req.file,
+      file: audioFile,
       body: req.body,
       uploadedBy: req.user?._id ? String(req.user._id) : '',
+      coverImage: coverFile?.path,
     });
     res.status(201).json({ success: true, song });
   } catch (error) {
