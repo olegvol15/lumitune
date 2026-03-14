@@ -20,9 +20,9 @@ export interface AuthLoginWithRefreshResult extends AuthLoginResult {
 
 export const authService = {
   async register(input: RegisterUserInput): Promise<AuthLoginWithRefreshResult> {
-    const { email, password, username } = input;
-    if (!email || !password || !username) {
-      throw new ServiceError(400, 'Email, password and username are required');
+    const { email, password, username, displayName, dateOfBirth, country, city, role } = input;
+    if (!email || !password || !username || !displayName || !dateOfBirth || !country || !city || !role) {
+      throw new ServiceError(400, 'All fields are required');
     }
 
     const normalizedEmail = normalizeEmail(email);
@@ -34,7 +34,16 @@ export const authService = {
       throw new ServiceError(400, 'User with this email or username already exists');
     }
 
-    const user = await User.create({ email: normalizedEmail, password, username });
+    const user = await User.create({
+      email: normalizedEmail,
+      password,
+      username,
+      displayName,
+      dateOfBirth,
+      country,
+      city,
+      role,
+    });
 
     const token = generateToken({ id: String(user._id), email: user.email, username: user.username });
     const refreshToken = await createRefreshToken(String(user._id));

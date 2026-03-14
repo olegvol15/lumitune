@@ -24,6 +24,49 @@ const userSchema = new mongoose.Schema({
     trim: true,
     minlength: [3, 'Username must be at least 3 characters']
   },
+  displayName: {
+    type: String,
+    required: [true, 'Display name is required'],
+    trim: true,
+    minlength: [1, 'Display name cannot be empty'],
+    maxlength: [50, 'Display name cannot exceed 50 characters']
+  },
+  dateOfBirth: {
+    day: {
+      type: Number,
+      required: [true, 'Day of birth is required'],
+      min: [1, 'Day must be between 1 and 31'],
+      max: [31, 'Day must be between 1 and 31']
+    },
+    month: {
+      type: Number,
+      required: [true, 'Month of birth is required'],
+      min: [1, 'Month must be between 1 and 12'],
+      max: [12, 'Month must be between 1 and 12']
+    },
+    year: {
+      type: Number,
+      required: [true, 'Year of birth is required'],
+      min: [1900, 'Invalid year'],
+      max: [new Date().getFullYear(), 'Year cannot be in the future']
+    }
+  },
+  country: {
+    type: String,
+    required: [true, 'Country is required'],
+    trim: true
+  },
+  city: {
+    type: String,
+    required: [true, 'City is required'],
+    trim: true
+  },
+  role: {
+    type: String,
+    enum: ['user', 'creator'],
+    required: [true, 'Role is required'],
+    default: 'user'
+  },
   profilePicture: {
     type: String,
     default: 'default-avatar.png'
@@ -34,8 +77,6 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// Hash password before saving - SIMPLIFIED VERSION
-// Alternative approach without using next parameter
 userSchema.pre('save', async function() {
   try {
     if (this.isModified('password')) {
@@ -47,7 +88,6 @@ userSchema.pre('save', async function() {
   }
 });
 
-// Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
