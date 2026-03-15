@@ -67,6 +67,16 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Role is required'],
     default: 'user'
   },
+  bio: {
+    type: String,
+    trim: true,
+    maxlength: [600, 'Bio cannot exceed 600 characters'],
+    default: ''
+  },
+  coverImage: {
+    type: String,
+    default: ''
+  },
   profilePicture: {
     type: String,
     default: 'default-avatar.png'

@@ -23,6 +23,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ accessToken, user, isAuthenticated: true });
   },
 
+  setUser: (user) => {
+    set({ user, isAuthenticated: true });
+  },
+
   clearSession: () => {
     clearLegacyUserStorage();
     set({ accessToken: null, user: null, isAuthenticated: false });

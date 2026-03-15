@@ -11,6 +11,8 @@ export interface AuthUser {
   country: string;
   city: string;
   role: 'user' | 'creator';
+  bio?: string;
+  coverImage?: string;
   profilePicture?: string;
 }
 

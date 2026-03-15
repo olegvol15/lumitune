@@ -20,6 +20,13 @@ export interface LoginUserInput {
   password?: string;
 }
 
+export interface UpdateUserProfileInput {
+  displayName?: string;
+  bio?: string;
+  profilePicture?: string;
+  coverImage?: string;
+}
+
 export interface AuthUserResponse {
   id: string;
   email: string;
@@ -33,6 +40,8 @@ export interface AuthUserResponse {
   country: string;
   city: string;
   role: 'user' | 'creator';
+  bio?: string;
+  coverImage?: string;
   profilePicture?: string;
 }
 

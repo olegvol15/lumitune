@@ -39,9 +39,9 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// Body parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Base64-encoded profile images can exceed Express defaults.
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static uploads
 app.use('/uploads', express.static('uploads'));

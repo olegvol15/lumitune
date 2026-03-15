@@ -46,6 +46,13 @@ export const resetPasswordSchema = z.object({
   newPassword: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
+export const updateProfileSchema = z.object({
+  displayName: z.string().min(1).max(50).optional(),
+  bio: z.string().max(600).optional(),
+  profilePicture: z.string().max(2_000_000).optional(),
+  coverImage: z.string().max(2_000_000).optional(),
+});
+
 // ─── Admin Auth ────────────────────────────────────────────────────────────
 
 export const adminCredentialsSchema = z.object({

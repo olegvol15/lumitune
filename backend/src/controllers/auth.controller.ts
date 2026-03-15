@@ -92,6 +92,21 @@ export const getMe = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const updateProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const { user } = await authService.updateProfile(
+      req.user?._id ? String(req.user._id) : undefined,
+      req.body,
+    );
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+    res.status(500).json({ success: false, message: getErrorMessage(error, 'Error updating profile') });
+  }
+};
+
 export const forgotPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.body as { email?: string };

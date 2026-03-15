@@ -13,6 +13,8 @@ export interface IUser extends mongoose.Document {
   country: string;
   city: string;
   role: 'user' | 'creator';
+  bio?: string;
+  coverImage?: string;
   profilePicture?: string;
   createdAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;

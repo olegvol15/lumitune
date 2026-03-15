@@ -9,6 +9,8 @@ export const toAuthUserResponse = (user: {
   country: string;
   city: string;
   role: 'user' | 'creator';
+  bio?: string;
+  coverImage?: string;
   profilePicture?: string;
 }): AuthUserResponse => ({
   id: String(user._id),
@@ -19,5 +21,7 @@ export const toAuthUserResponse = (user: {
   country: user.country,
   city: user.city,
   role: user.role,
+  bio: user.bio,
+  coverImage: user.coverImage,
   profilePicture: user.profilePicture,
 });

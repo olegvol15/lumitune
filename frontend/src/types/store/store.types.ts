@@ -20,6 +20,7 @@ export interface AuthStore {
   isAuthenticated: boolean;
   isBootstrapped: boolean;
   setSession: (accessToken: string, user: AuthUser) => void;
+  setUser: (user: AuthUser) => void;
   clearSession: () => void;
   bootstrap: () => Promise<void>;
   refreshSession: () => Promise<string | null>;

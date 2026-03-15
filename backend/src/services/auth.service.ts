@@ -12,6 +12,7 @@ import {
   AuthMeResult,
   LoginUserInput,
   RegisterUserInput,
+  UpdateUserProfileInput,
 } from '../types/auth/auth-service.types';
 
 export const authService = {
@@ -111,6 +112,45 @@ export const authService = {
     }
 
     return { user };
+  },
+
+  async updateProfile(userId: string | undefined, input: UpdateUserProfileInput) {
+    if (!userId) {
+      throw new ServiceError(401, 'Not authorized to access this route');
+    }
+
+    const updateData: UpdateUserProfileInput = {};
+
+    if (typeof input.displayName === 'string') {
+      const displayName = input.displayName.trim();
+      if (!displayName) {
+        throw new ServiceError(400, 'Display name cannot be empty');
+      }
+      updateData.displayName = displayName;
+    }
+
+    if (typeof input.bio === 'string') {
+      updateData.bio = input.bio.trim();
+    }
+
+    if (typeof input.profilePicture === 'string') {
+      updateData.profilePicture = input.profilePicture;
+    }
+
+    if (typeof input.coverImage === 'string') {
+      updateData.coverImage = input.coverImage;
+    }
+
+    const user = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select('-password');
+
+    if (!user) {
+      throw new ServiceError(404, 'User not found');
+    }
+
+    return { user: toAuthUserResponse(user) };
   },
 
   async forgotPassword(email?: string): Promise<{ code?: string }> {

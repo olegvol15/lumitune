@@ -6,6 +6,7 @@ import {
   refresh,
   logout,
   logoutAll,
+  updateProfile,
   forgotPassword,
   verifyResetCode,
   resetPassword,
@@ -18,6 +19,7 @@ import {
   forgotPasswordSchema,
   verifyResetCodeSchema,
   resetPasswordSchema,
+  updateProfileSchema,
 } from '../utils/validation.schemas';
 
 const router = express.Router();
@@ -28,6 +30,7 @@ router.post('/refresh', refresh);
 router.post('/logout', logout);
 router.post('/logout-all', protect, logoutAll);
 router.get('/me', protect, getMe);
+router.patch('/me', protect, validate(updateProfileSchema), updateProfile);
 router.post('/forgot-password', validate(forgotPasswordSchema), forgotPassword);
 router.post('/verify-reset-code', validate(verifyResetCodeSchema), verifyResetCode);
 router.post('/reset-password', validate(resetPasswordSchema), resetPassword);
