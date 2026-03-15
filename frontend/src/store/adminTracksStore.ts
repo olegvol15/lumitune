@@ -152,7 +152,7 @@ export const useAdminTracksStore = create<AdminTracksStore>((set, get) => ({
           const track = tracksById.get(id);
           if (!track) return Promise.resolve();
           return adminSongsApi.remove(track.backendId || track.id);
-        }),
+        })
       );
 
       await get().fetchTracks();

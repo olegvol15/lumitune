@@ -56,105 +56,105 @@ Check the backend is up: `http://localhost:3000/health` → `{"status":"OK"}`
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev:backend` | Start backend with nodemon (auto-restart) |
-| `pnpm dev:frontend` | Start Vite dev server |
-| `pnpm build:backend` | Compile backend TypeScript to `dist/` |
-| `pnpm build:frontend` | Build frontend for production |
-| `pnpm typecheck` | Run TypeScript checks across workspace |
-| `pnpm lint:frontend` | Run frontend ESLint |
-| `pnpm build` | Build all workspace packages |
+| Command               | Description                               |
+| --------------------- | ----------------------------------------- |
+| `pnpm dev:backend`    | Start backend with nodemon (auto-restart) |
+| `pnpm dev:frontend`   | Start Vite dev server                     |
+| `pnpm build:backend`  | Compile backend TypeScript to `dist/`     |
+| `pnpm build:frontend` | Build frontend for production             |
+| `pnpm typecheck`      | Run TypeScript checks across workspace    |
+| `pnpm lint:frontend`  | Run frontend ESLint                       |
+| `pnpm build`          | Build all workspace packages              |
 
 ## API Reference
 
 ### Admin Auth — `/api/admin/auth`
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/signup` | — | Register admin |
-| POST | `/login` | — | Login admin, returns token |
-| GET | `/me` | Bearer | Get current admin |
-| POST | `/forgot-password` | — | Request reset code |
-| POST | `/verify-reset-code` | — | Verify reset code |
-| POST | `/reset-password` | — | Reset password |
+| Method | Endpoint             | Auth   | Description                |
+| ------ | -------------------- | ------ | -------------------------- |
+| POST   | `/signup`            | —      | Register admin             |
+| POST   | `/login`             | —      | Login admin, returns token |
+| GET    | `/me`                | Bearer | Get current admin          |
+| POST   | `/forgot-password`   | —      | Request reset code         |
+| POST   | `/verify-reset-code` | —      | Verify reset code          |
+| POST   | `/reset-password`    | —      | Reset password             |
 
 ### Admin Songs — `/api/admin/songs`
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/` | Admin Bearer | List songs for admin table |
-| GET | `/:id` | Admin Bearer | Get song by ID |
-| POST | `/upload` | Admin Bearer | Create song (`multipart/form-data`, `audio` required, `cover` optional) |
-| PUT | `/:id` | Admin Bearer | Update song metadata and optional `cover` (`multipart/form-data`) |
-| DELETE | `/:id` | Admin Bearer | Delete song and associated local files |
+| Method | Endpoint  | Auth         | Description                                                             |
+| ------ | --------- | ------------ | ----------------------------------------------------------------------- |
+| GET    | `/`       | Admin Bearer | List songs for admin table                                              |
+| GET    | `/:id`    | Admin Bearer | Get song by ID                                                          |
+| POST   | `/upload` | Admin Bearer | Create song (`multipart/form-data`, `audio` required, `cover` optional) |
+| PUT    | `/:id`    | Admin Bearer | Update song metadata and optional `cover` (`multipart/form-data`)       |
+| DELETE | `/:id`    | Admin Bearer | Delete song and associated local files                                  |
 
 ### Auth — `/api/auth`
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/register` | — | Register a new user |
-| POST | `/login` | — | Login, returns JWT |
-| GET | `/me` | Bearer | Get current user |
+| Method | Endpoint    | Auth   | Description         |
+| ------ | ----------- | ------ | ------------------- |
+| POST   | `/register` | —      | Register a new user |
+| POST   | `/login`    | —      | Login, returns JWT  |
+| GET    | `/me`       | Bearer | Get current user    |
 
 ### Songs — `/api/songs`
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/` | — | List songs (supports `page`, `limit`, `search`, `genre`) |
-| GET | `/:id` | — | Get song by ID |
-| GET | `/:id/stream` | — | Stream audio (supports HTTP range requests) |
-| POST | `/upload` | Bearer | Upload song (`multipart/form-data`) |
+| Method | Endpoint      | Auth   | Description                                              |
+| ------ | ------------- | ------ | -------------------------------------------------------- |
+| GET    | `/`           | —      | List songs (supports `page`, `limit`, `search`, `genre`) |
+| GET    | `/:id`        | —      | Get song by ID                                           |
+| GET    | `/:id/stream` | —      | Stream audio (supports HTTP range requests)              |
+| POST   | `/upload`     | Bearer | Upload song (`multipart/form-data`)                      |
 
 ### Playlists — `/api/playlists`
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/` | Bearer | Get user's playlists |
-| POST | `/` | Bearer | Create playlist |
-| GET | `/:id` | Bearer | Get playlist |
-| PUT | `/:id` | Bearer | Update playlist |
-| DELETE | `/:id` | Bearer | Delete playlist |
-| POST | `/:id/songs` | Bearer | Add song to playlist |
+| Method | Endpoint             | Auth   | Description               |
+| ------ | -------------------- | ------ | ------------------------- |
+| GET    | `/`                  | Bearer | Get user's playlists      |
+| POST   | `/`                  | Bearer | Create playlist           |
+| GET    | `/:id`               | Bearer | Get playlist              |
+| PUT    | `/:id`               | Bearer | Update playlist           |
+| DELETE | `/:id`               | Bearer | Delete playlist           |
+| POST   | `/:id/songs`         | Bearer | Add song to playlist      |
 | DELETE | `/:id/songs/:songId` | Bearer | Remove song from playlist |
 
 ### Other
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| GET | `/uploads/*` | Serve uploaded audio and cover files |
+| Method | Endpoint     | Description                          |
+| ------ | ------------ | ------------------------------------ |
+| GET    | `/health`    | Health check                         |
+| GET    | `/uploads/*` | Serve uploaded audio and cover files |
 
 ## Frontend Routes
 
-| Path | Description |
-|------|-------------|
-| `/` | Home / discover |
-| `/search` | Search tracks |
-| `/library` | User library |
-| `/profile` | User profile |
-| `/settings` | Settings |
-| `/notifications` | Notifications |
-| `/player` | Full-screen player |
-| `/artist/:id` | Artist page |
-| `/album/:id` | Album page |
-| `/playlist/:id` | Playlist page |
-| `/auth/signin` | Sign in |
-| `/auth/signup` | Sign up |
-| `/auth/forgot-password` | Password reset |
-| `/admin` | Admin dashboard |
-| `/admin/tracks` | Admin track management |
+| Path                    | Description            |
+| ----------------------- | ---------------------- |
+| `/`                     | Home / discover        |
+| `/search`               | Search tracks          |
+| `/library`              | User library           |
+| `/profile`              | User profile           |
+| `/settings`             | Settings               |
+| `/notifications`        | Notifications          |
+| `/player`               | Full-screen player     |
+| `/artist/:id`           | Artist page            |
+| `/album/:id`            | Album page             |
+| `/playlist/:id`         | Playlist page          |
+| `/auth/signin`          | Sign in                |
+| `/auth/signup`          | Sign up                |
+| `/auth/forgot-password` | Password reset         |
+| `/admin`                | Admin dashboard        |
+| `/admin/tracks`         | Admin track management |
 
 ## State Management (Zustand)
 
-| Store | Responsibility |
-|-------|---------------|
-| `authStore` | User auth state — token, user profile, setAuth/logout |
-| `playerStore` | Playback state — current track, queue, play/pause, seek/progress, volume, shuffle/repeat |
-| `playlistStore` | Playlist management |
-| `adminAuthStore` | Admin panel authentication (session-based, separate from user auth) |
-| `adminTracksStore` | Admin track upload/management |
-| `songsCatalogStore` | Public songs catalog loaded from backend (`/api/songs`) |
+| Store               | Responsibility                                                                           |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| `authStore`         | User auth state — token, user profile, setAuth/logout                                    |
+| `playerStore`       | Playback state — current track, queue, play/pause, seek/progress, volume, shuffle/repeat |
+| `playlistStore`     | Playlist management                                                                      |
+| `adminAuthStore`    | Admin panel authentication (session-based, separate from user auth)                      |
+| `adminTracksStore`  | Admin track upload/management                                                            |
+| `songsCatalogStore` | Public songs catalog loaded from backend (`/api/songs`)                                  |
 
 ## Authentication
 

@@ -1,6 +1,10 @@
 import { Admin } from '../models/admin.model';
 import { generateAdminToken } from '../utils/admin-jwt.utils';
-import { AdminAuthUser, AdminForgotPasswordResult, AdminLoginResult } from '../types/admin/admin-auth.types';
+import {
+  AdminAuthUser,
+  AdminForgotPasswordResult,
+  AdminLoginResult,
+} from '../types/admin/admin-auth.types';
 import { ServiceError } from '../types/error/service-error';
 import { generateResetCode, hashResetCode } from '../utils/admin-auth.utils';
 import { normalizeEmail } from '../utils/email.utils';
@@ -28,7 +32,10 @@ export const adminAuthService = {
     return { id: String(admin._id), email: admin.email };
   },
 
-  async login(email?: string, password?: string): Promise<AdminLoginResult & { refreshToken: string }> {
+  async login(
+    email?: string,
+    password?: string
+  ): Promise<AdminLoginResult & { refreshToken: string }> {
     if (!email || !password) {
       throw new ServiceError(400, 'Email and password are required');
     }
@@ -85,7 +92,9 @@ export const adminAuthService = {
     }
 
     const normalizedEmail = normalizeEmail(email);
-    const admin = await Admin.findOne({ email: normalizedEmail }).select('+resetCodeHash +resetCodeExpiresAt');
+    const admin = await Admin.findOne({ email: normalizedEmail }).select(
+      '+resetCodeHash +resetCodeExpiresAt'
+    );
     if (!admin) {
       throw new ServiceError(404, 'No admin account found with this email');
     }
@@ -109,13 +118,15 @@ export const adminAuthService = {
     }
 
     const normalizedEmail = normalizeEmail(email);
-    const admin = await Admin.findOne({ email: normalizedEmail }).select('+resetCodeHash +resetCodeExpiresAt');
+    const admin = await Admin.findOne({ email: normalizedEmail }).select(
+      '+resetCodeHash +resetCodeExpiresAt'
+    );
     const isCodeValid = Boolean(
       admin &&
       admin.resetCodeHash &&
       admin.resetCodeExpiresAt &&
       admin.resetCodeExpiresAt.getTime() > Date.now() &&
-      admin.resetCodeHash === hashResetCode(code),
+      admin.resetCodeHash === hashResetCode(code)
     );
 
     if (!isCodeValid) {
@@ -129,13 +140,15 @@ export const adminAuthService = {
     }
 
     const normalizedEmail = normalizeEmail(email);
-    const admin = await Admin.findOne({ email: normalizedEmail }).select('+password +resetCodeHash +resetCodeExpiresAt');
+    const admin = await Admin.findOne({ email: normalizedEmail }).select(
+      '+password +resetCodeHash +resetCodeExpiresAt'
+    );
     const isCodeValid = Boolean(
       admin &&
       admin.resetCodeHash &&
       admin.resetCodeExpiresAt &&
       admin.resetCodeExpiresAt.getTime() > Date.now() &&
-      admin.resetCodeHash === hashResetCode(code),
+      admin.resetCodeHash === hashResetCode(code)
     );
 
     if (!admin || !isCodeValid) {

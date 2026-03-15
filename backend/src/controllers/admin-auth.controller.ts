@@ -100,7 +100,11 @@ export const adminRefresh = async (req: Request, res: Response) => {
       });
     }
 
-    const { accessToken, refreshToken: nextRefreshToken, admin } = await adminAuthService.refresh(refreshToken);
+    const {
+      accessToken,
+      refreshToken: nextRefreshToken,
+      admin,
+    } = await adminAuthService.refresh(refreshToken);
     setAdminRefreshCookie(res, nextRefreshToken);
 
     return res.status(200).json({

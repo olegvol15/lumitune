@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import type { ProfileTrackEditorModalProps } from "../../types/profile/profile.types";
-import Button from "../ui/Button";
-import ProfileCreatorModal from "./ProfileCreatorModal";
-import ProfileSelectField from "./ProfileSelectField";
-import ProfileUploadZone from "./ProfileUploadZone";
+import { useEffect, useState } from 'react';
+import type { ProfileTrackEditorModalProps } from '../../types/profile/profile.types';
+import Button from '../ui/Button';
+import ProfileCreatorModal from './ProfileCreatorModal';
+import ProfileSelectField from './ProfileSelectField';
+import ProfileUploadZone from './ProfileUploadZone';
 
 export default function ProfileTrackEditorModal({
   open,
@@ -15,11 +15,11 @@ export default function ProfileTrackEditorModal({
   onClose,
   onSave,
 }: ProfileTrackEditorModalProps) {
-  const [title, setTitle] = useState("");
-  const [genre, setGenre] = useState("");
-  const [mood, setMood] = useState("");
+  const [title, setTitle] = useState('');
+  const [genre, setGenre] = useState('');
+  const [mood, setMood] = useState('');
   const [coverImage, setCoverImage] = useState(fallbackCover);
-  const [audioFileName, setAudioFileName] = useState("");
+  const [audioFileName, setAudioFileName] = useState('');
 
   useEffect(() => {
     if (!open) return;
@@ -32,18 +32,18 @@ export default function ProfileTrackEditorModal({
       return;
     }
 
-    setTitle("");
-    setGenre("");
-    setMood("");
+    setTitle('');
+    setGenre('');
+    setMood('');
     setCoverImage(fallbackCover);
-    setAudioFileName("");
+    setAudioFileName('');
   }, [fallbackCover, initialTrack, open]);
 
   if (!open) return null;
 
   return (
     <ProfileCreatorModal
-      title={mode === "create" ? "Завантаження треку" : "Редагування треку"}
+      title={mode === 'create' ? 'Завантаження треку' : 'Редагування треку'}
       onClose={onClose}
     >
       <div className="space-y-4">
@@ -61,15 +61,13 @@ export default function ProfileTrackEditorModal({
 
         <ProfileUploadZone
           label="Перетягніть аудіофайл або завантажте"
-          sublabel={audioFileName || "Аудіо"}
+          sublabel={audioFileName || 'Аудіо'}
           onSelect={(file) => setAudioFileName(file.name)}
         />
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">
-              Жанр
-            </label>
+            <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">Жанр</label>
             <ProfileSelectField
               value={genre}
               options={genres}
@@ -78,9 +76,7 @@ export default function ProfileTrackEditorModal({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">
-              Настрій
-            </label>
+            <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">Настрій</label>
             <ProfileSelectField
               value={mood}
               options={moods}
@@ -107,20 +103,20 @@ export default function ProfileTrackEditorModal({
             onClick={() =>
               onSave({
                 id: initialTrack?.id || `creator-track-${Date.now()}`,
-                title: title || "Новий трек",
-                artistName: initialTrack?.artistName || "OLEH",
+                title: title || 'Новий трек',
+                artistName: initialTrack?.artistName || 'OLEH',
                 albumCover: coverImage,
                 duration: initialTrack?.duration || 182,
                 genre: genre || genres[0],
                 mood: mood || moods[0],
                 audioFileName,
-                releaseDate: initialTrack?.releaseDate || "12.11.2012",
+                releaseDate: initialTrack?.releaseDate || '12.11.2012',
                 likes: initialTrack?.likes || 235,
               })
             }
             className="rounded-[7px] bg-[#80c8eb] px-2 py-2 text-[10px] font-semibold text-[#123042] hover:bg-[#93d3f1]"
           >
-            {mode === "create" ? "Опублікувати" : "Зберегти"}
+            {mode === 'create' ? 'Опублікувати' : 'Зберегти'}
           </Button>
         </div>
       </div>

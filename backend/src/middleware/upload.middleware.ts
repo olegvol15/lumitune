@@ -14,17 +14,17 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
+  },
 });
 
 export const upload = multer({
   storage: storage,
   limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE || '524288000') // 500MB default
+    fileSize: parseInt(process.env.MAX_FILE_SIZE || '524288000'), // 500MB default
   },
-  fileFilter: audioFileFilter
+  fileFilter: audioFileFilter,
 });
 
 export const adminSongUpload = multer({

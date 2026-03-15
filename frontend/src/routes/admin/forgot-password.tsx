@@ -1,9 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import LogoIcon from "../../components/ui/LogoIcon";
-import { useAdminAuthStore } from "../../store/adminAuthStore";
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import LogoIcon from '../../components/ui/LogoIcon';
+import { useAdminAuthStore } from '../../store/adminAuthStore';
 
-export const Route = createFileRoute("/admin/forgot-password")({
+export const Route = createFileRoute('/admin/forgot-password')({
   component: ForgotPasswordPage,
 });
 
@@ -12,16 +12,16 @@ function ForgotPasswordPage() {
   const sendResetCode = useAdminAuthStore((s) => s.sendResetCode);
   const verifyResetCode = useAdminAuthStore((s) => s.verifyResetCode);
 
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
   const [codeSent, setCodeSent] = useState(false);
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSendCode = async () => {
     if (!email) return;
-    setError("");
+    setError('');
     setSending(true);
     const result = await sendResetCode(email);
     setSending(false);
@@ -33,23 +33,23 @@ function ForgotPasswordPage() {
       return;
     }
 
-    setError(result.error ?? "Failed to send code");
+    setError(result.error ?? 'Failed to send code');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
     const result = await verifyResetCode(email, code);
     if (!result.ok) {
-      setError(result.error ?? "Invalid code. Please try again.");
+      setError(result.error ?? 'Invalid code. Please try again.');
       setLoading(false);
       return;
     }
 
-    sessionStorage.setItem("reset_email", email);
-    sessionStorage.setItem("reset_code", code);
-    navigate({ to: "/admin/reset-password" });
+    sessionStorage.setItem('reset_email', email);
+    sessionStorage.setItem('reset_code', code);
+    navigate({ to: '/admin/reset-password' });
   };
 
   return (
@@ -62,9 +62,7 @@ function ForgotPasswordPage() {
         <form onSubmit={handleSubmit}>
           {/* Email */}
           <div className="mb-4">
-            <label className="block text-white text-sm font-medium mb-1.5">
-              Email Address
-            </label>
+            <label className="block text-white text-sm font-medium mb-1.5">Email Address</label>
             <input
               type="email"
               placeholder="admin@gmail.com"
@@ -72,7 +70,7 @@ function ForgotPasswordPage() {
               onChange={(e) => {
                 setEmail(e.target.value);
                 setCodeSent(false);
-                setCode("");
+                setCode('');
               }}
               autoComplete="email"
               required
@@ -82,9 +80,7 @@ function ForgotPasswordPage() {
 
           {/* Code + Send Code */}
           <div className="mb-5">
-            <label className="block text-white text-sm font-medium mb-1.5">
-              Code
-            </label>
+            <label className="block text-white text-sm font-medium mb-1.5">Code</label>
             <div className="relative">
               <input
                 type="text"
@@ -100,14 +96,12 @@ function ForgotPasswordPage() {
                 disabled={sending || codeSent || !email}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#4a7ea0] hover:text-white transition-colors disabled:opacity-40 whitespace-nowrap"
               >
-                {sending ? "Sending…" : codeSent ? "Sent ✓" : "Send Code"}
+                {sending ? 'Sending…' : codeSent ? 'Sent ✓' : 'Send Code'}
               </button>
             </div>
           </div>
 
-          {error && (
-            <p className="text-red-400 text-xs mb-3 text-center">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-xs mb-3 text-center">{error}</p>}
 
           <button
             type="submit"
@@ -117,7 +111,7 @@ function ForgotPasswordPage() {
             {loading ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              "Continue"
+              'Continue'
             )}
           </button>
         </form>

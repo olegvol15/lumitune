@@ -14,14 +14,11 @@ const adminAuthApi = {
   login: (email: string, password: string) =>
     publicApiClient.post<AdminLoginResponse>('/admin/auth/login', { email, password }),
 
-  refresh: () =>
-    publicApiClient.post<AdminRefreshResponse>('/admin/auth/refresh'),
+  refresh: () => publicApiClient.post<AdminRefreshResponse>('/admin/auth/refresh'),
 
-  logout: () =>
-    publicApiClient.post<BasicAdminResponse>('/admin/auth/logout'),
+  logout: () => publicApiClient.post<BasicAdminResponse>('/admin/auth/logout'),
 
-  me: () =>
-    publicApiClient.get<AdminAuthResponse>('/admin/auth/me'),
+  me: () => publicApiClient.get<AdminAuthResponse>('/admin/auth/me'),
 
   forgotPassword: (email: string) =>
     publicApiClient.post<AdminResetCodeResponse>('/admin/auth/forgot-password', { email }),

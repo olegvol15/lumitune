@@ -54,7 +54,7 @@ function AdminTracksPage() {
         t.title.toLowerCase().includes(q) ||
         t.artistId.toLowerCase().includes(q) ||
         t.albumId.toLowerCase().includes(q) ||
-        t.id.toLowerCase().includes(q),
+        t.id.toLowerCase().includes(q)
     );
   }, [tracks, search]);
 
@@ -70,7 +70,8 @@ function AdminTracksPage() {
 
   if (!isBootstrapped || !isAuthenticated) return null;
 
-  const thClass = 'px-3 py-3 text-left text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
+  const thClass =
+    'px-3 py-3 text-left text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
   const tdClass = 'px-3 py-3 text-sm text-white whitespace-nowrap';
   const tdMuted = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap';
 
@@ -116,9 +117,7 @@ function AdminTracksPage() {
       {/* Table */}
       <div className="bg-[#1e2638] rounded-xl border border-[#2a3a52] overflow-hidden">
         {error && (
-          <div className="px-4 py-3 text-sm text-red-300 border-b border-[#2a3a52]">
-            {error}
-          </div>
+          <div className="px-4 py-3 text-sm text-red-300 border-b border-[#2a3a52]">{error}</div>
         )}
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px]">

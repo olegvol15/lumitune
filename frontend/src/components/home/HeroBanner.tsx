@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 const banners = [
   {
-    id: "b1",
-    imageUrl: "https://picsum.photos/seed/exoplanet/900/300",
-    label: "EXO Planet — новий альбом",
+    id: 'b1',
+    imageUrl: 'https://picsum.photos/seed/exoplanet/900/300',
+    label: 'EXO Planet — новий альбом',
   },
   {
-    id: "b2",
-    imageUrl: "https://picsum.photos/seed/kpopnight/900/300",
-    label: "К-Поп вечір — слухай зараз",
+    id: 'b2',
+    imageUrl: 'https://picsum.photos/seed/kpopnight/900/300',
+    label: 'К-Поп вечір — слухай зараз',
   },
   {
-    id: "b3",
-    imageUrl: "https://picsum.photos/seed/indievibes/900/300",
-    label: "Indie Vibes — відкрий нове",
+    id: 'b3',
+    imageUrl: 'https://picsum.photos/seed/indievibes/900/300',
+    label: 'Indie Vibes — відкрий нове',
   },
 ];
 
@@ -37,7 +37,7 @@ export default function HeroBanner() {
             key={i}
             onClick={() => setActive(i)}
             className={`h-1.5 rounded-full transition-all ${
-              i === active ? "w-5 bg-[#1CA2EA]" : "w-1.5 bg-white/20"
+              i === active ? 'w-5 bg-[#1CA2EA]' : 'w-1.5 bg-white/20'
             }`}
           />
         ))}
@@ -50,15 +50,8 @@ export default function HeroBanner() {
           style={{ transform: `translateX(-${active * 100}%)` }}
         >
           {banners.map((b) => (
-            <div
-              key={b.id}
-              className="w-full flex-shrink-0 h-full relative cursor-pointer"
-            >
-              <img
-                src={b.imageUrl}
-                alt={b.label}
-                className="w-full h-full object-cover"
-              />
+            <div key={b.id} className="w-full flex-shrink-0 h-full relative cursor-pointer">
+              <img src={b.imageUrl} alt={b.label} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-5">
                 <span className="bg-black/40 backdrop-blur-sm text-white text-sm font-semibold px-4 py-1.5 rounded-full">

@@ -4,7 +4,9 @@ import { AdminRefreshToken } from '../models/admin-refresh-token.model';
 const REFRESH_TOKEN_BYTES = 64;
 
 const getAdminRefreshExpiryMs = (): number => {
-  const days = Number(process.env.ADMIN_REFRESH_TOKEN_EXPIRES_DAYS || process.env.REFRESH_TOKEN_EXPIRES_DAYS || 30);
+  const days = Number(
+    process.env.ADMIN_REFRESH_TOKEN_EXPIRES_DAYS || process.env.REFRESH_TOKEN_EXPIRES_DAYS || 30
+  );
   return days * 24 * 60 * 60 * 1000;
 };
 
@@ -24,7 +26,10 @@ export const consumeAdminRefreshToken = async (token: string) => {
   return doc;
 };
 
-export const rotateAdminRefreshToken = async (oldToken: string, adminId: string): Promise<string> => {
+export const rotateAdminRefreshToken = async (
+  oldToken: string,
+  adminId: string
+): Promise<string> => {
   await AdminRefreshToken.deleteOne({ token: oldToken });
   return createAdminRefreshToken(adminId);
 };

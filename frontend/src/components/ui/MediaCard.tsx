@@ -1,10 +1,10 @@
-import type { MediaCardProps } from "../../types/props/component-props.types";
-import SongCoverImage from "./SongCoverImage";
+import type { MediaCardProps } from '../../types/props/component-props.types';
+import SongCoverImage from './SongCoverImage';
 
 const sizes = {
-  sm: "w-28",
-  md: "w-36",
-  lg: "w-44",
+  sm: 'w-28',
+  md: 'w-36',
+  lg: 'w-44',
 };
 
 export default function MediaCard({
@@ -12,26 +12,21 @@ export default function MediaCard({
   title,
   subtitle,
   onClick,
-  size = "md",
+  size = 'md',
   rounded = false,
 }: MediaCardProps) {
   return (
-    <button
-      onClick={onClick}
-      className={`${sizes[size]} flex-shrink-0 text-left group`}
-    >
+    <button onClick={onClick} className={`${sizes[size]} flex-shrink-0 text-left group`}>
       <SongCoverImage
         src={image}
         alt={title}
         fallbackLabel={title}
         className={`w-full aspect-square object-cover mb-2 ${
-          rounded ? "rounded-full" : "rounded-xl"
+          rounded ? 'rounded-full' : 'rounded-xl'
         } group-hover:opacity-80 transition-opacity`}
       />
       <p className="text-white text-sm font-semibold truncate">{title}</p>
-      {subtitle && (
-        <p className="text-muted text-xs truncate mt-0.5">{subtitle}</p>
-      )}
+      {subtitle && <p className="text-muted text-xs truncate mt-0.5">{subtitle}</p>}
     </button>
   );
 }

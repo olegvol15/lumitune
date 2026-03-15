@@ -1,7 +1,12 @@
 import { User } from '../models/user.model';
 import { UserResetCode } from '../models/user-reset-code.model';
 import { generateToken } from '../utils/jwt.utils';
-import { createRefreshToken, rotateRefreshToken, revokeAllRefreshTokens, consumeRefreshToken } from '../utils/refresh-token.utils';
+import {
+  createRefreshToken,
+  rotateRefreshToken,
+  revokeAllRefreshTokens,
+  consumeRefreshToken,
+} from '../utils/refresh-token.utils';
 import { ServiceError } from '../types/error/service-error';
 import { normalizeEmail } from '../utils/email.utils';
 import { toAuthUserResponse } from '../utils/auth.utils';
@@ -18,7 +23,16 @@ import {
 export const authService = {
   async register(input: RegisterUserInput): Promise<AuthLoginResult & { refreshToken: string }> {
     const { email, password, username, displayName, dateOfBirth, country, city, role } = input;
-    if (!email || !password || !username || !displayName || !dateOfBirth || !country || !city || !role) {
+    if (
+      !email ||
+      !password ||
+      !username ||
+      !displayName ||
+      !dateOfBirth ||
+      !country ||
+      !city ||
+      !role
+    ) {
       throw new ServiceError(400, 'All fields are required');
     }
 
@@ -42,7 +56,11 @@ export const authService = {
       role,
     });
 
-    const accessToken = generateToken({ id: String(user._id), email: user.email, username: user.username });
+    const accessToken = generateToken({
+      id: String(user._id),
+      email: user.email,
+      username: user.username,
+    });
     const refreshToken = await createRefreshToken(String(user._id));
 
     // Fire-and-forget welcome email
@@ -68,13 +86,23 @@ export const authService = {
       throw new ServiceError(401, 'Invalid credentials');
     }
 
-    const accessToken = generateToken({ id: String(user._id), email: user.email, username: user.username });
+    const accessToken = generateToken({
+      id: String(user._id),
+      email: user.email,
+      username: user.username,
+    });
     const refreshToken = await createRefreshToken(String(user._id));
 
     return { accessToken, refreshToken, user: toAuthUserResponse(user) };
   },
 
-  async refresh(oldRefreshToken: string): Promise<{ accessToken: string; refreshToken: string; user: ReturnType<typeof toAuthUserResponse> }> {
+  async refresh(
+    oldRefreshToken: string
+  ): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    user: ReturnType<typeof toAuthUserResponse>;
+  }> {
     const doc = await consumeRefreshToken(oldRefreshToken);
     if (!doc) {
       throw new ServiceError(401, 'Invalid or expired refresh token');
@@ -85,7 +113,11 @@ export const authService = {
       throw new ServiceError(401, 'User not found');
     }
 
-    const accessToken = generateToken({ id: String(user._id), email: user.email, username: user.username });
+    const accessToken = generateToken({
+      id: String(user._id),
+      email: user.email,
+      username: user.username,
+    });
     const refreshToken = await rotateRefreshToken(oldRefreshToken, String(user._id));
 
     return { accessToken, refreshToken, user: toAuthUserResponse(user) };
@@ -175,7 +207,7 @@ export const authService = {
         codeHash: hashResetCode(code),
         expiresAt: new Date(Date.now() + expiresMinutes * 60 * 1000),
       },
-      { upsert: true, new: true },
+      { upsert: true, new: true }
     );
 
     await sendPasswordResetEmail(normalizedEmail, code, false);
@@ -196,9 +228,7 @@ export const authService = {
 
     const record = await UserResetCode.findOne({ userId: user._id });
     const isValid =
-      record &&
-      record.expiresAt > new Date() &&
-      record.codeHash === hashResetCode(code);
+      record && record.expiresAt > new Date() && record.codeHash === hashResetCode(code);
 
     if (!isValid) {
       throw new ServiceError(400, 'Invalid or expired reset code');
@@ -218,9 +248,7 @@ export const authService = {
 
     const record = await UserResetCode.findOne({ userId: user._id });
     const isValid =
-      record &&
-      record.expiresAt > new Date() &&
-      record.codeHash === hashResetCode(code);
+      record && record.expiresAt > new Date() && record.codeHash === hashResetCode(code);
 
     if (!isValid) {
       throw new ServiceError(400, 'Invalid or expired reset code');

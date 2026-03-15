@@ -57,7 +57,11 @@ export const playlistService = {
     return { playlist };
   },
 
-  async update(userId: string | undefined, playlistId: string, input: PlaylistUpdateInput): Promise<PlaylistResult> {
+  async update(
+    userId: string | undefined,
+    playlistId: string,
+    input: PlaylistUpdateInput
+  ): Promise<PlaylistResult> {
     ensureUserId(userId);
     ensureObjectId(playlistId, 'playlistId');
 
@@ -74,7 +78,7 @@ export const playlistService = {
     const playlist = await Playlist.findOneAndUpdate(
       { _id: playlistId, owner: userId },
       updateData,
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     ).populate('songs');
 
     if (!playlist) {
@@ -94,7 +98,11 @@ export const playlistService = {
     }
   },
 
-  async addSong(userId: string | undefined, playlistId: string, songId: string): Promise<PlaylistResult> {
+  async addSong(
+    userId: string | undefined,
+    playlistId: string,
+    songId: string
+  ): Promise<PlaylistResult> {
     ensureUserId(userId);
     ensureObjectId(playlistId, 'playlistId');
     ensureObjectId(songId, 'songId');
@@ -119,7 +127,11 @@ export const playlistService = {
     return { playlist };
   },
 
-  async removeSong(userId: string | undefined, playlistId: string, songId: string): Promise<PlaylistResult> {
+  async removeSong(
+    userId: string | undefined,
+    playlistId: string,
+    songId: string
+  ): Promise<PlaylistResult> {
     ensureUserId(userId);
     ensureObjectId(playlistId, 'playlistId');
     ensureObjectId(songId, 'songId');

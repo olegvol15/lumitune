@@ -1,19 +1,15 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useRouter,
-} from "@tanstack/react-router";
-import { ChevronLeft, UserCheck, Share2, MoreHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
-import { getArtist, artists } from "../data/artists";
-import { albums } from "../data/albums";
-import TrackRow from "../components/ui/TrackRow";
-import MediaCard from "../components/ui/MediaCard";
-import SectionHeader from "../components/ui/SectionHeader";
-import Button from "../components/ui/Button";
-import { useCatalogTracks } from "../hooks/useCatalogTracks";
+import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router';
+import { ChevronLeft, UserCheck, Share2, MoreHorizontal } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { getArtist, artists } from '../data/artists';
+import { albums } from '../data/albums';
+import TrackRow from '../components/ui/TrackRow';
+import MediaCard from '../components/ui/MediaCard';
+import SectionHeader from '../components/ui/SectionHeader';
+import Button from '../components/ui/Button';
+import { useCatalogTracks } from '../hooks/useCatalogTracks';
 
-export const Route = createFileRoute("/artist/$id")({
+export const Route = createFileRoute('/artist/$id')({
   component: ArtistPage,
 });
 
@@ -62,9 +58,7 @@ function ArtistPage() {
 
   const artistTracks = tracks.filter((t) => t.artistId === id).slice(0, 5);
   const artistAlbums = albums.filter((a) => a.artistId === id);
-  const similarArtists = artists
-    .filter((a) => a.id !== id && a.genre === artist.genre)
-    .slice(0, 5);
+  const similarArtists = artists.filter((a) => a.id !== id && a.genre === artist.genre).slice(0, 5);
 
   const fmtListeners = (n: number) => {
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -75,11 +69,7 @@ function ArtistPage() {
     <div className="pb-4">
       {/* Hero */}
       <div className="relative">
-        <img
-          src={artist.image}
-          alt={artist.name}
-          className="w-full h-72 object-cover"
-        />
+        <img src={artist.image} alt={artist.name} className="w-full h-72 object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-surface" />
 
         {/* Back button */}
@@ -98,9 +88,7 @@ function ArtistPage() {
         <div className="absolute bottom-4 left-4 right-4">
           {artist.verified && (
             <div className="flex items-center gap-1 mb-1">
-              <span className="text-brand text-xs font-semibold">
-                ✓ Верифікований виконавець
-              </span>
+              <span className="text-brand text-xs font-semibold">✓ Верифікований виконавець</span>
             </div>
           )}
           <h1 className="text-white text-3xl font-bold">{artist.name}</h1>
@@ -114,12 +102,12 @@ function ArtistPage() {
         {/* Follow + share */}
         <div className="flex items-center gap-3 mb-6">
           <Button
-            variant={following ? "secondary" : "outline"}
+            variant={following ? 'secondary' : 'outline'}
             shape="pill"
             leftIcon={following ? <UserCheck size={16} /> : undefined}
             onClick={() => setFollowing(!following)}
           >
-            {following ? "Підписаний" : "Підписатись"}
+            {following ? 'Підписаний' : 'Підписатись'}
           </Button>
           <button className="p-2.5 border border-white/20 rounded-full">
             <Share2 size={18} className="text-white" />
@@ -156,9 +144,7 @@ function ArtistPage() {
                   image={al.coverUrl}
                   title={al.title}
                   subtitle={`${al.year}`}
-                  onClick={() =>
-                    navigate({ to: "/album/$id", params: { id: al.id } })
-                  }
+                  onClick={() => navigate({ to: '/album/$id', params: { id: al.id } })}
                 />
               ))}
             </div>
@@ -177,9 +163,7 @@ function ArtistPage() {
                   title={a.name}
                   subtitle={a.genre}
                   rounded
-                  onClick={() =>
-                    navigate({ to: "/artist/$id", params: { id: a.id } })
-                  }
+                  onClick={() => navigate({ to: '/artist/$id', params: { id: a.id } })}
                 />
               ))}
             </div>
@@ -192,9 +176,7 @@ function ArtistPage() {
           <p className="text-muted text-sm leading-relaxed">{artist.bio}</p>
           <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/10">
             <div>
-              <p className="text-white font-bold text-sm">
-                {fmtListeners(artist.followers)}
-              </p>
+              <p className="text-white font-bold text-sm">{fmtListeners(artist.followers)}</p>
               <p className="text-muted text-xs">Підписники</p>
             </div>
             <div>

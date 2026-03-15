@@ -1,14 +1,14 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import AuthBackButton from "../../components/auth/AuthBackButton";
-import AuthBottomLink from "../../components/auth/AuthBottomLink";
-import AuthLogo from "../../components/auth/AuthLogo";
-import AuthOrDivider from "../../components/auth/AuthOrDivider";
-import Button from "../../components/ui/Button";
-import { maskEmail } from "../../utils/forgot-password.utils";
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import AuthBackButton from '../../components/auth/AuthBackButton';
+import AuthBottomLink from '../../components/auth/AuthBottomLink';
+import AuthLogo from '../../components/auth/AuthLogo';
+import AuthOrDivider from '../../components/auth/AuthOrDivider';
+import Button from '../../components/ui/Button';
+import { maskEmail } from '../../utils/forgot-password.utils';
 
-export const Route = createFileRoute("/auth/forgot-password")({
+export const Route = createFileRoute('/auth/forgot-password')({
   component: ForgotPasswordPage,
 });
 
@@ -17,14 +17,14 @@ function ForgotPasswordPage() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
 
   // Step 0
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
   // Step 1
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState('');
 
   // Step 2
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,7 +39,7 @@ function ForgotPasswordPage() {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 800));
     setLoading(false);
-    navigate({ to: "/auth/signin" });
+    navigate({ to: '/auth/signin' });
   };
 
   // ─── Step 0: email ────────────────────────────────────────────────────────
@@ -47,7 +47,7 @@ function ForgotPasswordPage() {
     return (
       <div className="auth-page-bg min-h-screen px-4 py-6 sm:py-8 flex flex-col sm:items-center sm:justify-center">
         <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
-          <AuthBackButton onBack={() => navigate({ to: "/auth/signin" })} />
+          <AuthBackButton onBack={() => navigate({ to: '/auth/signin' })} />
 
           <AuthLogo heading="Забули пароль?" />
 
@@ -72,30 +72,18 @@ function ForgotPasswordPage() {
               />
             </div>
 
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              shape="rect"
-              fullWidth
-            >
+            <Button type="submit" variant="primary" size="lg" shape="rect" fullWidth>
               Продовжити
             </Button>
           </form>
 
           <AuthOrDivider />
 
-          <Button
-            variant="auth-outline"
-            size="lg"
-            shape="rect"
-            fullWidth
-            onClick={handleResend}
-          >
+          <Button variant="auth-outline" size="lg" shape="rect" fullWidth onClick={handleResend}>
             Отримайте новий код
           </Button>
 
-          <AuthBottomLink onNavigateToSignIn={() => navigate({ to: "/auth/signin" })} />
+          <AuthBottomLink onNavigateToSignIn={() => navigate({ to: '/auth/signin' })} />
         </div>
       </div>
     );
@@ -111,10 +99,8 @@ function ForgotPasswordPage() {
           <AuthLogo heading="Забули пароль?" />
 
           <p className="text-[#769CCF] text-sm text-center -mt-2 mb-4">
-            Введіть 6-значний код, який ми відправили вам на адресу{" "}
-            <span className="text-[#8AB8F0]">
-              {maskedEmail || "G*****2@G*l.com"}
-            </span>
+            Введіть 6-значний код, який ми відправили вам на адресу{' '}
+            <span className="text-[#8AB8F0]">{maskedEmail || 'G*****2@G*l.com'}</span>
           </p>
 
           <form
@@ -125,9 +111,7 @@ function ForgotPasswordPage() {
             className="space-y-3.5"
           >
             <div>
-              <label className="text-[#D4E3F7] text-sm mb-1.5 block">
-                Код підтвердження
-              </label>
+              <label className="text-[#D4E3F7] text-sm mb-1.5 block">Код підтвердження</label>
               <input
                 type="text"
                 value={code}
@@ -139,30 +123,18 @@ function ForgotPasswordPage() {
               />
             </div>
 
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              shape="rect"
-              fullWidth
-            >
+            <Button type="submit" variant="primary" size="lg" shape="rect" fullWidth>
               Продовжити
             </Button>
           </form>
 
           <AuthOrDivider />
 
-          <Button
-            variant="auth-outline"
-            size="lg"
-            shape="rect"
-            fullWidth
-            onClick={handleResend}
-          >
+          <Button variant="auth-outline" size="lg" shape="rect" fullWidth onClick={handleResend}>
             Отримайте новий код
           </Button>
 
-          <AuthBottomLink onNavigateToSignIn={() => navigate({ to: "/auth/signin" })} />
+          <AuthBottomLink onNavigateToSignIn={() => navigate({ to: '/auth/signin' })} />
         </div>
       </div>
     );
@@ -178,12 +150,10 @@ function ForgotPasswordPage() {
 
         <div className="space-y-3.5 mt-1">
           <div>
-            <label className="text-[#D4E3F7] text-sm mb-1.5 block">
-              Пароль
-            </label>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Пароль</label>
             <div className="relative">
               <input
-                type={showPwd ? "text" : "password"}
+                type={showPwd ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="************"
@@ -204,12 +174,10 @@ function ForgotPasswordPage() {
           </div>
 
           <div>
-            <label className="text-[#D4E3F7] text-sm mb-1.5 block">
-              Підтвердіть пароль
-            </label>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Підтвердіть пароль</label>
             <div className="relative">
               <input
-                type={showConfirm ? "text" : "password"}
+                type={showConfirm ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="************"
@@ -245,17 +213,11 @@ function ForgotPasswordPage() {
 
         <AuthOrDivider />
 
-        <Button
-          variant="auth-outline"
-          size="lg"
-          shape="rect"
-          fullWidth
-          onClick={handleResend}
-        >
+        <Button variant="auth-outline" size="lg" shape="rect" fullWidth onClick={handleResend}>
           Отримайте новий код
         </Button>
 
-        <AuthBottomLink onNavigateToSignIn={() => navigate({ to: "/auth/signin" })} />
+        <AuthBottomLink onNavigateToSignIn={() => navigate({ to: '/auth/signin' })} />
       </div>
     </div>
   );

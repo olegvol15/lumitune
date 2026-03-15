@@ -9,85 +9,85 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     trim: true,
-    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email']
+    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email'],
   },
   password: {
     type: String,
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters'],
-    select: false
+    select: false,
   },
   username: {
     type: String,
     required: [true, 'Username is required'],
     unique: true,
     trim: true,
-    minlength: [3, 'Username must be at least 3 characters']
+    minlength: [3, 'Username must be at least 3 characters'],
   },
   displayName: {
     type: String,
     required: [true, 'Display name is required'],
     trim: true,
     minlength: [1, 'Display name cannot be empty'],
-    maxlength: [50, 'Display name cannot exceed 50 characters']
+    maxlength: [50, 'Display name cannot exceed 50 characters'],
   },
   dateOfBirth: {
     day: {
       type: Number,
       required: [true, 'Day of birth is required'],
       min: [1, 'Day must be between 1 and 31'],
-      max: [31, 'Day must be between 1 and 31']
+      max: [31, 'Day must be between 1 and 31'],
     },
     month: {
       type: Number,
       required: [true, 'Month of birth is required'],
       min: [1, 'Month must be between 1 and 12'],
-      max: [12, 'Month must be between 1 and 12']
+      max: [12, 'Month must be between 1 and 12'],
     },
     year: {
       type: Number,
       required: [true, 'Year of birth is required'],
       min: [1900, 'Invalid year'],
-      max: [new Date().getFullYear(), 'Year cannot be in the future']
-    }
+      max: [new Date().getFullYear(), 'Year cannot be in the future'],
+    },
   },
   country: {
     type: String,
     required: [true, 'Country is required'],
-    trim: true
+    trim: true,
   },
   city: {
     type: String,
     required: [true, 'City is required'],
-    trim: true
+    trim: true,
   },
   role: {
     type: String,
     enum: ['user', 'creator'],
     required: [true, 'Role is required'],
-    default: 'user'
+    default: 'user',
   },
   bio: {
     type: String,
     trim: true,
     maxlength: [600, 'Bio cannot exceed 600 characters'],
-    default: ''
+    default: '',
   },
   coverImage: {
     type: String,
-    default: ''
+    default: '',
   },
   profilePicture: {
     type: String,
-    default: 'default-avatar.png'
+    default: 'default-avatar.png',
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-userSchema.pre('save', async function() {
+userSchema.pre('save', async function () {
   try {
     if (this.isModified('password')) {
       const salt = await bcrypt.genSalt(10);
@@ -98,7 +98,7 @@ userSchema.pre('save', async function() {
   }
 });
 
-userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
 

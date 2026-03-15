@@ -1,10 +1,5 @@
 import express from 'express';
-import { 
-  uploadSong, 
-  getAllSongs, 
-  getSongById, 
-  streamSong 
-} from '../controllers/song.controller';
+import { uploadSong, getAllSongs, getSongById, streamSong } from '../controllers/song.controller';
 import { protect } from '../middleware/auth.middleware';
 import { adminSongUpload } from '../middleware/upload.middleware';
 
@@ -23,7 +18,7 @@ router.post(
     { name: 'audio', maxCount: 1 },
     { name: 'cover', maxCount: 1 },
   ]),
-  uploadSong,
+  uploadSong
 );
 
 export default router;

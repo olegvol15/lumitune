@@ -1,10 +1,7 @@
-import type { ProfileAlbumCardProps } from "../../types/profile/profile.types";
-import SongCoverImage from "../ui/SongCoverImage";
+import type { ProfileAlbumCardProps } from '../../types/profile/profile.types';
+import SongCoverImage from '../ui/SongCoverImage';
 
-export default function ProfileAlbumCard({
-  album,
-  onClick,
-}: ProfileAlbumCardProps) {
+export default function ProfileAlbumCard({ album, onClick }: ProfileAlbumCardProps) {
   return (
     <button
       type="button"

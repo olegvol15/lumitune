@@ -1,9 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import LogoIcon from "../../components/ui/LogoIcon";
-import { useAdminAuthStore } from "../../store/adminAuthStore";
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import LogoIcon from '../../components/ui/LogoIcon';
+import { useAdminAuthStore } from '../../store/adminAuthStore';
 
-export const Route = createFileRoute("/admin/reset-password")({
+export const Route = createFileRoute('/admin/reset-password')({
   component: ResetPasswordPage,
 });
 
@@ -11,34 +11,34 @@ function ResetPasswordPage() {
   const navigate = useNavigate();
   const resetPassword = useAdminAuthStore((s) => s.resetPassword);
 
-  const [password, setPassword] = useState("");
-  const [repeat, setRepeat] = useState("");
-  const [error, setError] = useState("");
+  const [password, setPassword] = useState('');
+  const [repeat, setRepeat] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     if (password !== repeat) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
-    const email = sessionStorage.getItem("reset_email") ?? "";
-    const code = sessionStorage.getItem("reset_code") ?? "";
+    const email = sessionStorage.getItem('reset_email') ?? '';
+    const code = sessionStorage.getItem('reset_code') ?? '';
     if (!email || !code) {
-      setError("Session expired. Please start again.");
+      setError('Session expired. Please start again.');
       return;
     }
     setLoading(true);
     const result = await resetPassword(email, code, password);
     if (result.ok) {
-      sessionStorage.removeItem("reset_email");
-      sessionStorage.removeItem("reset_code");
-      navigate({ to: "/admin/login" });
+      sessionStorage.removeItem('reset_email');
+      sessionStorage.removeItem('reset_code');
+      navigate({ to: '/admin/login' });
       return;
     }
 
-    setError(result.error ?? "Failed to reset password");
+    setError(result.error ?? 'Failed to reset password');
     setLoading(false);
   };
 
@@ -51,9 +51,7 @@ function ResetPasswordPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-white text-sm font-medium mb-1.5">
-              New Password
-            </label>
+            <label className="block text-white text-sm font-medium mb-1.5">New Password</label>
             <input
               type="password"
               placeholder="••••••••••••••••••"
@@ -66,9 +64,7 @@ function ResetPasswordPage() {
           </div>
 
           <div className="mb-5">
-            <label className="block text-white text-sm font-medium mb-1.5">
-              Repeat Password
-            </label>
+            <label className="block text-white text-sm font-medium mb-1.5">Repeat Password</label>
             <input
               type="password"
               placeholder="••••••••••••••••••"
@@ -80,9 +76,7 @@ function ResetPasswordPage() {
             />
           </div>
 
-          {error && (
-            <p className="text-red-400 text-xs mb-3 text-center">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-xs mb-3 text-center">{error}</p>}
 
           <button
             type="submit"
@@ -92,7 +86,7 @@ function ResetPasswordPage() {
             {loading ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              "Log In"
+              'Log In'
             )}
           </button>
         </form>

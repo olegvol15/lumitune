@@ -1,11 +1,7 @@
-import { ChevronDown } from "lucide-react";
-import type { SettingsSelectProps } from "../../types/settings/settings.types";
+import { ChevronDown } from 'lucide-react';
+import type { SettingsSelectProps } from '../../types/settings/settings.types';
 
-export default function SettingsSelect({
-  value,
-  options,
-  onChange,
-}: SettingsSelectProps) {
+export default function SettingsSelect({ value, options, onChange }: SettingsSelectProps) {
   return (
     <div className="relative w-full max-w-[170px]">
       <select

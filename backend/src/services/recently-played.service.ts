@@ -11,7 +11,7 @@ export const recentlyPlayedService = {
     await RecentlyPlayed.findOneAndUpdate(
       { userId, songId },
       { playedAt: new Date() },
-      { upsert: true },
+      { upsert: true }
     );
 
     // Cap history at MAX_HISTORY entries per user

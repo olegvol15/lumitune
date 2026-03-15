@@ -1,23 +1,17 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import {
-  ChevronDown,
-  Heart,
-  ListMusic,
-  Share2,
-  MoreHorizontal,
-} from "lucide-react";
-import { usePlayerStore } from "../store/playerStore";
-import { useAuthStore } from "../store/authStore";
-import PlayerControls from "../components/player/PlayerControls";
-import ProgressBar from "../components/player/ProgressBar";
-import TrackRow from "../components/ui/TrackRow";
-import SongCoverImage from "../components/ui/SongCoverImage";
-import { useState } from "react";
-import Button from "../components/ui/Button";
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { ChevronDown, Heart, ListMusic, Share2, MoreHorizontal } from 'lucide-react';
+import { usePlayerStore } from '../store/playerStore';
+import { useAuthStore } from '../store/authStore';
+import PlayerControls from '../components/player/PlayerControls';
+import ProgressBar from '../components/player/ProgressBar';
+import TrackRow from '../components/ui/TrackRow';
+import SongCoverImage from '../components/ui/SongCoverImage';
+import { useState } from 'react';
+import Button from '../components/ui/Button';
 
-export const Route = createFileRoute("/player")({
+export const Route = createFileRoute('/player')({
   beforeLoad: () => {
-    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: "/auth/signin" });
+    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: '/auth/signin' });
   },
   component: PlayerPage,
 });
@@ -34,7 +28,7 @@ function PlayerPage() {
         <Button
           variant="secondary"
           shape="pill"
-          onClick={() => navigate({ to: "/" })}
+          onClick={() => navigate({ to: '/' })}
           className="px-6"
         >
           Перейти на головну
@@ -56,9 +50,7 @@ function PlayerPage() {
           <ChevronDown size={28} className="text-white" />
         </button>
         <div className="text-center">
-          <p className="text-white/60 text-xs uppercase tracking-widest">
-            Відтворення
-          </p>
+          <p className="text-white/60 text-xs uppercase tracking-widest">Відтворення</p>
           <p className="text-white text-sm font-medium truncate max-w-[180px]">
             {currentTrack.albumTitle}
           </p>
@@ -83,22 +75,14 @@ function PlayerPage() {
           <div className="px-6 pb-2">
             <div className="flex items-center justify-between mb-4">
               <div className="flex-1 min-w-0">
-                <h1 className="text-white text-2xl font-bold truncate">
-                  {currentTrack.title}
-                </h1>
-                <p className="text-white/60 text-base mt-0.5">
-                  {currentTrack.artistName}
-                </p>
+                <h1 className="text-white text-2xl font-bold truncate">{currentTrack.title}</h1>
+                <p className="text-white/60 text-base mt-0.5">{currentTrack.artistName}</p>
               </div>
               <div className="flex gap-2 flex-shrink-0 ml-3">
                 <button onClick={toggleLike} className="p-2">
                   <Heart
                     size={24}
-                    className={
-                      currentTrack.liked
-                        ? "text-brand fill-brand"
-                        : "text-white/60"
-                    }
+                    className={currentTrack.liked ? 'text-brand fill-brand' : 'text-white/60'}
                   />
                 </button>
                 <button className="p-2">
@@ -151,12 +135,7 @@ function PlayerPage() {
           </div>
           <div className="overflow-y-auto space-y-1 flex-1">
             {queue.map((t, i) => (
-              <TrackRow
-                key={`${t.id}-${i}`}
-                track={t}
-                index={i}
-                queue={queue}
-              />
+              <TrackRow key={`${t.id}-${i}`} track={t} index={i} queue={queue} />
             ))}
           </div>
         </div>

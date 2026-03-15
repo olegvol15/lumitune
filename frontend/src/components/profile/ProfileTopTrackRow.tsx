@@ -1,12 +1,8 @@
-import type { ProfileTopTrackRowProps } from "../../types/profile/profile.types";
-import { formatDuration } from "../../utils/format";
-import SongCoverImage from "../ui/SongCoverImage";
+import type { ProfileTopTrackRowProps } from '../../types/profile/profile.types';
+import { formatDuration } from '../../utils/format';
+import SongCoverImage from '../ui/SongCoverImage';
 
-export default function ProfileTopTrackRow({
-  track,
-  index,
-  onPlay,
-}: ProfileTopTrackRowProps) {
+export default function ProfileTopTrackRow({ track, index, onPlay }: ProfileTopTrackRowProps) {
   return (
     <div className="grid grid-cols-[32px_minmax(0,1.8fr)_120px_110px_50px] items-center gap-4 rounded-xl bg-[#13273a]/92 px-4 py-3">
       <button

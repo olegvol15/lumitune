@@ -1,4 +1,4 @@
-import type { ProfileStatProps } from "../../types/profile/profile.types";
+import type { ProfileStatProps } from '../../types/profile/profile.types';
 
 export default function ProfileStat({ value, label }: ProfileStatProps) {
   return (

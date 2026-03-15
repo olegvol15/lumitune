@@ -17,8 +17,11 @@ export const getLikedSongs = async (req: AuthRequest, res: Response) => {
     const result = await likesService.getLikedSongs(userId, page, limit);
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    return res.status(500).json({ success: false, message: getErrorMessage(error, 'Error fetching liked songs') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error fetching liked songs') });
   }
 };
 
@@ -28,8 +31,11 @@ export const likeSong = async (req: AuthRequest, res: Response) => {
     const result = await likesService.likeSong(userId, String(req.params.songId));
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    return res.status(500).json({ success: false, message: getErrorMessage(error, 'Error liking song') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error liking song') });
   }
 };
 
@@ -39,8 +45,11 @@ export const unlikeSong = async (req: AuthRequest, res: Response) => {
     const result = await likesService.unlikeSong(userId, String(req.params.songId));
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    return res.status(500).json({ success: false, message: getErrorMessage(error, 'Error unliking song') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error unliking song') });
   }
 };
 
@@ -50,7 +59,10 @@ export const checkLiked = async (req: AuthRequest, res: Response) => {
     const liked = await likesService.isSongLiked(userId, String(req.params.songId));
     return res.status(200).json({ success: true, liked });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    return res.status(500).json({ success: false, message: getErrorMessage(error, 'Error checking like status') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error checking like status') });
   }
 };

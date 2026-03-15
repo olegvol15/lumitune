@@ -1,5 +1,5 @@
-import { ChevronDown } from "lucide-react";
-import type { ProfileSelectFieldProps } from "../../types/profile/profile.types";
+import { ChevronDown } from 'lucide-react';
+import type { ProfileSelectFieldProps } from '../../types/profile/profile.types';
 
 export default function ProfileSelectField({
   value,

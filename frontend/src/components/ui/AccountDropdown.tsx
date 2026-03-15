@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import Avatar from "./Avatar";
-import Button from "./Button";
-import { useAuthStore } from "../../store/authStore";
+import { Link, useNavigate } from '@tanstack/react-router';
+import { useEffect, useRef, useState } from 'react';
+import Avatar from './Avatar';
+import Button from './Button';
+import { useAuthStore } from '../../store/authStore';
 
 export default function AccountDropdown() {
   const navigate = useNavigate();
@@ -24,17 +24,17 @@ export default function AccountDropdown() {
     };
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         setOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
 
     return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
     };
   }, [open]);
 
@@ -43,7 +43,7 @@ export default function AccountDropdown() {
     try {
       await logout();
       setOpen(false);
-      navigate({ to: "/auth/signin" });
+      navigate({ to: '/auth/signin' });
     } finally {
       setIsLoggingOut(false);
     }
@@ -63,7 +63,7 @@ export default function AccountDropdown() {
         aria-label="Меню акаунта"
       >
         <Avatar
-          alt={user?.displayName || user?.username || user?.email || "User"}
+          alt={user?.displayName || user?.username || user?.email || 'User'}
           size={40}
           className="bg-transparent text-[14px] font-bold text-[#dbe7f8]"
         />
@@ -98,7 +98,7 @@ export default function AccountDropdown() {
               disabled={isLoggingOut}
               className="!block !px-0 !py-1.5 text-[15px] font-semibold tracking-[-0.02em] !text-[#f5f7fb] transition hover:!text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isLoggingOut ? "Вихід..." : "Вийти"}
+              {isLoggingOut ? 'Вихід...' : 'Вийти'}
             </Button>
           </div>
         </div>

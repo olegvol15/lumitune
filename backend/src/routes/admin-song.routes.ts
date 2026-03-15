@@ -20,7 +20,7 @@ router.post(
     { name: 'audio', maxCount: 1 },
     { name: 'cover', maxCount: 1 },
   ]),
-  uploadSongByAdmin,
+  uploadSongByAdmin
 );
 router.put('/:id', protectAdmin, adminSongUpload.single('cover'), updateSongByAdmin);
 router.delete('/:id', protectAdmin, deleteSongByAdmin);

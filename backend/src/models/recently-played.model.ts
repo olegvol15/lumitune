@@ -27,4 +27,7 @@ recentlyPlayedSchema.index({ userId: 1, playedAt: -1 });
 // Unique per user+song so we just upsert/update playedAt
 recentlyPlayedSchema.index({ userId: 1, songId: 1 }, { unique: true });
 
-export const RecentlyPlayed = mongoose.model<IRecentlyPlayed>('RecentlyPlayed', recentlyPlayedSchema);
+export const RecentlyPlayed = mongoose.model<IRecentlyPlayed>(
+  'RecentlyPlayed',
+  recentlyPlayedSchema
+);

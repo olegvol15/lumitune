@@ -1,24 +1,20 @@
-import {
-  createRootRoute,
-  Outlet,
-  useRouterState,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import BottomNav from "../components/layout/BottomNav";
-import MiniPlayer from "../components/layout/MiniPlayer";
-import TopBar from "../components/layout/TopBar";
-import Sidebar from "../components/layout/Sidebar";
-import RightPanel from "../components/layout/RightPanel";
-import Footer from "../components/layout/Footer";
-import DesktopPlayer from "../components/layout/DesktopPlayer";
-import AudioEngine from "../components/player/AudioEngine";
+import { createRootRoute, Outlet, useRouterState } from '@tanstack/react-router';
+import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import BottomNav from '../components/layout/BottomNav';
+import MiniPlayer from '../components/layout/MiniPlayer';
+import TopBar from '../components/layout/TopBar';
+import Sidebar from '../components/layout/Sidebar';
+import RightPanel from '../components/layout/RightPanel';
+import Footer from '../components/layout/Footer';
+import DesktopPlayer from '../components/layout/DesktopPlayer';
+import AudioEngine from '../components/player/AudioEngine';
 
 const HIDDEN_NAV_ROUTES = [
-  "/player",
-  "/auth/signin",
-  "/auth/signup",
-  "/auth/forgot-password",
-  "/admin",
+  '/player',
+  '/auth/signin',
+  '/auth/signup',
+  '/auth/forgot-password',
+  '/admin',
 ];
 
 function RootLayout() {
@@ -84,9 +80,7 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <RootLayout />
-      {import.meta.env.DEV && (
-        <TanStackRouterDevtools position="bottom-right" />
-      )}
+      {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
     </>
   ),
 });

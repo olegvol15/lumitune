@@ -4,8 +4,29 @@ import { useAdminTracksStore } from '../../store/adminTracksStore';
 import type { AdminTrack } from '../../types/admin/admin-tracks.types';
 import { albums } from '../../data/albums';
 
-const GENRES = ['Pop', 'Rock', 'Hip-Hop', 'R&B', 'K-Pop', 'Electronic', 'Jazz', 'Classical', 'Country', 'Latin'];
-const TAGS = ['top-100', 'trending', 'viral', 'new-release', 'classic', 'featured', 'chill', 'workout', 'party'];
+const GENRES = [
+  'Pop',
+  'Rock',
+  'Hip-Hop',
+  'R&B',
+  'K-Pop',
+  'Electronic',
+  'Jazz',
+  'Classical',
+  'Country',
+  'Latin',
+];
+const TAGS = [
+  'top-100',
+  'trending',
+  'viral',
+  'new-release',
+  'classic',
+  'featured',
+  'chill',
+  'workout',
+  'party',
+];
 
 export default function TrackModal() {
   const { modal, closeModal, saveTrack } = useAdminTracksStore();
@@ -29,7 +50,7 @@ export default function TrackModal() {
   if (!open || !form) return null;
 
   const set = (field: keyof AdminTrack, value: AdminTrack[keyof AdminTrack]) =>
-    setForm((prev) => prev ? { ...prev, [field]: value } : prev);
+    setForm((prev) => (prev ? { ...prev, [field]: value } : prev));
 
   const handleAlbumChange = (albumId: string) => {
     const album = albums.find((a) => a.id === albumId);
@@ -41,7 +62,7 @@ export default function TrackModal() {
             albumTitle: album?.title ?? '',
             albumCover: album?.coverUrl ?? '',
           }
-        : prev,
+        : prev
     );
   };
 
@@ -251,9 +272,7 @@ export default function TrackModal() {
 
         {/* Footer buttons */}
         <div className="px-6 py-4 border-t border-[#2a3a52] flex justify-end gap-3">
-          {error && (
-            <p className="mr-auto text-xs text-red-400 self-center">{error}</p>
-          )}
+          {error && <p className="mr-auto text-xs text-red-400 self-center">{error}</p>}
           {mode === 'edit' && (
             <button
               onClick={handleReset}

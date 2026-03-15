@@ -16,13 +16,7 @@ const PLACEHOLDER_NAV = [
 ];
 
 // Merged for rendering in order
-const NAV_ORDER = [
-  'Customers',
-  'Elements',
-  'Dashboard',
-  'Plugins',
-  'Settings',
-];
+const NAV_ORDER = ['Customers', 'Elements', 'Dashboard', 'Plugins', 'Settings'];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const { location } = useRouterState();
@@ -36,17 +30,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   const navItemClass = (active: boolean) =>
     `w-14 h-14 flex flex-col items-center justify-center rounded-xl gap-1 transition-colors text-[10px] font-medium ${
-      active
-        ? 'bg-[#253050] text-[#3dc9b0]'
-        : 'text-[#7a8faa] hover:bg-[#253050] hover:text-white'
+      active ? 'bg-[#253050] text-[#3dc9b0]' : 'text-[#7a8faa] hover:bg-[#253050] hover:text-white'
     }`;
 
-  const activeNavMap = Object.fromEntries(
-    ACTIVE_NAV.map((n) => [n.label, n]),
-  );
-  const placeholderNavMap = Object.fromEntries(
-    PLACEHOLDER_NAV.map((n) => [n.label, n]),
-  );
+  const activeNavMap = Object.fromEntries(ACTIVE_NAV.map((n) => [n.label, n]));
+  const placeholderNavMap = Object.fromEntries(PLACEHOLDER_NAV.map((n) => [n.label, n]));
 
   return (
     <div className="flex min-h-screen bg-[#1c2235] text-white">
@@ -62,11 +50,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               const { path, icon: Icon } = activeNavMap[label];
               const active = location.pathname.startsWith(path);
               return (
-                <Link
-                  key={label}
-                  to={path}
-                  className={navItemClass(active)}
-                >
+                <Link key={label} to={path} className={navItemClass(active)}>
                   <Icon size={20} />
                   <span>{label}</span>
                 </Link>

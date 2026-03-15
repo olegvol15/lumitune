@@ -1,10 +1,10 @@
-import { X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import authApi from "../../api/authApi";
-import type { ProfileEditModalProps } from "../../types/profile/profile.types";
-import { useAuthStore } from "../../store/authStore";
-import { fileToDataUrl } from "../../utils/file.utils";
-import Button from "../ui/Button";
+import { X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import authApi from '../../api/authApi';
+import type { ProfileEditModalProps } from '../../types/profile/profile.types';
+import { useAuthStore } from '../../store/authStore';
+import { fileToDataUrl } from '../../utils/file.utils';
+import Button from '../ui/Button';
 
 export default function ProfileEditModal({
   open,
@@ -14,15 +14,15 @@ export default function ProfileEditModal({
 }: ProfileEditModalProps) {
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
-  const [displayName, setDisplayName] = useState(user?.displayName || "");
+  const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [bio, setBio] = useState(
     user?.bio ||
-      "Вітаю всіх! Дякую, що завітали на мою сторінку. Тут ви знайдете мою музику, емоції та натхнення.",
+      'Вітаю всіх! Дякую, що завітали на мою сторінку. Тут ви знайдете мою музику, емоції та натхнення.'
   );
   const [profilePicture, setProfilePicture] = useState(
-    user?.profilePicture && user.profilePicture !== "default-avatar.png"
+    user?.profilePicture && user.profilePicture !== 'default-avatar.png'
       ? user.profilePicture
-      : fallbackAvatar,
+      : fallbackAvatar
   );
   const [coverImage, setCoverImage] = useState(user?.coverImage || fallbackCover);
   const [isSaving, setIsSaving] = useState(false);
@@ -32,15 +32,15 @@ export default function ProfileEditModal({
 
   useEffect(() => {
     if (!open || !user) return;
-    setDisplayName(user.displayName || "");
+    setDisplayName(user.displayName || '');
     setBio(
       user.bio ||
-        "Вітаю всіх! Дякую, що завітали на мою сторінку. Тут ви знайдете мою музику, емоції та натхнення.",
+        'Вітаю всіх! Дякую, що завітали на мою сторінку. Тут ви знайдете мою музику, емоції та натхнення.'
     );
     setProfilePicture(
-      user.profilePicture && user.profilePicture !== "default-avatar.png"
+      user.profilePicture && user.profilePicture !== 'default-avatar.png'
         ? user.profilePicture
-        : fallbackAvatar,
+        : fallbackAvatar
     );
     setCoverImage(user.coverImage || fallbackCover);
   }, [fallbackAvatar, fallbackCover, open, user]);
@@ -62,7 +62,7 @@ export default function ProfileEditModal({
       onClose();
     } catch (err) {
       const apiError = err as { response?: { data?: { message?: string } } };
-      setError(apiError.response?.data?.message ?? "Не вдалося оновити профіль");
+      setError(apiError.response?.data?.message ?? 'Не вдалося оновити профіль');
     } finally {
       setIsSaving(false);
     }
@@ -135,9 +135,7 @@ export default function ProfileEditModal({
 
           <div className="space-y-5">
             <label className="block">
-              <span className="mb-2 block text-[15px] font-semibold text-[#e5f2fc]">
-                Нікнейм
-              </span>
+              <span className="mb-2 block text-[15px] font-semibold text-[#e5f2fc]">Нікнейм</span>
               <input
                 value={displayName}
                 onChange={(event) => setDisplayName(event.target.value)}
@@ -146,9 +144,7 @@ export default function ProfileEditModal({
             </label>
 
             <label className="block">
-              <span className="mb-2 block text-[15px] font-semibold text-[#e5f2fc]">
-                Опис
-              </span>
+              <span className="mb-2 block text-[15px] font-semibold text-[#e5f2fc]">Опис</span>
               <textarea
                 value={bio}
                 onChange={(event) => setBio(event.target.value)}

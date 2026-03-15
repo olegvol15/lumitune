@@ -11,7 +11,10 @@ export const search = async (req: Request, res: Response) => {
     const result = await searchService.search(query, page, limit);
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    return res.status(500).json({ success: false, message: getErrorMessage(error, 'Error searching') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error searching') });
   }
 };

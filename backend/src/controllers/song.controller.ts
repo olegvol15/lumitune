@@ -24,8 +24,11 @@ export const uploadSong = async (req: AuthRequest, res: Response) => {
     });
     res.status(201).json({ success: true, song });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    res.status(500).json({ success: false, message: getErrorMessage(error, 'Error uploading song') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error uploading song') });
   }
 };
 
@@ -34,8 +37,11 @@ export const getAllSongs = async (req: Request, res: Response) => {
     const { songs, pagination } = await songService.listSongs(req.query);
     res.status(200).json({ success: true, songs, pagination });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    res.status(500).json({ success: false, message: getErrorMessage(error, 'Error fetching songs') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error fetching songs') });
   }
 };
 
@@ -44,8 +50,11 @@ export const getSongById = async (req: Request, res: Response) => {
     const { song } = await songService.getSongById(String(req.params.id));
     res.status(200).json({ success: true, song });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    res.status(500).json({ success: false, message: getErrorMessage(error, 'Error fetching song') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error fetching song') });
   }
 };
 
@@ -56,13 +65,16 @@ export const streamSong = async (req: AuthRequest, res: Response) => {
     const { statusCode, headers, stream } = await songService.streamSong(
       String(req.params.id),
       req.headers.range,
-      userId,
+      userId
     );
     res.writeHead(statusCode, headers);
     stream.pipe(res);
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    res.status(500).json({ success: false, message: getErrorMessage(error, 'Error streaming song') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error streaming song') });
   }
 };
 
@@ -81,8 +93,11 @@ export const uploadSongByAdmin = async (req: Request, res: Response) => {
 
     res.status(201).json({ success: true, song });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    res.status(500).json({ success: false, message: getErrorMessage(error, 'Error uploading song') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error uploading song') });
   }
 };
 
@@ -95,8 +110,11 @@ export const updateSongByAdmin = async (req: Request, res: Response) => {
     });
     res.status(200).json({ success: true, song });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    res.status(500).json({ success: false, message: getErrorMessage(error, 'Error updating song') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error updating song') });
   }
 };
 
@@ -105,7 +123,10 @@ export const deleteSongByAdmin = async (req: Request, res: Response) => {
     await songService.deleteSong(String(req.params.id));
     res.status(200).json({ success: true, message: 'Song deleted successfully' });
   } catch (error) {
-    if (error instanceof ServiceError) return res.status(error.status).json({ success: false, message: error.message });
-    res.status(500).json({ success: false, message: getErrorMessage(error, 'Error deleting song') });
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error deleting song') });
   }
 };

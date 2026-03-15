@@ -41,9 +41,17 @@ export const searchService = {
     };
 
     const [songs, totalSongs, playlists, totalPlaylists] = await Promise.all([
-      Song.find(songFilter).populate('uploadedBy', 'username').skip(skip).limit(limit).sort({ plays: -1 }),
+      Song.find(songFilter)
+        .populate('uploadedBy', 'username')
+        .skip(skip)
+        .limit(limit)
+        .sort({ plays: -1 }),
       Song.countDocuments(songFilter),
-      Playlist.find(playlistFilter).populate('owner', 'username').skip(skip).limit(limit).sort({ updatedAt: -1 }),
+      Playlist.find(playlistFilter)
+        .populate('owner', 'username')
+        .skip(skip)
+        .limit(limit)
+        .sort({ updatedAt: -1 }),
       Playlist.countDocuments(playlistFilter),
     ]);
 

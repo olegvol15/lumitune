@@ -17,9 +17,21 @@ export const registerSchema = z.object({
     .min(1, 'Display name is required')
     .max(50, 'Display name cannot exceed 50 characters'),
   dateOfBirth: z.object({
-    day: z.number().int().min(1, 'Day must be between 1 and 31').max(31, 'Day must be between 1 and 31'),
-    month: z.number().int().min(1, 'Month must be between 1 and 12').max(12, 'Month must be between 1 and 12'),
-    year: z.number().int().min(1900, 'Invalid year').max(currentYear, 'Year cannot be in the future'),
+    day: z
+      .number()
+      .int()
+      .min(1, 'Day must be between 1 and 31')
+      .max(31, 'Day must be between 1 and 31'),
+    month: z
+      .number()
+      .int()
+      .min(1, 'Month must be between 1 and 12')
+      .max(12, 'Month must be between 1 and 12'),
+    year: z
+      .number()
+      .int()
+      .min(1900, 'Invalid year')
+      .max(currentYear, 'Year cannot be in the future'),
   }),
   country: z.string().min(1, 'Country is required').max(100),
   city: z.string().min(1, 'City is required').max(100),

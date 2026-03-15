@@ -1,12 +1,12 @@
-import { useRef } from "react";
-import { formatDuration } from "../../utils/format";
-import type { ProgressBarProps } from "../../types/props/component-props.types";
+import { useRef } from 'react';
+import { formatDuration } from '../../utils/format';
+import type { ProgressBarProps } from '../../types/props/component-props.types';
 
 export default function ProgressBar({
   progress,
   onSeek,
   duration,
-  className = "",
+  className = '',
 }: ProgressBarProps) {
   const barRef = useRef<HTMLDivElement>(null);
 
@@ -35,9 +35,7 @@ export default function ProgressBar({
       </div>
       {duration !== undefined && (
         <div className="flex justify-between mt-1">
-          <span className="text-xs text-muted">
-            {formatDuration(progress * duration)}
-          </span>
+          <span className="text-xs text-muted">{formatDuration(progress * duration)}</span>
           <span className="text-xs text-muted">{formatDuration(duration)}</span>
         </div>
       )}

@@ -1,5 +1,5 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Button from "../ui/Button";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Button from '../ui/Button';
 
 export default function ProfileSectionArrows() {
   return (

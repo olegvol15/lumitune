@@ -1,6 +1,6 @@
-import { X } from "lucide-react";
-import type { ProfileCreatorModalProps } from "../../types/profile/profile.types";
-import Button from "../ui/Button";
+import { X } from 'lucide-react';
+import type { ProfileCreatorModalProps } from '../../types/profile/profile.types';
+import Button from '../ui/Button';
 
 export default function ProfileCreatorModal({
   title,

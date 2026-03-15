@@ -33,5 +33,5 @@ adminRefreshTokenSchema.index({ adminId: 1 });
 
 export const AdminRefreshToken = mongoose.model<IAdminRefreshToken>(
   'AdminRefreshToken',
-  adminRefreshTokenSchema,
+  adminRefreshTokenSchema
 );

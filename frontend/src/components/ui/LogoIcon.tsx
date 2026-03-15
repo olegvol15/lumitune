@@ -1,4 +1,4 @@
-import type { LogoIconProps } from "../../types/props/component-props.types";
+import type { LogoIconProps } from '../../types/props/component-props.types';
 
 export default function LogoIcon({ className }: LogoIconProps) {
   return (
@@ -104,16 +104,8 @@ export default function LogoIcon({ className }: LogoIconProps) {
           colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="BackgroundImageFix"
-            result="shape"
-          />
-          <feGaussianBlur
-            stdDeviation="14.95"
-            result="effect1_foregroundBlur_2286_34278"
-          />
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+          <feGaussianBlur stdDeviation="14.95" result="effect1_foregroundBlur_2286_34278" />
         </filter>
       </defs>
     </svg>

@@ -1,18 +1,14 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useRouter,
-} from "@tanstack/react-router";
-import { useMemo } from "react";
-import { ChevronLeft, Play, Shuffle, MoreHorizontal } from "lucide-react";
-import { getAlbum } from "../data/albums";
-import { getArtist } from "../data/artists";
-import TrackRow from "../components/ui/TrackRow";
-import { usePlayerStore } from "../store/playerStore";
-import Button from "../components/ui/Button";
-import { useCatalogTracks } from "../hooks/useCatalogTracks";
+import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router';
+import { useMemo } from 'react';
+import { ChevronLeft, Play, Shuffle, MoreHorizontal } from 'lucide-react';
+import { getAlbum } from '../data/albums';
+import { getArtist } from '../data/artists';
+import TrackRow from '../components/ui/TrackRow';
+import { usePlayerStore } from '../store/playerStore';
+import Button from '../components/ui/Button';
+import { useCatalogTracks } from '../hooks/useCatalogTracks';
 
-export const Route = createFileRoute("/album/$id")({
+export const Route = createFileRoute('/album/$id')({
   component: AlbumPage,
 });
 
@@ -46,9 +42,7 @@ function AlbumPage() {
 
   if (!album) {
     return (
-      <div className="flex items-center justify-center h-screen text-muted">
-        Альбом не знайдено
-      </div>
+      <div className="flex items-center justify-center h-screen text-muted">Альбом не знайдено</div>
     );
   }
 
@@ -74,11 +68,7 @@ function AlbumPage() {
     <div className="pb-4">
       {/* Cover header */}
       <div className="relative">
-        <img
-          src={album.coverUrl}
-          alt={album.title}
-          className="w-full aspect-square object-cover"
-        />
+        <img src={album.coverUrl} alt={album.title} className="w-full aspect-square object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-surface" />
 
         <button
@@ -98,9 +88,7 @@ function AlbumPage() {
         <div className="flex items-center gap-2 mt-1">
           {artist && (
             <button
-              onClick={() =>
-                navigate({ to: "/artist/$id", params: { id: artist.id } })
-              }
+              onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
               className="flex items-center gap-1.5"
             >
               <img
@@ -108,17 +96,13 @@ function AlbumPage() {
                 alt={artist.name}
                 className="w-5 h-5 rounded-full object-cover"
               />
-              <span className="text-white text-sm font-medium">
-                {artist.name}
-              </span>
+              <span className="text-white text-sm font-medium">{artist.name}</span>
             </button>
           )}
           <span className="text-muted text-sm">·</span>
           <span className="text-muted text-sm">{album.year}</span>
           <span className="text-muted text-sm">·</span>
-          <span className="text-muted text-sm">
-            {albumTracks.length} треків
-          </span>
+          <span className="text-muted text-sm">{albumTracks.length} треків</span>
           <span className="text-muted text-sm">·</span>
           <span className="text-muted text-sm">{fmtTotal(totalDuration)}</span>
         </div>
@@ -134,10 +118,7 @@ function AlbumPage() {
           >
             Відтворити
           </Button>
-          <button
-            onClick={shufflePlay}
-            className="p-2.5 bg-surface-alt rounded-full"
-          >
+          <button onClick={shufflePlay} className="p-2.5 bg-surface-alt rounded-full">
             <Shuffle size={18} className="text-white" />
           </button>
         </div>
@@ -145,13 +126,7 @@ function AlbumPage() {
         {/* Track list */}
         <div className="space-y-1">
           {albumTracks.map((t, i) => (
-            <TrackRow
-              key={t.id}
-              track={t}
-              index={i}
-              queue={albumTracks}
-              showIndex
-            />
+            <TrackRow key={t.id} track={t} index={i} queue={albumTracks} showIndex />
           ))}
         </div>
 
@@ -166,9 +141,7 @@ function AlbumPage() {
             <div>
               <p className="text-muted text-xs">Виконавець</p>
               <button
-                onClick={() =>
-                  navigate({ to: "/artist/$id", params: { id: artist.id } })
-                }
+                onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
                 className="text-white font-semibold hover:text-brand transition-colors"
               >
                 {artist.name}

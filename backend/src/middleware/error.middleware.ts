@@ -17,7 +17,7 @@ export const errorHandler = (
     const message = 'Resource not found';
     return res.status(404).json({
       success: false,
-      message
+      message,
     });
   }
 
@@ -26,21 +26,23 @@ export const errorHandler = (
     const message = 'Duplicate field value entered';
     return res.status(400).json({
       success: false,
-      message
+      message,
     });
   }
 
   // Mongoose validation error
   if (err.name === 'ValidationError') {
-    const message = Object.values((err as any).errors).map((val: any) => val.message).join(', ');
+    const message = Object.values((err as any).errors)
+      .map((val: any) => val.message)
+      .join(', ');
     return res.status(400).json({
       success: false,
-      message
+      message,
     });
   }
 
   res.status(err.status || 500).json({
     success: false,
-    message: err.message || 'Server Error'
+    message: err.message || 'Server Error',
   });
 };

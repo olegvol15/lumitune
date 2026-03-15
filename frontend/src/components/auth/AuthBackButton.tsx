@@ -1,5 +1,5 @@
-import type { AuthBackButtonProps } from "../../types/auth/auth-component.types";
-import Button from "../ui/Button";
+import type { AuthBackButtonProps } from '../../types/auth/auth-component.types';
+import Button from '../ui/Button';
 
 export default function AuthBackButton({ onBack }: AuthBackButtonProps) {
   return (

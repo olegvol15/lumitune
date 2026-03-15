@@ -1,9 +1,9 @@
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import MediaCard from "../ui/MediaCard";
-import type { Track } from "../../types";
-import { isAlbum } from "../../utils/typeGuards";
-import type { HorizontalSectionProps } from "../../types/props/component-props.types";
+import { useRef } from 'react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import MediaCard from '../ui/MediaCard';
+import type { Track } from '../../types';
+import { isAlbum } from '../../utils/typeGuards';
+import type { HorizontalSectionProps } from '../../types/props/component-props.types';
 
 export default function HorizontalSection({
   title,
@@ -13,18 +13,17 @@ export default function HorizontalSection({
 }: HorizontalSectionProps) {
   const rowRef = useRef<HTMLDivElement>(null);
 
-  const scroll = (dir: "left" | "right") => {
+  const scroll = (dir: 'left' | 'right') => {
     if (!rowRef.current) return;
     rowRef.current.scrollBy({
-      left: dir === "right" ? 168 : -168,
-      behavior: "smooth",
+      left: dir === 'right' ? 168 : -168,
+      behavior: 'smooth',
     });
   };
 
   const accentIdx = title.indexOf(accentWord);
   const before = accentIdx > -1 ? title.slice(0, accentIdx) : title;
-  const after =
-    accentIdx > -1 ? title.slice(accentIdx + accentWord.length) : "";
+  const after = accentIdx > -1 ? title.slice(accentIdx + accentWord.length) : '';
 
   return (
     <section className="mb-10">
@@ -36,13 +35,13 @@ export default function HorizontalSection({
         </h2>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => scroll("left")}
+            onClick={() => scroll('left')}
             className="w-7 h-7 rounded-full border border-[#1a3050] flex items-center justify-center text-white/50 hover:text-white hover:border-[#1CA2EA] transition-colors"
           >
             <ChevronLeft size={13} />
           </button>
           <button
-            onClick={() => scroll("right")}
+            onClick={() => scroll('right')}
             className="w-7 h-7 rounded-full border border-[#1a3050] flex items-center justify-center text-white/50 hover:text-white hover:border-[#1CA2EA] transition-colors"
           >
             <ChevronRight size={13} />
@@ -50,10 +49,7 @@ export default function HorizontalSection({
         </div>
       </div>
 
-      <div
-        ref={rowRef}
-        className="flex gap-3 overflow-x-auto pb-2 scrollbar-none"
-      >
+      <div ref={rowRef} className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
         {items.slice(0, 5).map((item) => {
           if (isAlbum(item)) {
             return (

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
 export type CreatorTrack = {
   id: string;
@@ -20,7 +20,7 @@ export type CreatorAlbum = {
   trackIds: string[];
 };
 
-export type TrackModalMode = "create" | "edit";
+export type TrackModalMode = 'create' | 'edit';
 
 export type TrackModalState =
   | { open: false; trackId?: undefined }

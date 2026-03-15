@@ -1,36 +1,36 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import LogoIcon from "../../components/ui/LogoIcon";
-import { useAdminAuthStore } from "../../store/adminAuthStore";
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import LogoIcon from '../../components/ui/LogoIcon';
+import { useAdminAuthStore } from '../../store/adminAuthStore';
 
-export const Route = createFileRoute("/admin/signup")({
+export const Route = createFileRoute('/admin/signup')({
   component: AdminSignupPage,
 });
 
 function AdminSignupPage() {
   const navigate = useNavigate();
   const signup = useAdminAuthStore((s) => s.signup);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeat, setRepeat] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeat, setRepeat] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     if (password !== repeat) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
     setLoading(true);
     const result = await signup(email, password);
     if (result.ok) {
-      navigate({ to: "/admin/login" });
+      navigate({ to: '/admin/login' });
       return;
     }
 
-    setError(result.error ?? "Something went wrong");
+    setError(result.error ?? 'Something went wrong');
     setLoading(false);
   };
 
@@ -43,9 +43,7 @@ function AdminSignupPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-white text-sm font-medium mb-1.5">
-              Email Address
-            </label>
+            <label className="block text-white text-sm font-medium mb-1.5">Email Address</label>
             <input
               type="email"
               placeholder="admin@gmail.com"
@@ -58,9 +56,7 @@ function AdminSignupPage() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-white text-sm font-medium mb-1.5">
-              Password
-            </label>
+            <label className="block text-white text-sm font-medium mb-1.5">Password</label>
             <input
               type="password"
               placeholder="••••••••••••••••••"
@@ -73,9 +69,7 @@ function AdminSignupPage() {
           </div>
 
           <div className="mb-5">
-            <label className="block text-white text-sm font-medium mb-1.5">
-              Repeat Password
-            </label>
+            <label className="block text-white text-sm font-medium mb-1.5">Repeat Password</label>
             <input
               type="password"
               placeholder="••••••••••••••••••"
@@ -87,9 +81,7 @@ function AdminSignupPage() {
             />
           </div>
 
-          {error && (
-            <p className="text-red-400 text-xs mb-3 text-center">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-xs mb-3 text-center">{error}</p>}
 
           <button
             type="submit"
@@ -99,17 +91,14 @@ function AdminSignupPage() {
             {loading ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              "Sign Up"
+              'Sign Up'
             )}
           </button>
         </form>
 
         <div className="mt-4 text-center text-xs text-[#5a6a82]">
-          Already have an account?{" "}
-          <Link
-            to="/admin/login"
-            className="text-[#4a7ea0] hover:text-white transition-colors"
-          >
+          Already have an account?{' '}
+          <Link to="/admin/login" className="text-[#4a7ea0] hover:text-white transition-colors">
             Log In
           </Link>
         </div>

@@ -31,14 +31,11 @@ const authApi = {
   register: (payload: RegisterPayload) =>
     publicApiClient.post<AuthResponse>('/auth/register', payload),
 
-  refresh: () =>
-    publicApiClient.post<AuthResponse>('/auth/refresh'),
+  refresh: () => publicApiClient.post<AuthResponse>('/auth/refresh'),
 
-  logout: () =>
-    publicApiClient.post('/auth/logout'),
+  logout: () => publicApiClient.post('/auth/logout'),
 
-  me: () =>
-    apiClient.get<MeResponse>('/auth/me'),
+  me: () => apiClient.get<MeResponse>('/auth/me'),
 
   updateProfile: (payload: UpdateProfilePayload) =>
     apiClient.patch<MeResponse>('/auth/me', payload),

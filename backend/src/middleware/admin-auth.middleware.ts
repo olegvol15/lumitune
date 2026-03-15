@@ -3,11 +3,7 @@ import { verifyAdminToken } from '../utils/admin-jwt.utils';
 import { Admin } from '../models/admin.model';
 import { AdminAuthRequest } from '../types/admin/admin-auth.types';
 
-export const protectAdmin = async (
-  req: AdminAuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
+export const protectAdmin = async (req: AdminAuthRequest, res: Response, next: NextFunction) => {
   try {
     const authorization = req.headers.authorization;
     if (!authorization?.startsWith('Bearer ')) {

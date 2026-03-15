@@ -12,7 +12,11 @@ const createTransporter = () => {
   });
 };
 
-export const sendPasswordResetEmail = async (to: string, code: string, isAdmin = false): Promise<void> => {
+export const sendPasswordResetEmail = async (
+  to: string,
+  code: string,
+  isAdmin = false
+): Promise<void> => {
   const transporter = createTransporter();
   const role = isAdmin ? 'Admin' : '';
   const appName = process.env.APP_NAME || 'LumiTune';

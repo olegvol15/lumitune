@@ -1,6 +1,6 @@
-import { Pencil, Settings } from "lucide-react";
-import type { ProfileHeroActionsProps } from "../../types/profile/profile.types";
-import Button from "../ui/Button";
+import { Pencil, Settings } from 'lucide-react';
+import type { ProfileHeroActionsProps } from '../../types/profile/profile.types';
+import Button from '../ui/Button';
 
 export default function ProfileHeroActions({
   onEditProfile,

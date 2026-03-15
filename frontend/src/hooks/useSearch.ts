@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
-import { artists } from "../data/artists";
-import { albums } from "../data/albums";
-import type { Track } from "../types";
+import { useMemo, useState } from 'react';
+import { artists } from '../data/artists';
+import { albums } from '../data/albums';
+import type { Track } from '../types';
 
 export function useSearch(tracks: Track[]) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
 
   const results = useMemo(() => {
     const q = query.toLowerCase().trim();
@@ -15,25 +15,22 @@ export function useSearch(tracks: Track[]) {
         (t) =>
           t.title.toLowerCase().includes(q) ||
           t.artistName.toLowerCase().includes(q) ||
-          t.albumTitle.toLowerCase().includes(q),
+          t.albumTitle.toLowerCase().includes(q)
       ),
       artists: artists.filter(
-        (a) =>
-          a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q),
+        (a) => a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q)
       ),
       albums: albums.filter(
         (a) =>
           a.title.toLowerCase().includes(q) ||
           a.artistName.toLowerCase().includes(q) ||
-          a.genre.toLowerCase().includes(q),
+          a.genre.toLowerCase().includes(q)
       ),
     };
   }, [query]);
 
   const hasResults =
-    results.tracks.length > 0 ||
-    results.artists.length > 0 ||
-    results.albums.length > 0;
+    results.tracks.length > 0 || results.artists.length > 0 || results.albums.length > 0;
 
   return { query, setQuery, results, hasResults };
 }

@@ -3,11 +3,7 @@ import { verifyToken } from '../utils/jwt.utils';
 import { User } from '../models/user.model';
 import { AuthRequest } from '../types/auth/auth.types';
 
-export const protect = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     let token: string | undefined;
 
@@ -16,9 +12,9 @@ export const protect = async (
     }
 
     if (!token) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: 'Not authorized to access this route' 
+        message: 'Not authorized to access this route',
       });
     }
 
@@ -27,20 +23,20 @@ export const protect = async (
 
     // Get user from token
     const user = await User.findById(decoded.id).select('-password');
-    
+
     if (!user) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: 'User not found' 
+        message: 'User not found',
       });
     }
 
     req.user = user;
     next();
   } catch (error) {
-    return res.status(401).json({ 
+    return res.status(401).json({
       success: false,
-      message: 'Not authorized to access this route' 
+      message: 'Not authorized to access this route',
     });
   }
 };

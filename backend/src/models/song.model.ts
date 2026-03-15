@@ -5,46 +5,46 @@ const songSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, 'Song title is required'],
-    trim: true
+    trim: true,
   },
   artist: {
     type: String,
     required: [true, 'Artist name is required'],
-    trim: true
+    trim: true,
   },
   album: {
     type: String,
-    trim: true
+    trim: true,
   },
   genre: {
     type: String,
-    trim: true
+    trim: true,
   },
   duration: {
     type: Number,
-    required: true
+    required: true,
   },
   filePath: {
     type: String,
-    required: true
+    required: true,
   },
   coverImage: {
     type: String,
-    default: 'default-album-cover.jpg'
+    default: 'default-album-cover.jpg',
   },
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: false
+    required: false,
   },
   plays: {
     type: Number,
-    default: 0
+    default: 0,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 // Create indexes for better query performance

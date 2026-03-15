@@ -1,12 +1,10 @@
-import type { AuthBottomLinkProps } from "../../types/auth/auth-component.types";
-import Button from "../ui/Button";
+import type { AuthBottomLinkProps } from '../../types/auth/auth-component.types';
+import Button from '../ui/Button';
 
-export default function AuthBottomLink({
-  onNavigateToSignIn,
-}: AuthBottomLinkProps) {
+export default function AuthBottomLink({ onNavigateToSignIn }: AuthBottomLinkProps) {
   return (
     <p className="mt-4 text-center text-[15px] text-[#769CCF]">
-      Згадали пароль?{" "}
+      Згадали пароль?{' '}
       <Button
         variant="ghost"
         size="sm"

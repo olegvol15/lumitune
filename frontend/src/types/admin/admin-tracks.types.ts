@@ -50,7 +50,7 @@ export interface AdminTracksStore {
   saveTrack: (
     track: AdminTrack,
     audioFile?: File | null,
-    coverFile?: File | null,
+    coverFile?: File | null
   ) => Promise<{ ok: boolean; error?: string }>;
   deleteTrack: (id: string) => Promise<{ ok: boolean; error?: string }>;
   deleteSelected: () => Promise<{ ok: boolean; error?: string }>;

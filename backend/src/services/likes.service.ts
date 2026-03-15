@@ -8,11 +8,7 @@ export const likesService = {
     const skip = (page - 1) * limit;
 
     const [records, total] = await Promise.all([
-      LikedSong.find({ userId })
-        .sort({ likedAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .populate('songId'),
+      LikedSong.find({ userId }).sort({ likedAt: -1 }).skip(skip).limit(limit).populate('songId'),
       LikedSong.countDocuments({ userId }),
     ]);
 
@@ -31,11 +27,7 @@ export const likesService = {
       throw new ServiceError(404, 'Song not found');
     }
 
-    await LikedSong.findOneAndUpdate(
-      { userId, songId },
-      { likedAt: new Date() },
-      { upsert: true },
-    );
+    await LikedSong.findOneAndUpdate({ userId, songId }, { likedAt: new Date() }, { upsert: true });
 
     return { liked: true };
   },

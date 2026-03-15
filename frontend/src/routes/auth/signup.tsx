@@ -1,49 +1,49 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Eye, EyeOff, ChevronDown } from "lucide-react";
-import { FaFacebook, FaApple } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import AuthLogo from "../../components/auth/AuthLogo";
-import Button from "../../components/ui/Button";
-import StepBar from "../../components/ui/StepBar";
-import PasswordRequirement from "../../components/ui/PasswordRequirement";
-import authApi from "../../api/authApi";
-import { useAuthStore } from "../../store/authStore";
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Eye, EyeOff, ChevronDown } from 'lucide-react';
+import { FaFacebook, FaApple } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import AuthLogo from '../../components/auth/AuthLogo';
+import Button from '../../components/ui/Button';
+import StepBar from '../../components/ui/StepBar';
+import PasswordRequirement from '../../components/ui/PasswordRequirement';
+import authApi from '../../api/authApi';
+import { useAuthStore } from '../../store/authStore';
 
-export const Route = createFileRoute("/auth/signup")({
+export const Route = createFileRoute('/auth/signup')({
   beforeLoad: () => {
-    if (useAuthStore.getState().isAuthenticated) throw redirect({ to: "/" });
+    if (useAuthStore.getState().isAuthenticated) throw redirect({ to: '/' });
   },
   component: SignUpPage,
 });
 
 const socialButtons = [
   {
-    id: "facebook",
+    id: 'facebook',
     icon: <FaFacebook size={22} color="#1877F2" />,
-    label: "Увійти з Facebook",
+    label: 'Увійти з Facebook',
   },
-  { id: "google", icon: <FcGoogle size={22} />, label: "Увійти з Google" },
+  { id: 'google', icon: <FcGoogle size={22} />, label: 'Увійти з Google' },
   {
-    id: "apple",
+    id: 'apple',
     icon: <FaApple size={22} color="#fff" />,
-    label: "Увійти з Apple",
+    label: 'Увійти з Apple',
   },
 ];
 
 const MONTHS = [
-  "Січень",
-  "Лютий",
-  "Березень",
-  "Квітень",
-  "Травень",
-  "Червень",
-  "Липень",
-  "Серпень",
-  "Вересень",
-  "Жовтень",
-  "Листопад",
-  "Грудень",
+  'Січень',
+  'Лютий',
+  'Березень',
+  'Квітень',
+  'Травень',
+  'Червень',
+  'Липень',
+  'Серпень',
+  'Вересень',
+  'Жовтень',
+  'Листопад',
+  'Грудень',
 ];
 
 function SignUpPage() {
@@ -51,20 +51,20 @@ function SignUpPage() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
 
   // Step 0
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
   // Step 1
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
 
   // Step 2
-  const [name, setName] = useState("");
-  const [dobYear, setDobYear] = useState("");
-  const [dobMonth, setDobMonth] = useState("");
-  const [dobDay, setDobDay] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
-  const [role, setRole] = useState<"user" | "creator">("user");
+  const [name, setName] = useState('');
+  const [dobYear, setDobYear] = useState('');
+  const [dobMonth, setDobMonth] = useState('');
+  const [dobDay, setDobDay] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [role, setRole] = useState<'user' | 'creator'>('user');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,9 +74,9 @@ function SignUpPage() {
   const passwordValid = hasLetter && hasNumberOrSpecial && hasLength;
 
   const usernameFromEmail = (value: string) => {
-    const localPart = value.split("@")[0] ?? "user";
-    const normalized = localPart.replace(/[^a-zA-Z0-9_]/g, "_").replace(/_+/g, "_");
-    return (normalized || "user").slice(0, 30);
+    const localPart = value.split('@')[0] ?? 'user';
+    const normalized = localPart.replace(/[^a-zA-Z0-9_]/g, '_').replace(/_+/g, '_');
+    return (normalized || 'user').slice(0, 30);
   };
 
   const handleFinalSubmit = async () => {
@@ -98,10 +98,10 @@ function SignUpPage() {
         role,
       });
       useAuthStore.getState().setSession(data.accessToken, data.user);
-      navigate({ to: "/" });
+      navigate({ to: '/' });
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
-      setError(axiosErr.response?.data?.message ?? "Помилка реєстрації");
+      setError(axiosErr.response?.data?.message ?? 'Помилка реєстрації');
     } finally {
       setLoading(false);
     }
@@ -112,7 +112,7 @@ function SignUpPage() {
     return (
       <div className="auth-page-bg min-h-screen px-4 py-6 sm:py-8 flex flex-col sm:items-center sm:justify-center">
         <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
-          <AuthLogo heading={"Пориньте вперше\nу LumiTune"} />
+          <AuthLogo heading={'Пориньте вперше\nу LumiTune'} />
 
           <form
             onSubmit={(e) => {
@@ -122,9 +122,7 @@ function SignUpPage() {
             className="space-y-3.5"
           >
             <div>
-              <label className="text-[#D4E3F7] text-sm mb-1.5 block">
-                Електронна пошта
-              </label>
+              <label className="text-[#D4E3F7] text-sm mb-1.5 block">Електронна пошта</label>
               <input
                 type="email"
                 value={email}
@@ -134,13 +132,7 @@ function SignUpPage() {
                 className="w-full auth-input rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-brand/45 text-[15px]"
               />
             </div>
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              shape="rect"
-              fullWidth
-            >
+            <Button type="submit" variant="primary" size="lg" shape="rect" fullWidth>
               Далі
             </Button>
           </form>
@@ -160,9 +152,7 @@ function SignUpPage() {
                 shape="rect"
                 fullWidth
                 leftIcon={
-                  <div className="w-7 flex flex-col sm:items-center sm:justify-center">
-                    {icon}
-                  </div>
+                  <div className="w-7 flex flex-col sm:items-center sm:justify-center">{icon}</div>
                 }
               >
                 <span className="flex-1 text-center">{label}</span>
@@ -173,12 +163,12 @@ function SignUpPage() {
           <div className="auth-muted-line mt-6 mb-5" />
 
           <p className="text-center text-[#769CCF] text-[15px]">
-            Є аккаунт?{" "}
+            Є аккаунт?{' '}
             <Button
               variant="ghost"
               size="sm"
               shape="pill"
-              onClick={() => navigate({ to: "/auth/signin" })}
+              onClick={() => navigate({ to: '/auth/signin' })}
               className="text-[#8AB8F0] font-semibold underline underline-offset-4 !px-0"
             >
               Увійдіть до нього
@@ -205,20 +195,16 @@ function SignUpPage() {
 
           <div className="flex flex-col items-center">
             <AuthLogo heading="" />
-            <p className="text-[#E8EEF8] text-[20px] font-bold -mt-4">
-              Створіть профіль
-            </p>
+            <p className="text-[#E8EEF8] text-[20px] font-bold -mt-4">Створіть профіль</p>
             <p className="text-[#769CCF] text-sm mt-0.5 mb-2">Крок 1 із 2</p>
             <StepBar currentStep={1} totalSteps={2} />
           </div>
 
           <div className="mt-4 mb-4">
-            <label className="text-[#D4E3F7] text-sm mb-1.5 block">
-              Пароль
-            </label>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Пароль</label>
             <div className="relative">
               <input
-                type={showPwd ? "text" : "password"}
+                type={showPwd ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="************"
@@ -280,9 +266,7 @@ function SignUpPage() {
 
         <div className="flex flex-col items-center">
           <AuthLogo heading="" />
-          <p className="text-[#E8EEF8] text-[20px] font-bold -mt-4">
-            Створіть профіль
-          </p>
+          <p className="text-[#E8EEF8] text-[20px] font-bold -mt-4">Створіть профіль</p>
           <p className="text-[#769CCF] text-sm mt-0.5 mb-2">Крок 2 із 2</p>
           <StepBar currentStep={2} totalSteps={2} />
         </div>
@@ -290,12 +274,8 @@ function SignUpPage() {
         <div className="space-y-4 mt-4">
           {/* Name */}
           <div>
-            <label className="text-[#D4E3F7] text-sm font-medium block mb-0.5">
-              Ім&apos;я
-            </label>
-            <p className="text-[#769CCF] text-xs mb-1.5">
-              Це ім'я відображатиметься в профілі
-            </p>
+            <label className="text-[#D4E3F7] text-sm font-medium block mb-0.5">Ім&apos;я</label>
+            <p className="text-[#769CCF] text-xs mb-1.5">Це ім'я відображатиметься в профілі</p>
             <input
               type="text"
               value={name}
@@ -311,10 +291,8 @@ function SignUpPage() {
               Дата народження
             </label>
             <p className="text-[#769CCF] text-xs mb-0.5">
-              Для чого нам потрібна ваша дата народження?{" "}
-              <span className="text-[#8AB8F0] underline cursor-pointer">
-                Докладніше
-              </span>
+              Для чого нам потрібна ваша дата народження?{' '}
+              <span className="text-[#8AB8F0] underline cursor-pointer">Докладніше</span>
             </p>
             <div className="flex gap-2 mt-1.5">
               <input
@@ -362,16 +340,12 @@ function SignUpPage() {
               Регіон проживання
             </label>
             <p className="text-[#769CCF] text-xs mb-0.5">
-              Для чого нам потрібна ваше місце проживання?{" "}
-              <span className="text-[#8AB8F0] underline cursor-pointer">
-                Докладніше
-              </span>
+              Для чого нам потрібна ваше місце проживання?{' '}
+              <span className="text-[#8AB8F0] underline cursor-pointer">Докладніше</span>
             </p>
             <div className="flex gap-2 mt-1.5">
               <div className="relative flex-1">
-                <label className="text-[#A8C4E0] text-xs mb-1 block">
-                  Країна
-                </label>
+                <label className="text-[#A8C4E0] text-xs mb-1 block">Країна</label>
                 <select
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
@@ -391,9 +365,7 @@ function SignUpPage() {
                 />
               </div>
               <div className="relative flex-1">
-                <label className="text-[#A8C4E0] text-xs mb-1 block">
-                  Місто
-                </label>
+                <label className="text-[#A8C4E0] text-xs mb-1 block">Місто</label>
                 <select
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -417,26 +389,19 @@ function SignUpPage() {
 
           {/* Role */}
           <div>
-            <label className="text-[#D4E3F7] text-sm font-medium block mb-2">
-              Хто ви?
-            </label>
+            <label className="text-[#D4E3F7] text-sm font-medium block mb-2">Хто ви?</label>
             <div className="space-y-2">
               {(
                 [
-                  { value: "user", label: "Я звичайний користувач" },
-                  { value: "creator", label: "Я автор пісень" },
+                  { value: 'user', label: 'Я звичайний користувач' },
+                  { value: 'creator', label: 'Я автор пісень' },
                 ] as const
               ).map(({ value, label }) => (
-                <label
-                  key={value}
-                  className="flex items-center gap-2.5 cursor-pointer"
-                >
+                <label key={value} className="flex items-center gap-2.5 cursor-pointer">
                   <span
                     onClick={() => setRole(value)}
                     className={`w-4 h-4 rounded-full border flex-shrink-0 transition-colors cursor-pointer ${
-                      role === value
-                        ? "border-[#1CA2EA] bg-[#1CA2EA]"
-                        : "border-[#4A6F9A]"
+                      role === value ? 'border-[#1CA2EA] bg-[#1CA2EA]' : 'border-[#4A6F9A]'
                     }`}
                   />
                   <span className="text-[#A8C4E0] text-[13px]">{label}</span>
@@ -446,9 +411,7 @@ function SignUpPage() {
           </div>
         </div>
 
-        {error && (
-          <p className="text-red-400 text-sm text-center mt-3">{error}</p>
-        )}
+        {error && <p className="text-red-400 text-sm text-center mt-3">{error}</p>}
 
         <Button
           variant="primary"

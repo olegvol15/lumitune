@@ -1,38 +1,38 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import { FaFacebook, FaApple } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import AuthLogo from "../../components/auth/AuthLogo";
-import Button from "../../components/ui/Button";
-import authApi from "../../api/authApi";
-import { useAuthStore } from "../../store/authStore";
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { FaFacebook, FaApple } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import AuthLogo from '../../components/auth/AuthLogo';
+import Button from '../../components/ui/Button';
+import authApi from '../../api/authApi';
+import { useAuthStore } from '../../store/authStore';
 
-export const Route = createFileRoute("/auth/signin")({
+export const Route = createFileRoute('/auth/signin')({
   beforeLoad: () => {
-    if (useAuthStore.getState().isAuthenticated) throw redirect({ to: "/" });
+    if (useAuthStore.getState().isAuthenticated) throw redirect({ to: '/' });
   },
   component: SignInPage,
 });
 
 const socialButtons = [
   {
-    id: "facebook",
+    id: 'facebook',
     icon: <FaFacebook size={22} color="#1877F2" />,
-    label: "Увійти з Facebook",
+    label: 'Увійти з Facebook',
   },
-  { id: "google", icon: <FcGoogle size={22} />, label: "Увійти з Google" },
+  { id: 'google', icon: <FcGoogle size={22} />, label: 'Увійти з Google' },
   {
-    id: "apple",
+    id: 'apple',
     icon: <FaApple size={22} color="#fff" />,
-    label: "Увійти з Apple",
+    label: 'Увійти з Apple',
   },
 ];
 
 function SignInPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,10 +44,10 @@ function SignInPage() {
     try {
       const { data } = await authApi.login(email, password);
       useAuthStore.getState().setSession(data.accessToken, data.user);
-      navigate({ to: "/" });
+      navigate({ to: '/' });
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
-      setError(axiosErr.response?.data?.message ?? "Помилка входу");
+      setError(axiosErr.response?.data?.message ?? 'Помилка входу');
     } finally {
       setLoading(false);
     }
@@ -67,9 +67,7 @@ function SignInPage() {
               shape="rect"
               fullWidth
               leftIcon={
-                <div className="w-7 flex flex-col sm:items-center sm:justify-center">
-                  {icon}
-                </div>
+                <div className="w-7 flex flex-col sm:items-center sm:justify-center">{icon}</div>
               }
             >
               <span className="flex-1 text-center">{label}</span>
@@ -101,7 +99,7 @@ function SignInPage() {
                 variant="ghost"
                 size="sm"
                 type="button"
-                onClick={() => navigate({ to: "/auth/forgot-password" })}
+                onClick={() => navigate({ to: '/auth/forgot-password' })}
                 className="text-[#79A9E4] !px-0 underline"
               >
                 Забули пароль?
@@ -109,7 +107,7 @@ function SignInPage() {
             </div>
             <div className="relative">
               <input
-                type={showPwd ? "text" : "password"}
+                type={showPwd ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="************"
@@ -130,9 +128,7 @@ function SignInPage() {
             </div>
           </div>
 
-          {error && (
-            <p className="text-red-400 text-sm text-center">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
           <Button
             type="submit"
@@ -150,11 +146,11 @@ function SignInPage() {
         <div className="auth-muted-line w-4/5 mx-auto mt-6 mb-5" />
 
         <p className="text-center text-[#769CCF] text-[15px]">
-          Немає акаунта?{" "}
+          Немає акаунта?{' '}
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate({ to: "/auth/signup" })}
+            onClick={() => navigate({ to: '/auth/signup' })}
             className="text-[#8AB8F0] font-semibold underline underline-offset-4 !px-0"
           >
             Реєстрація у LumiTune

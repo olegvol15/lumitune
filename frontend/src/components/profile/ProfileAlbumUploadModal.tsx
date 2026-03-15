@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import type { ProfileAlbumUploadModalProps } from "../../types/profile/profile.types";
-import { fileToDataUrl } from "../../utils/file.utils";
-import { formatDuration } from "../../utils/format";
-import Button from "../ui/Button";
-import SongCoverImage from "../ui/SongCoverImage";
-import ProfileCreatorModal from "./ProfileCreatorModal";
-import ProfileSelectField from "./ProfileSelectField";
-import ProfileUploadZone from "./ProfileUploadZone";
+import { useEffect, useState } from 'react';
+import type { ProfileAlbumUploadModalProps } from '../../types/profile/profile.types';
+import { fileToDataUrl } from '../../utils/file.utils';
+import { formatDuration } from '../../utils/format';
+import Button from '../ui/Button';
+import SongCoverImage from '../ui/SongCoverImage';
+import ProfileCreatorModal from './ProfileCreatorModal';
+import ProfileSelectField from './ProfileSelectField';
+import ProfileUploadZone from './ProfileUploadZone';
 
 export default function ProfileAlbumUploadModal({
   open,
@@ -15,13 +15,13 @@ export default function ProfileAlbumUploadModal({
   onClose,
   onSave,
 }: ProfileAlbumUploadModalProps) {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const [coverImage, setCoverImage] = useState(fallbackCover);
   const [selectedTrackIds, setSelectedTrackIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!open) return;
-    setTitle("");
+    setTitle('');
     setCoverImage(fallbackCover);
     setSelectedTrackIds(tracks[0] ? [tracks[0].id] : []);
   }, [fallbackCover, open, tracks]);
@@ -47,9 +47,7 @@ export default function ProfileAlbumUploadModal({
 
         <div>
           <div className="mb-1.5 flex items-center justify-between">
-            <label className="block text-[11px] font-semibold text-[#d8ecf8]">
-              Додати треки
-            </label>
+            <label className="block text-[11px] font-semibold text-[#d8ecf8]">Додати треки</label>
             <span className="text-[12px] text-[#9ec7df]">+</span>
           </div>
           <div className="space-y-1.5">
@@ -65,16 +63,10 @@ export default function ProfileAlbumUploadModal({
                   className="h-7 w-7 rounded-md object-cover"
                 />
                 <div className="min-w-0">
-                  <div className="truncate text-[10px] font-semibold text-white">
-                    {track.title}
-                  </div>
-                  <div className="truncate text-[8px] text-[#bfd0db]">
-                    {track.artistName}
-                  </div>
+                  <div className="truncate text-[10px] font-semibold text-white">{track.title}</div>
+                  <div className="truncate text-[8px] text-[#bfd0db]">{track.artistName}</div>
                 </div>
-                <span className="text-[9px] text-[#b5c8d7]">
-                  {formatDuration(track.duration)}
-                </span>
+                <span className="text-[9px] text-[#b5c8d7]">{formatDuration(track.duration)}</span>
               </div>
             ))}
           </div>
@@ -120,7 +112,7 @@ export default function ProfileAlbumUploadModal({
             onClick={() =>
               onSave({
                 id: `creator-album-${Date.now()}`,
-                title: title || "Новий альбом",
+                title: title || 'Новий альбом',
                 coverImage,
                 trackIds: selectedTrackIds,
               })

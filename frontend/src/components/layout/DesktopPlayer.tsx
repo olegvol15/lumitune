@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef } from 'react';
 import {
   Heart,
   Plus,
@@ -11,10 +11,10 @@ import {
   Pause,
   SkipForward,
   Maximize2,
-} from "lucide-react";
-import { usePlayerStore } from "../../store/playerStore";
-import { formatDuration } from "../../utils/format";
-import SongCoverImage from "../ui/SongCoverImage";
+} from 'lucide-react';
+import { usePlayerStore } from '../../store/playerStore';
+import { formatDuration } from '../../utils/format';
+import SongCoverImage from '../ui/SongCoverImage';
 
 export default function DesktopPlayer() {
   const {
@@ -64,16 +64,13 @@ export default function DesktopPlayer() {
             {currentTrack.artistName}
           </p>
         </div>
-        <button
-          onClick={toggleLike}
-          className="flex-shrink-0 transition-colors"
-        >
+        <button onClick={toggleLike} className="flex-shrink-0 transition-colors">
           <Heart
             size={16}
             className={
               currentTrack.liked
-                ? "text-[#1CA2EA] fill-[#1CA2EA]"
-                : "text-white/45 hover:text-white"
+                ? 'text-[#1CA2EA] fill-[#1CA2EA]'
+                : 'text-white/45 hover:text-white'
             }
           />
         </button>
@@ -89,18 +86,13 @@ export default function DesktopPlayer() {
           <button
             onClick={toggleRepeat}
             className={`transition-colors ${
-              repeat !== "off"
-                ? "text-[#1CA2EA]"
-                : "text-white/45 hover:text-white"
+              repeat !== 'off' ? 'text-[#1CA2EA]' : 'text-white/45 hover:text-white'
             }`}
           >
-            {repeat === "one" ? <Repeat1 size={15} /> : <Repeat size={15} />}
+            {repeat === 'one' ? <Repeat1 size={15} /> : <Repeat size={15} />}
           </button>
 
-          <button
-            onClick={prev}
-            className="text-white/70 hover:text-white transition-colors"
-          >
+          <button onClick={prev} className="text-white/70 hover:text-white transition-colors">
             <SkipBack size={17} fill="currentColor" />
           </button>
 
@@ -116,17 +108,14 @@ export default function DesktopPlayer() {
             )}
           </button>
 
-          <button
-            onClick={next}
-            className="text-white/70 hover:text-white transition-colors"
-          >
+          <button onClick={next} className="text-white/70 hover:text-white transition-colors">
             <SkipForward size={17} fill="currentColor" />
           </button>
 
           <button
             onClick={toggleShuffle}
             className={`transition-colors ${
-              shuffle ? "text-[#1CA2EA]" : "text-white/45 hover:text-white"
+              shuffle ? 'text-[#1CA2EA]' : 'text-white/45 hover:text-white'
             }`}
           >
             <Shuffle size={15} />

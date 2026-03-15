@@ -135,7 +135,11 @@ export const songService = {
     }
   },
 
-  async streamSong(songId: string, rangeHeader?: string, userId?: string): Promise<StreamSongResult> {
+  async streamSong(
+    songId: string,
+    rangeHeader?: string,
+    userId?: string
+  ): Promise<StreamSongResult> {
     ensureObjectId(songId, 'songId');
 
     const song = await Song.findById(songId);

@@ -1,5 +1,5 @@
-import { Search } from "lucide-react";
-import ProfileSectionArrows from "./ProfileSectionArrows";
+import { Search } from 'lucide-react';
+import ProfileSectionArrows from './ProfileSectionArrows';
 
 export default function ProfileTrackSectionTools() {
   return (

@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Sun, Droplets, Heart, Zap, Music2, ChevronDown } from "lucide-react";
+import { useState } from 'react';
+import { Sun, Droplets, Heart, Zap, Music2, ChevronDown } from 'lucide-react';
 
 const moods = [
-  { id: "happy", icon: Sun, label: "Хепні" },
-  { id: "melancholy", icon: Droplets, label: "Меланхолія" },
-  { id: "romance", icon: Heart, label: "Романтика" },
-  { id: "drive", icon: Zap, label: "Драйв" },
-  { id: "party", icon: Music2, label: "Туса" },
+  { id: 'happy', icon: Sun, label: 'Хепні' },
+  { id: 'melancholy', icon: Droplets, label: 'Меланхолія' },
+  { id: 'romance', icon: Heart, label: 'Романтика' },
+  { id: 'drive', icon: Zap, label: 'Драйв' },
+  { id: 'party', icon: Music2, label: 'Туса' },
 ];
 
 export default function MoodSection() {
@@ -16,8 +16,7 @@ export default function MoodSection() {
     <section className="mb-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-white font-bold text-xl">
-          Саундреки на основі твого{" "}
-          <span className="text-[#1CA2EA]">настрою</span>
+          Саундреки на основі твого <span className="text-[#1CA2EA]">настрою</span>
         </h2>
         <button className="flex items-center gap-1.5 text-white/60 text-sm border border-[#1a3050] rounded-full px-4 py-1.5 hover:border-[#1CA2EA]/60 hover:text-white/80 transition-colors">
           Настрій
@@ -38,18 +37,18 @@ export default function MoodSection() {
               <div
                 className={`w-24 h-24 rounded-full border-2 border-[#1CA2EA] bg-[#071220] flex items-center justify-center transition-all ${
                   isActive
-                    ? "shadow-[0_0_20px_rgba(28,162,234,0.6),inset_0_0_20px_rgba(28,162,234,0.15)]"
-                    : "shadow-[0_0_10px_rgba(28,162,234,0.25),inset_0_0_10px_rgba(28,162,234,0.08)]"
+                    ? 'shadow-[0_0_20px_rgba(28,162,234,0.6),inset_0_0_20px_rgba(28,162,234,0.15)]'
+                    : 'shadow-[0_0_10px_rgba(28,162,234,0.25),inset_0_0_10px_rgba(28,162,234,0.08)]'
                 }`}
               >
                 <Icon
                   size={34}
-                  className={`transition-colors ${isActive ? "text-[#1CA2EA]" : "text-[#5bb8e8]"}`}
+                  className={`transition-colors ${isActive ? 'text-[#1CA2EA]' : 'text-[#5bb8e8]'}`}
                 />
               </div>
               <span
                 className={`text-sm font-medium transition-colors ${
-                  isActive ? "text-white" : "text-white/70"
+                  isActive ? 'text-white' : 'text-white/70'
                 }`}
               >
                 {label}

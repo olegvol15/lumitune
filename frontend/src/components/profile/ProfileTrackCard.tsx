@@ -1,13 +1,9 @@
-import { Pencil } from "lucide-react";
-import type { ProfileTrackCardProps } from "../../types/profile/profile.types";
-import Button from "../ui/Button";
-import SongCoverImage from "../ui/SongCoverImage";
+import { Pencil } from 'lucide-react';
+import type { ProfileTrackCardProps } from '../../types/profile/profile.types';
+import Button from '../ui/Button';
+import SongCoverImage from '../ui/SongCoverImage';
 
-export default function ProfileTrackCard({
-  track,
-  onPlay,
-  onEdit,
-}: ProfileTrackCardProps) {
+export default function ProfileTrackCard({ track, onPlay, onEdit }: ProfileTrackCardProps) {
   return (
     <div className="group relative">
       <button type="button" onClick={onPlay} className="w-full text-left">

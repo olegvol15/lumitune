@@ -2,7 +2,7 @@
 export function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
+  return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
 /** Formats seconds as "X год. Y хв." — used for podcast/audiobook durations */
@@ -22,5 +22,5 @@ export function formatPlayCount(n: number): string {
 
 /** Formats a listener count with Ukrainian locale thousands separator */
 export function formatListeners(count: number): string {
-  return count.toLocaleString("uk-UA");
+  return count.toLocaleString('uk-UA');
 }

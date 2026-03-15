@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import type { PlaylistStore } from "../types/store/store.types";
+import { create } from 'zustand';
+import type { PlaylistStore } from '../types/store/store.types';
 
 export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
   playlists: [],
@@ -17,7 +17,7 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
       playlists: s.playlists.map((p) =>
         p.id === playlistId && !p.trackIds.includes(trackId)
           ? { ...p, trackIds: [...p.trackIds, trackId] }
-          : p,
+          : p
       ),
     }));
   },
@@ -25,9 +25,7 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
   removeTrack: (playlistId, trackId) => {
     set((s) => ({
       playlists: s.playlists.map((p) =>
-        p.id === playlistId
-          ? { ...p, trackIds: p.trackIds.filter((id) => id !== trackId) }
-          : p,
+        p.id === playlistId ? { ...p, trackIds: p.trackIds.filter((id) => id !== trackId) } : p
       ),
     }));
   },

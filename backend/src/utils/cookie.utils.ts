@@ -17,7 +17,9 @@ const parseCookieHeader = (header?: string): Record<string, string> => {
 const getCookieSecure = (): boolean => process.env.NODE_ENV === 'production';
 
 const getRefreshCookieMaxAgeMs = (envKey: string, fallbackKey?: string): number => {
-  const days = Number(process.env[envKey] || (fallbackKey ? process.env[fallbackKey] : undefined) || 30);
+  const days = Number(
+    process.env[envKey] || (fallbackKey ? process.env[fallbackKey] : undefined) || 30
+  );
   return days * 24 * 60 * 60 * 1000;
 };
 
@@ -54,7 +56,10 @@ export const setAdminRefreshCookie = (res: Response, token: string): void => {
     sameSite: 'lax',
     secure: getCookieSecure(),
     path: '/api/admin/auth',
-    maxAge: getRefreshCookieMaxAgeMs('ADMIN_REFRESH_TOKEN_EXPIRES_DAYS', 'REFRESH_TOKEN_EXPIRES_DAYS'),
+    maxAge: getRefreshCookieMaxAgeMs(
+      'ADMIN_REFRESH_TOKEN_EXPIRES_DAYS',
+      'REFRESH_TOKEN_EXPIRES_DAYS'
+    ),
   });
 };
 

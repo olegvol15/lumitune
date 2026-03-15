@@ -1,43 +1,24 @@
-import {
-  Shuffle,
-  SkipBack,
-  Play,
-  Pause,
-  SkipForward,
-  Repeat,
-  Repeat1,
-} from "lucide-react";
-import { usePlayerStore } from "../../store/playerStore";
-import type { PlayerControlsProps } from "../../types/props/component-props.types";
+import { Shuffle, SkipBack, Play, Pause, SkipForward, Repeat, Repeat1 } from 'lucide-react';
+import { usePlayerStore } from '../../store/playerStore';
+import type { PlayerControlsProps } from '../../types/props/component-props.types';
 
-export default function PlayerControls({ size = "lg" }: PlayerControlsProps) {
-  const {
-    isPlaying,
-    togglePlay,
-    next,
-    prev,
-    shuffle,
-    repeat,
-    toggleShuffle,
-    toggleRepeat,
-  } = usePlayerStore();
+export default function PlayerControls({ size = 'lg' }: PlayerControlsProps) {
+  const { isPlaying, togglePlay, next, prev, shuffle, repeat, toggleShuffle, toggleRepeat } =
+    usePlayerStore();
 
-  const iconSize = size === "lg" ? 24 : 18;
-  const playSize = size === "lg" ? 56 : 40;
+  const iconSize = size === 'lg' ? 24 : 18;
+  const playSize = size === 'lg' ? 56 : 40;
 
   return (
     <div className="flex items-center justify-center gap-6">
       <button
         onClick={toggleShuffle}
-        className={`transition-colors ${shuffle ? "text-brand" : "text-muted hover:text-white"}`}
+        className={`transition-colors ${shuffle ? 'text-brand' : 'text-muted hover:text-white'}`}
       >
         <Shuffle size={iconSize} />
       </button>
 
-      <button
-        onClick={prev}
-        className="text-white hover:text-brand transition-colors"
-      >
+      <button onClick={prev} className="text-white hover:text-brand transition-colors">
         <SkipBack size={iconSize} fill="currentColor" />
       </button>
 
@@ -53,22 +34,15 @@ export default function PlayerControls({ size = "lg" }: PlayerControlsProps) {
         )}
       </button>
 
-      <button
-        onClick={next}
-        className="text-white hover:text-brand transition-colors"
-      >
+      <button onClick={next} className="text-white hover:text-brand transition-colors">
         <SkipForward size={iconSize} fill="currentColor" />
       </button>
 
       <button
         onClick={toggleRepeat}
-        className={`transition-colors ${repeat !== "off" ? "text-brand" : "text-muted hover:text-white"}`}
+        className={`transition-colors ${repeat !== 'off' ? 'text-brand' : 'text-muted hover:text-white'}`}
       >
-        {repeat === "one" ? (
-          <Repeat1 size={iconSize} />
-        ) : (
-          <Repeat size={iconSize} />
-        )}
+        {repeat === 'one' ? <Repeat1 size={iconSize} /> : <Repeat size={iconSize} />}
       </button>
     </div>
   );

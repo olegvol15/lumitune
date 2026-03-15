@@ -1,4 +1,4 @@
-import type { ProfileFollowingCardProps } from "../../types/profile/profile.types";
+import type { ProfileFollowingCardProps } from '../../types/profile/profile.types';
 
 export default function ProfileFollowingCard({
   name,

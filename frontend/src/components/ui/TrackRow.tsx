@@ -1,8 +1,8 @@
-import { Heart, MoreVertical, Play } from "lucide-react";
-import { formatDuration, formatPlayCount } from "../../utils/format";
-import { usePlayerStore } from "../../store/playerStore";
-import type { TrackRowProps } from "../../types/props/component-props.types";
-import SongCoverImage from "./SongCoverImage";
+import { Heart, MoreVertical, Play } from 'lucide-react';
+import { formatDuration, formatPlayCount } from '../../utils/format';
+import { usePlayerStore } from '../../store/playerStore';
+import type { TrackRowProps } from '../../types/props/component-props.types';
+import SongCoverImage from './SongCoverImage';
 
 export default function TrackRow({
   track,
@@ -25,7 +25,7 @@ export default function TrackRow({
   return (
     <div
       className={`flex items-center gap-3 p-2 rounded-xl group hover:bg-surface-alt transition-colors ${
-        isActive ? "bg-surface-alt" : ""
+        isActive ? 'bg-surface-alt' : ''
       }`}
     >
       {/* Index / album art */}
@@ -48,7 +48,7 @@ export default function TrackRow({
         {showIndex && index !== undefined && (
           <span
             className={`absolute inset-0 flex items-center justify-center text-xs font-bold group-hover:opacity-0 transition-opacity ${
-              isActive ? "text-brand" : "text-muted"
+              isActive ? 'text-brand' : 'text-muted'
             }`}
           >
             {index + 1}
@@ -58,9 +58,7 @@ export default function TrackRow({
 
       {/* Title + artist */}
       <div className="flex-1 min-w-0">
-        <p
-          className={`text-sm font-semibold truncate ${isActive ? "text-brand" : "text-white"}`}
-        >
+        <p className={`text-sm font-semibold truncate ${isActive ? 'text-brand' : 'text-white'}`}>
           {track.title}
         </p>
         <p className="text-xs text-muted truncate">{track.artistName}</p>
@@ -68,22 +66,15 @@ export default function TrackRow({
 
       {/* Play count or duration */}
       {showPlayCount ? (
-        <span className="text-xs text-muted flex-shrink-0">
-          {formatPlayCount(track.playCount)}
-        </span>
+        <span className="text-xs text-muted flex-shrink-0">{formatPlayCount(track.playCount)}</span>
       ) : (
-        <span className="text-xs text-muted flex-shrink-0">
-          {formatDuration(track.duration)}
-        </span>
+        <span className="text-xs text-muted flex-shrink-0">{formatDuration(track.duration)}</span>
       )}
 
       {/* Like + more */}
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button className="p-1.5 rounded-full hover:bg-white/10">
-          <Heart
-            size={14}
-            className={track.liked ? "text-brand fill-brand" : "text-muted"}
-          />
+          <Heart size={14} className={track.liked ? 'text-brand fill-brand' : 'text-muted'} />
         </button>
         <button className="p-1.5 rounded-full hover:bg-white/10">
           <MoreVertical size={14} className="text-muted" />

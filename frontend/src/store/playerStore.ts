@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import type { PlayerStore } from "../types/store/store.types";
+import { create } from 'zustand';
+import type { PlayerStore } from '../types/store/store.types';
 
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
   currentTrack: null,
@@ -8,7 +8,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   volume: 0.8,
   progress: 0,
   shuffle: false,
-  repeat: "off",
+  repeat: 'off',
 
   play: (track, queue) =>
     set({
@@ -37,7 +37,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     let nextIdx: number;
     if (shuffle) {
       nextIdx = Math.floor(Math.random() * queue.length);
-    } else if (repeat === "one") {
+    } else if (repeat === 'one') {
       nextIdx = idx;
     } else {
       nextIdx = (idx + 1) % queue.length;
@@ -60,8 +60,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
   seek: (progress) => set({ progress: Math.max(0, Math.min(1, progress)) }),
 
-  setProgress: (progress) =>
-    set({ progress: Math.max(0, Math.min(1, progress)) }),
+  setProgress: (progress) => set({ progress: Math.max(0, Math.min(1, progress)) }),
 
   setIsPlaying: (isPlaying) => set({ isPlaying }),
 
@@ -71,7 +70,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
   toggleRepeat: () =>
     set((s) => ({
-      repeat: s.repeat === "off" ? "all" : s.repeat === "all" ? "one" : "off",
+      repeat: s.repeat === 'off' ? 'all' : s.repeat === 'all' ? 'one' : 'off',
     })),
 
   toggleLike: () =>
