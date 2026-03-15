@@ -24,7 +24,6 @@ export interface AuthStore {
   clearSession: () => void;
   bootstrap: () => Promise<void>;
   refreshSession: () => Promise<string | null>;
-  logout: () => Promise<void>;
 }
 
 export interface PlayerStore {
@@ -48,12 +47,4 @@ export interface PlayerStore {
   toggleShuffle: () => void;
   toggleRepeat: () => void;
   toggleLike: () => void;
-}
-
-export interface SongsCatalogStore {
-  tracks: Track[];
-  isLoading: boolean;
-  hasLoaded: boolean;
-  error: string | null;
-  fetchTracks: () => Promise<void>;
 }

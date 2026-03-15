@@ -7,7 +7,7 @@ import AuthLogo from '../../components/auth/AuthLogo';
 import Button from '../../components/ui/Button';
 import StepBar from '../../components/ui/StepBar';
 import PasswordRequirement from '../../components/ui/PasswordRequirement';
-import authApi from '../../api/authApi';
+import { useAuthRegisterMutation } from '../../hooks/auth';
 import { useAuthStore } from '../../store/authStore';
 
 export const Route = createFileRoute('/auth/signup')({
@@ -65,8 +65,8 @@ function SignUpPage() {
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [role, setRole] = useState<'user' | 'creator'>('user');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const registerMutation = useAuthRegisterMutation();
 
   const hasLetter = /[a-zA-Zа-яА-ЯіІїЇєЄ]/.test(password);
   const hasNumberOrSpecial = /[0-9!?_&#]/.test(password);
@@ -80,10 +80,9 @@ function SignUpPage() {
   };
 
   const handleFinalSubmit = async () => {
-    setLoading(true);
     setError(null);
     try {
-      const { data } = await authApi.register({
+      await registerMutation.mutateAsync({
         email,
         password,
         username: usernameFromEmail(email),
@@ -97,13 +96,10 @@ function SignUpPage() {
         city,
         role,
       });
-      useAuthStore.getState().setSession(data.accessToken, data.user);
       navigate({ to: '/' });
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
       setError(axiosErr.response?.data?.message ?? 'Помилка реєстрації');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -418,7 +414,7 @@ function SignUpPage() {
           size="lg"
           shape="rect"
           fullWidth
-          loading={loading}
+          loading={registerMutation.isPending}
           disabled={!name}
           onClick={handleFinalSubmit}
           className="mt-5"

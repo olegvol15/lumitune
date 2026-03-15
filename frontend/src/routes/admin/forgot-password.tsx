@@ -1,7 +1,10 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import {
+  useAdminForgotPasswordMutation,
+  useAdminVerifyResetCodeMutation,
+} from '../../hooks/admin-auth';
 import LogoIcon from '../../components/ui/LogoIcon';
-import { useAdminAuthStore } from '../../store/adminAuthStore';
 
 export const Route = createFileRoute('/admin/forgot-password')({
   component: ForgotPasswordPage,
@@ -9,47 +12,42 @@ export const Route = createFileRoute('/admin/forgot-password')({
 
 function ForgotPasswordPage() {
   const navigate = useNavigate();
-  const sendResetCode = useAdminAuthStore((s) => s.sendResetCode);
-  const verifyResetCode = useAdminAuthStore((s) => s.verifyResetCode);
 
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [codeSent, setCodeSent] = useState(false);
-  const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const sendResetCodeMutation = useAdminForgotPasswordMutation();
+  const verifyResetCodeMutation = useAdminVerifyResetCodeMutation();
 
   const handleSendCode = async () => {
     if (!email) return;
     setError('');
-    setSending(true);
-    const result = await sendResetCode(email);
-    setSending(false);
-    if (result.ok) {
+    try {
+      const { data } = await sendResetCodeMutation.mutateAsync(email);
       setCodeSent(true);
-      if (result.code) {
-        setCode(result.code);
+      if (data.code) {
+        setCode(data.code);
       }
       return;
+    } catch (error) {
+      const apiError = error as { response?: { data?: { message?: string } } };
+      setError(apiError.response?.data?.message ?? 'Failed to send code');
     }
-
-    setError(result.error ?? 'Failed to send code');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
-    const result = await verifyResetCode(email, code);
-    if (!result.ok) {
-      setError(result.error ?? 'Invalid code. Please try again.');
-      setLoading(false);
-      return;
+    try {
+      await verifyResetCodeMutation.mutateAsync({ email, code });
+      sessionStorage.setItem('reset_email', email);
+      sessionStorage.setItem('reset_code', code);
+      navigate({ to: '/admin/reset-password' });
+    } catch (error) {
+      const apiError = error as { response?: { data?: { message?: string } } };
+      setError(apiError.response?.data?.message ?? 'Invalid code. Please try again.');
     }
-
-    sessionStorage.setItem('reset_email', email);
-    sessionStorage.setItem('reset_code', code);
-    navigate({ to: '/admin/reset-password' });
   };
 
   return (
@@ -93,10 +91,10 @@ function ForgotPasswordPage() {
               <button
                 type="button"
                 onClick={handleSendCode}
-                disabled={sending || codeSent || !email}
+                disabled={sendResetCodeMutation.isPending || codeSent || !email}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#4a7ea0] hover:text-white transition-colors disabled:opacity-40 whitespace-nowrap"
               >
-                {sending ? 'Sending…' : codeSent ? 'Sent ✓' : 'Send Code'}
+                {sendResetCodeMutation.isPending ? 'Sending…' : codeSent ? 'Sent ✓' : 'Send Code'}
               </button>
             </div>
           </div>
@@ -105,10 +103,10 @@ function ForgotPasswordPage() {
 
           <button
             type="submit"
-            disabled={loading || !codeSent}
+            disabled={verifyResetCodeMutation.isPending || !codeSent}
             className="w-full py-2.5 rounded-md text-sm font-semibold text-white bg-[#4a7ea0] hover:bg-[#3d6d8e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            {loading ? (
+            {verifyResetCodeMutation.isPending ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               'Continue'

@@ -1,8 +1,8 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { type ReactNode } from 'react';
 import { Users, Music2, LayoutDashboard, Puzzle, Settings, LogOut } from 'lucide-react';
+import { useAdminLogoutMutation } from '../../hooks/admin-auth';
 import LogoIcon from '../ui/LogoIcon';
-import { useAdminAuthStore } from '../../store/adminAuthStore';
 
 // Only include routes that are actually registered
 const ACTIVE_NAV = [{ path: '/admin/tracks', icon: Music2, label: 'Elements' }] as const;
@@ -21,10 +21,10 @@ const NAV_ORDER = ['Customers', 'Elements', 'Dashboard', 'Plugins', 'Settings'];
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const { location } = useRouterState();
   const navigate = useNavigate();
-  const logout = useAdminAuthStore((s) => s.logout);
+  const logoutMutation = useAdminLogoutMutation();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logoutMutation.mutateAsync();
     navigate({ to: '/admin/login' });
   };
 
@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </nav>
 
         <button
-          onClick={handleLogout}
+          onClick={() => void handleLogout()}
           className="w-14 h-14 flex flex-col items-center justify-center rounded-xl gap-1 text-[10px] font-medium text-[#7a8faa] hover:bg-[#253050] hover:text-white transition-colors"
         >
           <LogOut size={20} />

@@ -10,7 +10,7 @@ import PodcastSection from '../components/home/PodcastSection';
 import AudiobookSection from '../components/home/AudiobookSection';
 import type { Album, Track } from '../types';
 import type { HomeFilterTab } from '../types/routes/route.types';
-import { useCatalogTracks } from '../hooks/useCatalogTracks';
+import { useCatalogTracks } from '../hooks/tracks';
 import { usePlayerStore } from '../store/playerStore';
 
 const FILTER_TABS: HomeFilterTab[] = ['Всі', 'Треки', 'Інше'];

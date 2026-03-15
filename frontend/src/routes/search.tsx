@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Search, Mic, X } from 'lucide-react';
-import { useSearch } from '../hooks/useSearch';
+import { useSearch } from '../hooks/search';
 import TrackRow from '../components/ui/TrackRow';
 import MediaCard from '../components/ui/MediaCard';
-import { useCatalogTracks } from '../hooks/useCatalogTracks';
+import { useCatalogTracks } from '../hooks/tracks';
 
 const genres = [
   { id: 'pop', label: 'Поп', color: 'from-pink-500 to-rose-600', emoji: '🎵' },

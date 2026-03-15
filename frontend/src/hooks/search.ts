@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { artists } from '../data/artists';
 import { albums } from '../data/albums';
+import { artists } from '../data/artists';
 import type { Track } from '../types';
 
 export function useSearch(tracks: Track[]) {
@@ -27,7 +27,7 @@ export function useSearch(tracks: Track[]) {
           a.genre.toLowerCase().includes(q)
       ),
     };
-  }, [query]);
+  }, [query, tracks]);
 
   const hasResults =
     results.tracks.length > 0 || results.artists.length > 0 || results.albums.length > 0;

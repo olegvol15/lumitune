@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import { usePlayerStore } from '../store/playerStore';
 import { formatDuration, formatPlayCount } from '../utils/format';
 import Button from '../components/ui/Button';
-import { useCatalogTracks } from '../hooks/useCatalogTracks';
+import { useCatalogTracks } from '../hooks/tracks';
 import SongCoverImage from '../components/ui/SongCoverImage';
 
 export const Route = createFileRoute('/playlist/$id')({

@@ -7,7 +7,7 @@ import TrackRow from '../components/ui/TrackRow';
 import MediaCard from '../components/ui/MediaCard';
 import SectionHeader from '../components/ui/SectionHeader';
 import Button from '../components/ui/Button';
-import { useCatalogTracks } from '../hooks/useCatalogTracks';
+import { useCatalogTracks } from '../hooks/tracks';
 
 export const Route = createFileRoute('/artist/$id')({
   component: ArtistPage,

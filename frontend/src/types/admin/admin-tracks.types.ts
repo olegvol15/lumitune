@@ -30,9 +30,6 @@ export interface AdminTrackModalState {
 }
 
 export interface AdminTracksStore {
-  tracks: AdminTrack[];
-  isLoading: boolean;
-  error: string | null;
   selected: Set<string>;
   search: string;
   page: number;
@@ -40,18 +37,10 @@ export interface AdminTracksStore {
   modal: AdminTrackModalState;
   setSearch: (q: string) => void;
   setPage: (p: number) => void;
-  fetchTracks: () => Promise<void>;
   toggleSelect: (id: string) => void;
   selectAll: (ids: string[]) => void;
   clearSelection: () => void;
-  openNew: () => void;
+  openNew: (seqNum: number) => void;
   openEdit: (track: AdminTrack) => void;
   closeModal: () => void;
-  saveTrack: (
-    track: AdminTrack,
-    audioFile?: File | null,
-    coverFile?: File | null
-  ) => Promise<{ ok: boolean; error?: string }>;
-  deleteTrack: (id: string) => Promise<{ ok: boolean; error?: string }>;
-  deleteSelected: () => Promise<{ ok: boolean; error?: string }>;
 }

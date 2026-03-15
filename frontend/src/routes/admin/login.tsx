@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useAdminLoginMutation } from '../../hooks/admin-auth';
 import LogoIcon from '../../components/ui/LogoIcon';
-import { useAdminAuthStore } from '../../store/adminAuthStore';
 
 export const Route = createFileRoute('/admin/login')({
   component: AdminLoginPage,
@@ -9,24 +9,22 @@ export const Route = createFileRoute('/admin/login')({
 
 function AdminLoginPage() {
   const navigate = useNavigate();
-  const login = useAdminAuthStore((s) => s.login);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const loginMutation = useAdminLoginMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
-    const result = await login(email, password);
-    if (result.ok) {
+    try {
+      await loginMutation.mutateAsync({ email, password });
       navigate({ to: '/admin' });
       return;
+    } catch (error) {
+      const apiError = error as { response?: { data?: { message?: string } } };
+      setError(apiError.response?.data?.message ?? 'Invalid email or password');
     }
-
-    setError(result.error ?? 'Invalid email or password');
-    setLoading(false);
   };
 
   return (
@@ -67,10 +65,10 @@ function AdminLoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loginMutation.isPending}
             className="w-full py-2.5 rounded-md text-sm font-semibold text-white bg-[#4a7ea0] hover:bg-[#3d6d8e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            {loading ? (
+            {loginMutation.isPending ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               'Log In'

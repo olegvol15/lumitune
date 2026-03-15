@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SettingsItem from '../components/settings/SettingsItem';
 import SettingsSelect from '../components/settings/SettingsSelect';
 import SettingsToggle from '../components/settings/SettingsToggle';
+import { useAuthLogoutMutation } from '../hooks/auth';
 import Button from '../components/ui/Button';
 import { useAuthStore } from '../store/authStore';
 import { LANGUAGE_OPTIONS, THEME_OPTIONS } from '../utils/settings.utils';
@@ -19,7 +20,6 @@ export const Route = createFileRoute('/settings')({
 
 function SettingsPage() {
   const navigate = useNavigate();
-  const logout = useAuthStore((state) => state.logout);
 
   const [offlineMode, setOfflineMode] = useState(false);
   const [notifications, setNotifications] = useState(false);
@@ -30,16 +30,13 @@ function SettingsPage() {
   const [musicFolder, setMusicFolder] = useState(true);
   const [language, setLanguage] = useState('uk-UA');
   const [theme, setTheme] = useState('base');
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const logoutMutation = useAuthLogoutMutation();
 
   const handleLogout = async () => {
-    setIsLoggingOut(true);
     try {
-      await logout();
-    } finally {
+      await logoutMutation.mutateAsync();
       navigate({ to: '/auth/signin' });
-      setIsLoggingOut(false);
-    }
+    } catch {}
   };
 
   return (
@@ -84,7 +81,7 @@ function SettingsPage() {
                 variant="auth-outline"
                 size="sm"
                 shape="rect"
-                loading={isLoggingOut}
+                loading={logoutMutation.isPending}
                 onClick={handleLogout}
                 className="min-w-[84px] rounded-lg border-[#406c90] bg-transparent px-4 py-2 text-[#c4d7eb] hover:bg-[#10253a]"
               >

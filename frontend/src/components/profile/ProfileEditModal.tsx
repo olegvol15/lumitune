@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import authApi from '../../api/authApi';
+import { useUpdateProfileMutation } from '../../hooks/auth';
 import type { ProfileEditModalProps } from '../../types/profile/profile.types';
 import { useAuthStore } from '../../store/authStore';
 import { fileToDataUrl } from '../../utils/file.utils';
@@ -13,7 +13,6 @@ export default function ProfileEditModal({
   onClose,
 }: ProfileEditModalProps) {
   const user = useAuthStore((state) => state.user);
-  const setUser = useAuthStore((state) => state.setUser);
   const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [bio, setBio] = useState(
     user?.bio ||
@@ -25,10 +24,10 @@ export default function ProfileEditModal({
       : fallbackAvatar
   );
   const [coverImage, setCoverImage] = useState(user?.coverImage || fallbackCover);
-  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement | null>(null);
   const coverInputRef = useRef<HTMLInputElement | null>(null);
+  const updateProfileMutation = useUpdateProfileMutation();
 
   useEffect(() => {
     if (!open || !user) return;
@@ -48,23 +47,19 @@ export default function ProfileEditModal({
   if (!open || !user) return null;
 
   const handleSave = async () => {
-    setIsSaving(true);
     setError(null);
 
     try {
-      const { data } = await authApi.updateProfile({
+      await updateProfileMutation.mutateAsync({
         displayName,
         bio,
         profilePicture,
         coverImage,
       });
-      setUser(data.user);
       onClose();
     } catch (err) {
       const apiError = err as { response?: { data?: { message?: string } } };
       setError(apiError.response?.data?.message ?? 'Не вдалося оновити профіль');
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -160,7 +155,7 @@ export default function ProfileEditModal({
                 variant="primary"
                 size="sm"
                 shape="rect"
-                loading={isSaving}
+                loading={updateProfileMutation.isPending}
                 onClick={() => void handleSave()}
                 className="min-w-[146px] rounded-[12px] bg-[#7bc7ea] px-6 py-2.5 text-[14px] font-semibold text-[#0d2330] hover:bg-[#90d5f3]"
               >

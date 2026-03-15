@@ -6,7 +6,7 @@ import { getArtist } from '../data/artists';
 import TrackRow from '../components/ui/TrackRow';
 import { usePlayerStore } from '../store/playerStore';
 import Button from '../components/ui/Button';
-import { useCatalogTracks } from '../hooks/useCatalogTracks';
+import { useCatalogTracks } from '../hooks/tracks';
 
 export const Route = createFileRoute('/album/$id')({
   component: AlbumPage,

@@ -1,16 +1,16 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
+import { useAuthLogoutMutation } from '../../hooks/auth';
+import { useAuthStore } from '../../store/authStore';
 import Avatar from './Avatar';
 import Button from './Button';
-import { useAuthStore } from '../../store/authStore';
 
 export default function AccountDropdown() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
   const [open, setOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const logoutMutation = useAuthLogoutMutation();
 
   useEffect(() => {
     if (!open) {
@@ -39,14 +39,11 @@ export default function AccountDropdown() {
   }, [open]);
 
   const handleLogout = async () => {
-    setIsLoggingOut(true);
     try {
-      await logout();
+      await logoutMutation.mutateAsync();
       setOpen(false);
       navigate({ to: '/auth/signin' });
-    } finally {
-      setIsLoggingOut(false);
-    }
+    } catch {}
   };
 
   return (
@@ -95,10 +92,10 @@ export default function AccountDropdown() {
               size="sm"
               shape="rect"
               onClick={() => void handleLogout()}
-              disabled={isLoggingOut}
+              disabled={logoutMutation.isPending}
               className="!block !px-0 !py-1.5 text-[15px] font-semibold tracking-[-0.02em] !text-[#f5f7fb] transition hover:!text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isLoggingOut ? 'Вихід...' : 'Вийти'}
+              {logoutMutation.isPending ? 'Вихід...' : 'Вийти'}
             </Button>
           </div>
         </div>

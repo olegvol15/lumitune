@@ -60,14 +60,4 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     return refreshPromise;
   },
-
-  logout: async () => {
-    try {
-      await authApi.logout();
-    } catch {
-      // Clear client state even if the backend revoke fails.
-    } finally {
-      useAuthStore.getState().clearSession();
-    }
-  },
 }));

@@ -1,8 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
+import { queryClient } from './lib/queryClient';
 import { routeTree } from './routeTree.gen';
 import { useAdminAuthStore } from './store/adminAuthStore';
 import { useAuthStore } from './store/authStore';
@@ -14,14 +15,6 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,
-    },
-  },
-});
 
 async function startApp() {
   await Promise.all([

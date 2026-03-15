@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X, Upload } from 'lucide-react';
 import { useAdminTracksStore } from '../../store/adminTracksStore';
+import { useSaveAdminTrackMutation } from '../../hooks/tracks';
 import type { AdminTrack } from '../../types/admin/admin-tracks.types';
 import { albums } from '../../data/albums';
 
@@ -29,7 +30,7 @@ const TAGS = [
 ];
 
 export default function TrackModal() {
-  const { modal, closeModal, saveTrack } = useAdminTracksStore();
+  const { modal, closeModal } = useAdminTracksStore();
   const { open, mode, track } = modal;
 
   const [form, setForm] = useState<AdminTrack | null>(null);
@@ -37,6 +38,7 @@ export default function TrackModal() {
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const saveTrackMutation = useSaveAdminTrackMutation();
 
   useEffect(() => {
     if (track) {
@@ -70,9 +72,12 @@ export default function TrackModal() {
     if (!form.title.trim()) return;
     setIsSaving(true);
     setError(null);
-    const result = await saveTrack(form, audioFile, coverFile);
-    if (!result.ok) {
-      setError(result.error ?? 'Failed to save track');
+    try {
+      await saveTrackMutation.mutateAsync({ mode, track: form, audioFile, coverFile });
+      closeModal();
+    } catch (error) {
+      const mutationError = error as { message?: string; response?: { data?: { message?: string } } };
+      setError(mutationError.response?.data?.message ?? mutationError.message ?? 'Failed to save track');
     }
     setIsSaving(false);
   };

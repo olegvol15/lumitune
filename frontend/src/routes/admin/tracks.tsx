@@ -1,6 +1,11 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo } from 'react';
 import { Pencil, Trash2, Play, Plus, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import {
+  useAdminTracksQuery,
+  useDeleteAdminTrackMutation,
+  useDeleteSelectedAdminTracksMutation,
+} from '../../hooks/tracks';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 import { useAdminTracksStore } from '../../store/adminTracksStore';
 import AdminLayout from '../../components/admin/AdminLayout';
@@ -19,10 +24,10 @@ function AdminTracksPage() {
     if (isBootstrapped && !isAuthenticated) navigate({ to: '/admin/login' });
   }, [isAuthenticated, isBootstrapped, navigate]);
 
+  const adminTracksQuery = useAdminTracksQuery();
+  const deleteTrackMutation = useDeleteAdminTrackMutation();
+  const deleteSelectedTracksMutation = useDeleteSelectedAdminTracksMutation();
   const {
-    tracks,
-    isLoading,
-    error,
     selected,
     search,
     page,
@@ -33,18 +38,12 @@ function AdminTracksPage() {
     toggleSelect,
     selectAll,
     clearSelection,
-    fetchTracks,
     openNew,
     openEdit,
-    deleteTrack,
-    deleteSelected,
   } = useAdminTracksStore();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchTracks();
-    }
-  }, [isAuthenticated, fetchTracks]);
+  const tracks = adminTracksQuery.data ?? [];
+  const isLoading = adminTracksQuery.isLoading;
+  const error = adminTracksQuery.error instanceof Error ? adminTracksQuery.error.message : null;
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -81,7 +80,7 @@ function AdminTracksPage() {
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-white font-semibold text-xl">Tracks</h1>
         <button
-          onClick={openNew}
+          onClick={() => openNew(tracks.length + 1)}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] transition-colors"
         >
           <Plus size={16} />
@@ -104,7 +103,14 @@ function AdminTracksPage() {
         {selected.size > 0 && (
           <button
             onClick={async () => {
-              await deleteSelected();
+              const tracksById = new Map(tracks.map((track) => [track.id, track]));
+              const songIds = Array.from(selected)
+                .map((id) => tracksById.get(id))
+                .filter((track): track is NonNullable<typeof track> => Boolean(track))
+                .map((track) => track.backendId || track.id);
+
+              await deleteSelectedTracksMutation.mutateAsync(songIds);
+              clearSelection();
             }}
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
           >
@@ -214,7 +220,15 @@ function AdminTracksPage() {
                       <button
                         title="Delete"
                         onClick={async () => {
-                          await deleteTrack(track.id);
+                          await deleteTrackMutation.mutateAsync(track.backendId || track.id);
+                          const nextSelected = new Set(selected);
+                          nextSelected.delete(track.id);
+                          if (selected.has(track.id)) {
+                            clearSelection();
+                            if (nextSelected.size > 0) {
+                              selectAll(Array.from(nextSelected));
+                            }
+                          }
                         }}
                         className="p-1.5 rounded-lg text-[#7a8faa] hover:text-[#f07282] hover:bg-[#2a3a52] transition-colors"
                       >

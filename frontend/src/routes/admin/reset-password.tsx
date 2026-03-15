@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useAdminResetPasswordMutation } from '../../hooks/admin-auth';
 import LogoIcon from '../../components/ui/LogoIcon';
-import { useAdminAuthStore } from '../../store/adminAuthStore';
 
 export const Route = createFileRoute('/admin/reset-password')({
   component: ResetPasswordPage,
@@ -9,12 +9,11 @@ export const Route = createFileRoute('/admin/reset-password')({
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
-  const resetPassword = useAdminAuthStore((s) => s.resetPassword);
 
   const [password, setPassword] = useState('');
   const [repeat, setRepeat] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const resetPasswordMutation = useAdminResetPasswordMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,17 +28,16 @@ function ResetPasswordPage() {
       setError('Session expired. Please start again.');
       return;
     }
-    setLoading(true);
-    const result = await resetPassword(email, code, password);
-    if (result.ok) {
+    try {
+      await resetPasswordMutation.mutateAsync({ email, code, newPassword: password });
       sessionStorage.removeItem('reset_email');
       sessionStorage.removeItem('reset_code');
       navigate({ to: '/admin/login' });
       return;
+    } catch (error) {
+      const apiError = error as { response?: { data?: { message?: string } } };
+      setError(apiError.response?.data?.message ?? 'Failed to reset password');
     }
-
-    setError(result.error ?? 'Failed to reset password');
-    setLoading(false);
   };
 
   return (
@@ -80,10 +78,10 @@ function ResetPasswordPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={resetPasswordMutation.isPending}
             className="w-full py-2.5 rounded-md text-sm font-semibold text-white bg-[#4a7ea0] hover:bg-[#3d6d8e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            {loading ? (
+            {resetPasswordMutation.isPending ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               'Log In'

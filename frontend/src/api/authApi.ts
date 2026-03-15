@@ -1,28 +1,7 @@
 import publicApiClient from '../lib/publicApiClient';
 import apiClient from '../lib/apiClient';
+import type { RegisterPayload, UpdateProfilePayload } from '../types/auth/auth-api.types';
 import type { AuthResponse, MeResponse } from '../types/auth/auth-types';
-
-export interface RegisterPayload {
-  email: string;
-  password: string;
-  username: string;
-  displayName: string;
-  dateOfBirth: {
-    day: number;
-    month: number;
-    year: number;
-  };
-  country: string;
-  city: string;
-  role: 'user' | 'creator';
-}
-
-export interface UpdateProfilePayload {
-  displayName?: string;
-  bio?: string;
-  profilePicture?: string;
-  coverImage?: string;
-}
 
 const authApi = {
   login: (email: string, password: string) =>

@@ -5,7 +5,7 @@ import TrackRow from '../components/ui/TrackRow';
 import { usePlayerStore } from '../store/playerStore';
 import Button from '../components/ui/Button';
 import type { FavoriteSortKey } from '../types/routes/route.types';
-import { useCatalogTracks } from '../hooks/useCatalogTracks';
+import { useCatalogTracks } from '../hooks/tracks';
 
 export const Route = createFileRoute('/favorite')({ component: FavoritePage });
 

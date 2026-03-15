@@ -5,7 +5,7 @@ import { FaFacebook, FaApple } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import AuthLogo from '../../components/auth/AuthLogo';
 import Button from '../../components/ui/Button';
-import authApi from '../../api/authApi';
+import { useAuthLoginMutation } from '../../hooks/auth';
 import { useAuthStore } from '../../store/authStore';
 
 export const Route = createFileRoute('/auth/signin')({
@@ -34,22 +34,18 @@ function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const loginMutation = useAuthLoginMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
     try {
-      const { data } = await authApi.login(email, password);
-      useAuthStore.getState().setSession(data.accessToken, data.user);
+      await loginMutation.mutateAsync({ email, password });
       navigate({ to: '/' });
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
       setError(axiosErr.response?.data?.message ?? 'Помилка входу');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -136,7 +132,7 @@ function SignInPage() {
             size="lg"
             shape="rect"
             fullWidth
-            loading={loading}
+            loading={loginMutation.isPending}
             className="mt-4"
           >
             Увійти
