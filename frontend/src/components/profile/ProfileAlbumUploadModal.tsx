@@ -17,12 +17,14 @@ export default function ProfileAlbumUploadModal({
 }: ProfileAlbumUploadModalProps) {
   const [title, setTitle] = useState('');
   const [coverImage, setCoverImage] = useState(fallbackCover);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [selectedTrackIds, setSelectedTrackIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!open) return;
     setTitle('');
     setCoverImage(fallbackCover);
+    setCoverFile(null);
     setSelectedTrackIds(tracks[0] ? [tracks[0].id] : []);
   }, [fallbackCover, open, tracks]);
 
@@ -90,6 +92,7 @@ export default function ProfileAlbumUploadModal({
           sublabel="Зображення"
           compact
           onSelect={async (file) => {
+            setCoverFile(file);
             const dataUrl = await fileToDataUrl(file);
             setCoverImage(dataUrl);
           }}
@@ -111,9 +114,9 @@ export default function ProfileAlbumUploadModal({
             shape="rect"
             onClick={() =>
               onSave({
-                id: `creator-album-${Date.now()}`,
                 title: title || 'Новий альбом',
                 coverImage,
+                coverFile,
                 trackIds: selectedTrackIds,
               })
             }

@@ -28,6 +28,9 @@ export interface SongUpdateInput {
   album?: string;
   genre?: string;
   coverImage?: string;
+  audioFile?: Express.Multer.File;
+  filePath?: string;
+  duration?: number;
 }
 
 export interface SongListResult {

@@ -18,6 +18,28 @@ export type CreatorAlbum = {
   title: string;
   coverImage: string;
   trackIds: string[];
+  backendId?: string;
+};
+
+export type CreatorTrackDraft = {
+  id?: string;
+  title: string;
+  artistName: string;
+  albumCover: string;
+  genre: string;
+  mood: string;
+  releaseDate: string;
+  likes: number;
+  audioFile?: File | null;
+  audioFileName?: string;
+  coverFile?: File | null;
+};
+
+export type CreatorAlbumDraft = {
+  title: string;
+  coverImage: string;
+  coverFile?: File | null;
+  trackIds: string[];
 };
 
 export type TrackModalMode = 'create' | 'edit';
@@ -93,7 +115,7 @@ export type ProfileTrackEditorModalProps = {
   genres: string[];
   moods: string[];
   onClose: () => void;
-  onSave: (track: CreatorTrack) => void;
+  onSave: (track: CreatorTrackDraft) => Promise<void> | void;
 };
 
 export type ProfileAlbumUploadModalProps = {
@@ -101,7 +123,7 @@ export type ProfileAlbumUploadModalProps = {
   tracks: CreatorTrack[];
   fallbackCover: string;
   onClose: () => void;
-  onSave: (album: CreatorAlbum) => void;
+  onSave: (album: CreatorAlbumDraft) => Promise<void> | void;
 };
 
 export type ProfileEditModalProps = {

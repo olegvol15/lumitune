@@ -32,6 +32,31 @@ export const uploadSong = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const updateOwnSong = async (req: AuthRequest, res: Response) => {
+  try {
+    const audioFile = req.file ?? getFileFromField(req, 'audio');
+    const coverFile = getFileFromField(req, 'cover');
+
+    const { song } = await songService.updateSongForUploader(
+      String(req.params.id),
+      req.user?._id ? String(req.user._id) : undefined,
+      {
+        ...req.body,
+        audioFile,
+        ...(coverFile?.path ? { coverImage: coverFile.path } : {}),
+      }
+    );
+
+    res.status(200).json({ success: true, song });
+  } catch (error) {
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error updating song') });
+  }
+};
+
 export const getAllSongs = async (req: Request, res: Response) => {
   try {
     const { songs, pagination } = await songService.listSongs(req.query);
@@ -103,9 +128,11 @@ export const uploadSongByAdmin = async (req: Request, res: Response) => {
 
 export const updateSongByAdmin = async (req: Request, res: Response) => {
   try {
-    const coverFile = req.file ?? getFileFromField(req, 'cover');
+    const audioFile = req.file ?? getFileFromField(req, 'audio');
+    const coverFile = getFileFromField(req, 'cover');
     const { song } = await songService.updateSong(String(req.params.id), {
       ...req.body,
+      ...(audioFile ? { audioFile } : {}),
       ...(coverFile?.path ? { coverImage: coverFile.path } : {}),
     });
     res.status(200).json({ success: true, song });

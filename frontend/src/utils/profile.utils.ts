@@ -1,4 +1,6 @@
 import { albums } from '../data/albums';
+import type { BackendPlaylist } from '../types/media/playlist-api.types';
+import type { BackendSong } from '../types/media/song-api.types';
 import type { CreatorAlbum, CreatorTrack } from '../types/profile/profile.types';
 
 export const RELEASE_DATES = ['12.11.2012', '24.06.2023', '10.10.2005'];
@@ -36,4 +38,53 @@ export function buildSeedAlbums(): CreatorAlbum[] {
     coverImage: album.coverUrl,
     trackIds: [],
   }));
+}
+
+const toCoverUrl = (coverImage?: string): string => {
+  if (!coverImage || coverImage === 'default-album-cover.jpg') {
+    return '/vite.svg';
+  }
+
+  if (
+    coverImage.startsWith('http://') ||
+    coverImage.startsWith('https://') ||
+    coverImage.startsWith('data:')
+  ) {
+    return coverImage;
+  }
+
+  if (coverImage.startsWith('/uploads/')) {
+    return coverImage;
+  }
+
+  if (coverImage.startsWith('uploads/')) {
+    return `/${coverImage}`;
+  }
+
+  return coverImage;
+};
+
+export function mapBackendSongToCreatorTrack(song: BackendSong): CreatorTrack {
+  return {
+    id: song._id,
+    title: song.title,
+    artistName: song.artist || 'Unknown Artist',
+    albumCover: toCoverUrl(song.coverImage),
+    duration: song.duration || 0,
+    genre: song.genre || '',
+    mood: '',
+    audioFileName: song.filePath.split('/').pop(),
+    releaseDate: new Date().toLocaleDateString('uk-UA'),
+    likes: song.plays || 0,
+  };
+}
+
+export function mapBackendPlaylistToCreatorAlbum(playlist: BackendPlaylist): CreatorAlbum {
+  return {
+    id: playlist._id,
+    backendId: playlist._id,
+    title: playlist.name,
+    coverImage: toCoverUrl(playlist.coverImage),
+    trackIds: playlist.songs.map((song) => song._id),
+  };
 }

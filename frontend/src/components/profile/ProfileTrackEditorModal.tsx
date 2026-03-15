@@ -20,6 +20,8 @@ export default function ProfileTrackEditorModal({
   const [mood, setMood] = useState('');
   const [coverImage, setCoverImage] = useState(fallbackCover);
   const [audioFileName, setAudioFileName] = useState('');
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -29,6 +31,8 @@ export default function ProfileTrackEditorModal({
       setMood(initialTrack.mood);
       setCoverImage(initialTrack.albumCover);
       setAudioFileName(initialTrack.audioFileName || initialTrack.title);
+      setAudioFile(null);
+      setCoverFile(null);
       return;
     }
 
@@ -37,6 +41,8 @@ export default function ProfileTrackEditorModal({
     setMood('');
     setCoverImage(fallbackCover);
     setAudioFileName('');
+    setAudioFile(null);
+    setCoverFile(null);
   }, [fallbackCover, initialTrack, open]);
 
   if (!open) return null;
@@ -62,7 +68,10 @@ export default function ProfileTrackEditorModal({
         <ProfileUploadZone
           label="Перетягніть аудіофайл або завантажте"
           sublabel={audioFileName || 'Аудіо'}
-          onSelect={(file) => setAudioFileName(file.name)}
+          onSelect={(file) => {
+            setAudioFile(file);
+            setAudioFileName(file.name);
+          }}
         />
 
         <div className="grid grid-cols-2 gap-3">
@@ -102,14 +111,15 @@ export default function ProfileTrackEditorModal({
             shape="rect"
             onClick={() =>
               onSave({
-                id: initialTrack?.id || `creator-track-${Date.now()}`,
+                id: initialTrack?.id,
                 title: title || 'Новий трек',
                 artistName: initialTrack?.artistName || 'OLEH',
                 albumCover: coverImage,
-                duration: initialTrack?.duration || 182,
                 genre: genre || genres[0],
                 mood: mood || moods[0],
+                audioFile,
                 audioFileName,
+                coverFile,
                 releaseDate: initialTrack?.releaseDate || '12.11.2012',
                 likes: initialTrack?.likes || 235,
               })

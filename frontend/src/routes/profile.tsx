@@ -13,6 +13,8 @@ import ProfileTopTrackRow from '../components/profile/ProfileTopTrackRow';
 import ProfileTrackCard from '../components/profile/ProfileTrackCard';
 import ProfileTrackEditorModal from '../components/profile/ProfileTrackEditorModal';
 import ProfileTrackSectionTools from '../components/profile/ProfileTrackSectionTools';
+import { useAddSongToPlaylistMutation, useCreatePlaylistMutation } from '../hooks/playlists';
+import { useUpdateCreatorTrackMutation, useUploadCreatorTrackMutation } from '../hooks/tracks';
 import type { CreatorAlbum, CreatorTrack, TrackModalState } from '../types/profile/profile.types';
 import Button from '../components/ui/Button';
 import { albums } from '../data/albums';
@@ -22,6 +24,8 @@ import { usePlayerStore } from '../store/playerStore';
 import {
   buildSeedAlbums,
   buildSeedTracks,
+  mapBackendPlaylistToCreatorAlbum,
+  mapBackendSongToCreatorTrack,
   PROFILE_GENRES,
   PROFILE_MOODS,
   readJsonFromStorage,
@@ -51,6 +55,10 @@ function ProfilePage() {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [trackModal, setTrackModal] = useState<TrackModalState>({ open: false });
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
+  const uploadCreatorTrackMutation = useUploadCreatorTrackMutation();
+  const updateCreatorTrackMutation = useUpdateCreatorTrackMutation();
+  const createPlaylistMutation = useCreatePlaylistMutation();
+  const addSongToPlaylistMutation = useAddSongToPlaylistMutation();
 
   const displayName = user?.displayName || user?.username || 'Oleh';
   const bio =
@@ -293,12 +301,32 @@ function ProfilePage() {
         genres={PROFILE_GENRES}
         moods={PROFILE_MOODS}
         onClose={() => setTrackModal({ open: false })}
-        onSave={(track) => {
+        onSave={async (track) => {
+          const formData = new FormData();
+          formData.append('title', track.title);
+          formData.append('artist', track.artistName || displayName);
+          formData.append('genre', track.genre);
+          if (track.coverFile) {
+            formData.append('cover', track.coverFile);
+          }
+          if (track.audioFile) {
+            formData.append('audio', track.audioFile);
+          }
+
+          const response =
+            trackModal.open && trackModal.mode === 'edit' && track.id
+              ? await updateCreatorTrackMutation.mutateAsync({
+                  songId: track.id,
+                  formData,
+                })
+              : await uploadCreatorTrackMutation.mutateAsync(formData);
+
+          const persistedTrack = mapBackendSongToCreatorTrack(response.data.song);
           setCreatorTracks((prev) => {
-            const exists = prev.some((item) => item.id === track.id);
+            const exists = prev.some((item) => item.id === persistedTrack.id);
             return exists
-              ? prev.map((item) => (item.id === track.id ? track : item))
-              : [track, ...prev];
+              ? prev.map((item) => (item.id === persistedTrack.id ? persistedTrack : item))
+              : [persistedTrack, ...prev];
           });
           setTrackModal({ open: false });
         }}
@@ -308,8 +336,30 @@ function ProfilePage() {
         tracks={creatorTracks}
         fallbackCover={FALLBACK_COVER}
         onClose={() => setIsAlbumModalOpen(false)}
-        onSave={(album) => {
-          setCreatorAlbums((prev) => [album, ...prev]);
+        onSave={async (album) => {
+          const { data } = await createPlaylistMutation.mutateAsync({
+            name: album.title,
+            description: 'Creator album',
+            coverImage: album.coverImage,
+            isPublic: true,
+          });
+
+          await Promise.all(
+            album.trackIds.map((trackId) =>
+              addSongToPlaylistMutation.mutateAsync({
+                playlistId: data.playlist._id,
+                songId: trackId,
+              })
+            )
+          );
+
+          setCreatorAlbums((prev) => [
+            {
+              ...mapBackendPlaylistToCreatorAlbum(data.playlist),
+              trackIds: album.trackIds,
+            },
+            ...prev,
+          ]);
           setIsAlbumModalOpen(false);
         }}
       />

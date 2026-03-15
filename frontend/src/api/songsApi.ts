@@ -1,5 +1,5 @@
 import apiClient from '../lib/apiClient';
-import type { SongsResponse } from '../types/media/song-api.types';
+import type { SongResponse, SongsResponse } from '../types/media/song-api.types';
 import { mapBackendSongToTrack } from '../utils/song-catalog.utils';
 
 const songsApi = {
@@ -8,6 +8,14 @@ const songsApi = {
     const { data } = await apiClient.get<SongsResponse>('/songs');
     return data.songs.map(mapBackendSongToTrack);
   },
+  uploadCreatorTrack: (data: FormData) =>
+    apiClient.post<SongResponse>('/songs/upload', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  updateCreatorTrack: (songId: string, data: FormData) =>
+    apiClient.put<SongResponse>(`/songs/${songId}`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
 };
 
 export default songsApi;

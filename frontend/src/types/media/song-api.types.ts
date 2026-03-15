@@ -8,6 +8,10 @@ export interface BackendSong {
   filePath: string;
   coverImage?: string;
   plays: number;
+  uploadedBy?: {
+    _id: string;
+    username: string;
+  };
 }
 
 export interface SongsResponse {

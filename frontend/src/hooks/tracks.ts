@@ -95,3 +95,22 @@ export function useDeleteSelectedAdminTracksMutation() {
     },
   });
 }
+
+export function useUploadCreatorTrackMutation() {
+  return useMutation({
+    mutationFn: (formData: FormData) => songsApi.uploadCreatorTrack(formData),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: tracksKeys.catalog() });
+    },
+  });
+}
+
+export function useUpdateCreatorTrackMutation() {
+  return useMutation({
+    mutationFn: ({ songId, formData }: { songId: string; formData: FormData }) =>
+      songsApi.updateCreatorTrack(songId, formData),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: tracksKeys.catalog() });
+    },
+  });
+}

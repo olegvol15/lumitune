@@ -104,6 +104,26 @@ export const songService = {
     const existingSong = await Song.findById(songId);
     if (!existingSong) throw new ServiceError(404, 'Song not found');
 
+    let nextAudioPath: string | undefined;
+    if (input.audioFile) {
+      try {
+        const metadata = await musicMetadata.parseFile(input.audioFile.path);
+        const duration = metadata.format.duration;
+        if (!duration) {
+          safeUnlink(input.audioFile.path);
+          throw new ServiceError(400, 'Could not read audio file duration');
+        }
+
+        updateData.audioFile = undefined;
+        updateData.filePath = input.audioFile.path;
+        updateData.duration = Math.round(duration);
+        nextAudioPath = input.audioFile.path;
+      } catch (error) {
+        safeUnlink(input.audioFile.path);
+        throw error;
+      }
+    }
+
     const song = await Song.findByIdAndUpdate(songId, updateData, {
       new: true,
       runValidators: true,
@@ -120,7 +140,33 @@ export const songService = {
       safeUnlink(existingSong.coverImage);
     }
 
+    if (
+      nextAudioPath &&
+      typeof existingSong.filePath === 'string' &&
+      existingSong.filePath !== nextAudioPath
+    ) {
+      safeUnlink(existingSong.filePath);
+    }
+
     return { song };
+  },
+
+  async updateSongForUploader(songId: string, userId: string | undefined, input: SongUpdateInput) {
+    if (!userId) {
+      throw new ServiceError(401, 'Not authorized to access this route');
+    }
+
+    ensureObjectId(songId, 'songId');
+    const existingSong = await Song.findById(songId);
+    if (!existingSong) {
+      throw new ServiceError(404, 'Song not found');
+    }
+
+    if (String(existingSong.uploadedBy) !== userId) {
+      throw new ServiceError(403, 'You can only edit your own tracks');
+    }
+
+    return this.updateSong(songId, input);
   },
 
   async deleteSong(songId: string) {
