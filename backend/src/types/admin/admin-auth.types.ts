@@ -12,7 +12,7 @@ export interface AdminAuthUser {
 }
 
 export interface AdminLoginResult {
-  token: string;
+  accessToken: string;
   admin: AdminAuthUser;
 }
 

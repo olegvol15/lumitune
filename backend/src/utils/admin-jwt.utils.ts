@@ -12,7 +12,7 @@ const getAdminJwtSecret = (): string => {
 
 export const generateAdminToken = (payload: AdminTokenPayload): string => {
   return jwt.sign(payload, getAdminJwtSecret(), {
-    expiresIn: (process.env.ADMIN_JWT_EXPIRES_IN || '12h') as jwt.SignOptions['expiresIn'],
+    expiresIn: (process.env.ADMIN_JWT_EXPIRES_IN || '15m') as jwt.SignOptions['expiresIn'],
   });
 };
 

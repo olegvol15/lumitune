@@ -18,14 +18,13 @@ import {
   forgotPasswordSchema,
   verifyResetCodeSchema,
   resetPasswordSchema,
-  refreshTokenSchema,
 } from '../utils/validation.schemas';
 
 const router = express.Router();
 
 router.post('/register', validate(registerSchema), register);
 router.post('/login', validate(loginSchema), login);
-router.post('/refresh', validate(refreshTokenSchema), refresh);
+router.post('/refresh', refresh);
 router.post('/logout', logout);
 router.post('/logout-all', protect, logoutAll);
 router.get('/me', protect, getMe);

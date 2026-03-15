@@ -13,10 +13,11 @@ export const Route = createFileRoute('/admin/tracks')({ component: AdminTracksPa
 function AdminTracksPage() {
   const navigate = useNavigate();
   const isAuthenticated = useAdminAuthStore((s) => s.isAuthenticated);
+  const isBootstrapped = useAdminAuthStore((s) => s.isBootstrapped);
 
   useEffect(() => {
-    if (!isAuthenticated) navigate({ to: '/admin/login' });
-  }, [isAuthenticated, navigate]);
+    if (isBootstrapped && !isAuthenticated) navigate({ to: '/admin/login' });
+  }, [isAuthenticated, isBootstrapped, navigate]);
 
   const {
     tracks,
@@ -67,7 +68,7 @@ function AdminTracksPage() {
     else selectAll(pageIds);
   };
 
-  if (!isAuthenticated) return null;
+  if (!isBootstrapped || !isAuthenticated) return null;
 
   const thClass = 'px-3 py-3 text-left text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
   const tdClass = 'px-3 py-3 text-sm text-white whitespace-nowrap';

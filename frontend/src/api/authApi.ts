@@ -1,15 +1,36 @@
-import apiClient from '../lib/apiClient';
+import publicApiClient from '../lib/publicApiClient';
 import type { AuthResponse, MeResponse } from '../types/auth/auth-types';
+
+export interface RegisterPayload {
+  email: string;
+  password: string;
+  username: string;
+  displayName: string;
+  dateOfBirth: {
+    day: number;
+    month: number;
+    year: number;
+  };
+  country: string;
+  city: string;
+  role: 'user' | 'creator';
+}
 
 const authApi = {
   login: (email: string, password: string) =>
-    apiClient.post<AuthResponse>('/auth/login', { email, password }),
+    publicApiClient.post<AuthResponse>('/auth/login', { email, password }),
 
-  register: (email: string, password: string, username: string) =>
-    apiClient.post<AuthResponse>('/auth/register', { email, password, username }),
+  register: (payload: RegisterPayload) =>
+    publicApiClient.post<AuthResponse>('/auth/register', payload),
+
+  refresh: () =>
+    publicApiClient.post<AuthResponse>('/auth/refresh'),
+
+  logout: () =>
+    publicApiClient.post('/auth/logout'),
 
   me: () =>
-    apiClient.get<MeResponse>('/auth/me'),
+    publicApiClient.get<MeResponse>('/auth/me'),
 };
 
 export default authApi;

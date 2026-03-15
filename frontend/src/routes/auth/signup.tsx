@@ -12,7 +12,7 @@ import { useAuthStore } from "../../store/authStore";
 
 export const Route = createFileRoute("/auth/signup")({
   beforeLoad: () => {
-    if (useAuthStore.getState().token) throw redirect({ to: "/" });
+    if (useAuthStore.getState().isAuthenticated) throw redirect({ to: "/" });
   },
   component: SignUpPage,
 });
@@ -64,7 +64,7 @@ function SignUpPage() {
   const [dobDay, setDobDay] = useState("");
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
-  const [role, setRole] = useState<"user" | "artist">("user");
+  const [role, setRole] = useState<"user" | "creator">("user");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,12 +73,31 @@ function SignUpPage() {
   const hasLength = password.length >= 8;
   const passwordValid = hasLetter && hasNumberOrSpecial && hasLength;
 
+  const usernameFromEmail = (value: string) => {
+    const localPart = value.split("@")[0] ?? "user";
+    const normalized = localPart.replace(/[^a-zA-Z0-9_]/g, "_").replace(/_+/g, "_");
+    return (normalized || "user").slice(0, 30);
+  };
+
   const handleFinalSubmit = async () => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await authApi.register(email, password, name);
-      useAuthStore.getState().setAuth(data.token, data.user);
+      const { data } = await authApi.register({
+        email,
+        password,
+        username: usernameFromEmail(email),
+        displayName: name,
+        dateOfBirth: {
+          day: Number(dobDay),
+          month: Number(dobMonth),
+          year: Number(dobYear),
+        },
+        country,
+        city,
+        role,
+      });
+      useAuthStore.getState().setSession(data.accessToken, data.user);
       navigate({ to: "/" });
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
@@ -405,7 +424,7 @@ function SignUpPage() {
               {(
                 [
                   { value: "user", label: "Я звичайний користувач" },
-                  { value: "artist", label: "Я автор пісень" },
+                  { value: "creator", label: "Я автор пісень" },
                 ] as const
               ).map(({ value, label }) => (
                 <label

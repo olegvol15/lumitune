@@ -10,7 +10,7 @@ import { useAuthStore } from "../../store/authStore";
 
 export const Route = createFileRoute("/auth/signin")({
   beforeLoad: () => {
-    if (useAuthStore.getState().token) throw redirect({ to: "/" });
+    if (useAuthStore.getState().isAuthenticated) throw redirect({ to: "/" });
   },
   component: SignInPage,
 });
@@ -43,7 +43,7 @@ function SignInPage() {
     setError(null);
     try {
       const { data } = await authApi.login(email, password);
-      useAuthStore.getState().setAuth(data.token, data.user);
+      useAuthStore.getState().setSession(data.accessToken, data.user);
       navigate({ to: "/" });
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };

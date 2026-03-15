@@ -1,6 +1,8 @@
 import { Mic, Bell, Search } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import LogoIcon from "../ui/LogoIcon";
+import AccountDropdown from "../ui/AccountDropdown";
+import Button from "../ui/Button";
 
 export default function TopBar() {
   return (
@@ -29,12 +31,16 @@ export default function TopBar() {
 
       {/* Right actions */}
       <div className="flex items-center gap-4 flex-shrink-0 w-60 justify-end pr-1">
-        <button className="text-white/60 hover:text-white transition-colors">
+        <Button
+          variant="ghost"
+          size="sm"
+          shape="pill"
+          className="h-10 w-10 !rounded-full !p-0 !text-white/60 hover:!text-white"
+          aria-label="Сповіщення"
+        >
           <Bell size={20} />
-        </button>
-        <div className="w-8 h-8 rounded-full bg-[#1a3050] flex items-center justify-center text-xs font-bold text-white/80">
-          U
-        </div>
+        </Button>
+        <AccountDropdown />
       </div>
     </header>
   );

@@ -17,7 +17,7 @@ import Button from "../components/ui/Button";
 
 export const Route = createFileRoute("/player")({
   beforeLoad: () => {
-    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: "/auth/signin" });
   },
   component: PlayerPage,
 });

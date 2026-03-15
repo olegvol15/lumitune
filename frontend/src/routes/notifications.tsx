@@ -43,7 +43,7 @@ function NotificationItem({ n }: { n: Notification }) {
 
 export const Route = createFileRoute("/notifications")({
   beforeLoad: () => {
-    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: "/auth/signin" });
   },
   component: NotificationsPage,
 });

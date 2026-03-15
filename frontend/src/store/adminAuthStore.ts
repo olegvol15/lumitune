@@ -2,23 +2,61 @@ import { create } from 'zustand';
 import adminAuthApi from '../api/adminAuthApi';
 import type { AdminAuthStore } from '../types/admin/admin-auth-store.types';
 import { getApiErrorMessage } from '../utils/api-error.utils';
-import {
-  ADMIN_TOKEN_KEY,
-  ADMIN_USER_KEY,
-  loadStoredAdminUser,
-} from '../utils/admin-auth-store.utils';
+import { clearLegacyAdminAuthStorage } from '../utils/admin-auth-store.utils';
+
+let refreshPromise: Promise<string | null> | null = null;
+
+clearLegacyAdminAuthStorage();
 
 export const useAdminAuthStore = create<AdminAuthStore>((set) => ({
-  token: sessionStorage.getItem(ADMIN_TOKEN_KEY),
-  admin: loadStoredAdminUser(),
-  isAuthenticated: Boolean(sessionStorage.getItem(ADMIN_TOKEN_KEY)),
+  accessToken: null,
+  admin: null,
+  isAuthenticated: false,
+  isBootstrapped: false,
+
+  setSession: (accessToken, admin) => {
+    clearLegacyAdminAuthStorage();
+    set({ accessToken, admin, isAuthenticated: true });
+  },
+
+  clearSession: () => {
+    clearLegacyAdminAuthStorage();
+    set({ accessToken: null, admin: null, isAuthenticated: false });
+  },
+
+  bootstrap: async () => {
+    try {
+      await useAdminAuthStore.getState().refreshSession();
+    } finally {
+      set({ isBootstrapped: true });
+    }
+  },
+
+  refreshSession: async () => {
+    if (refreshPromise) {
+      return refreshPromise;
+    }
+
+    refreshPromise = (async () => {
+      try {
+        const { data } = await adminAuthApi.refresh();
+        useAdminAuthStore.getState().setSession(data.accessToken, data.admin);
+        return data.accessToken;
+      } catch {
+        useAdminAuthStore.getState().clearSession();
+        return null;
+      } finally {
+        refreshPromise = null;
+      }
+    })();
+
+    return refreshPromise;
+  },
 
   login: async (email, password) => {
     try {
       const { data } = await adminAuthApi.login(email, password);
-      sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
-      sessionStorage.setItem(ADMIN_USER_KEY, JSON.stringify(data.admin));
-      set({ token: data.token, admin: data.admin, isAuthenticated: true });
+      useAdminAuthStore.getState().setSession(data.accessToken, data.admin);
       return { ok: true };
     } catch (error) {
       return { ok: false, error: getApiErrorMessage(error, 'Invalid email or password') };
@@ -34,10 +72,14 @@ export const useAdminAuthStore = create<AdminAuthStore>((set) => ({
     }
   },
 
-  logout: () => {
-    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
-    sessionStorage.removeItem(ADMIN_USER_KEY);
-    set({ token: null, admin: null, isAuthenticated: false });
+  logout: async () => {
+    try {
+      await adminAuthApi.logout();
+    } catch {
+      // Clear client state even if the backend revoke fails.
+    } finally {
+      useAdminAuthStore.getState().clearSession();
+    }
   },
 
   sendResetCode: async (email) => {

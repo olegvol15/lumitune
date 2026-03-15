@@ -11,7 +11,7 @@ import SongCoverImage from "../components/ui/SongCoverImage";
 
 export const Route = createFileRoute("/playlist/$id")({
   beforeLoad: () => {
-    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: "/auth/signin" });
   },
   component: PlaylistPage,
 });

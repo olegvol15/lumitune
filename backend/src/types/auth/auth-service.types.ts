@@ -37,8 +37,7 @@ export interface AuthUserResponse {
 }
 
 export interface AuthLoginResult {
-  token: string;
-  refreshToken: string;
+  accessToken: string;
   user: AuthUserResponse;
 }
 

@@ -5,13 +5,17 @@ export interface AdminAuthUser {
 
 export interface AdminLoginResponse {
   success: boolean;
-  token: string;
+  accessToken: string;
   admin: AdminAuthUser;
 }
 
 export interface AdminAuthResponse {
   success: boolean;
   admin: AdminAuthUser;
+}
+
+export interface AdminRefreshResponse extends AdminAuthResponse {
+  accessToken: string;
 }
 
 export interface AdminResetCodeResponse {

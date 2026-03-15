@@ -5,6 +5,12 @@ import { ServiceError } from '../types/error/service-error';
 import { generateResetCode, hashResetCode } from '../utils/admin-auth.utils';
 import { normalizeEmail } from '../utils/email.utils';
 import { sendPasswordResetEmail } from '../utils/mailer.utils';
+import {
+  consumeAdminRefreshToken,
+  createAdminRefreshToken,
+  revokeAllAdminRefreshTokens,
+  rotateAdminRefreshToken,
+} from '../utils/admin-refresh-token.utils';
 
 export const adminAuthService = {
   async signup(email?: string, password?: string): Promise<AdminAuthUser> {
@@ -22,7 +28,7 @@ export const adminAuthService = {
     return { id: String(admin._id), email: admin.email };
   },
 
-  async login(email?: string, password?: string): Promise<AdminLoginResult> {
+  async login(email?: string, password?: string): Promise<AdminLoginResult & { refreshToken: string }> {
     if (!email || !password) {
       throw new ServiceError(400, 'Email and password are required');
     }
@@ -38,8 +44,39 @@ export const adminAuthService = {
       throw new ServiceError(401, 'Invalid email or password');
     }
 
-    const token = generateAdminToken({ id: String(admin._id), email: admin.email });
-    return { token, admin: { id: String(admin._id), email: admin.email } };
+    const accessToken = generateAdminToken({ id: String(admin._id), email: admin.email });
+    const refreshToken = await createAdminRefreshToken(String(admin._id));
+    return { accessToken, refreshToken, admin: { id: String(admin._id), email: admin.email } };
+  },
+
+  async refresh(oldRefreshToken: string): Promise<AdminLoginResult & { refreshToken: string }> {
+    const doc = await consumeAdminRefreshToken(oldRefreshToken);
+    if (!doc) {
+      throw new ServiceError(401, 'Invalid or expired refresh token');
+    }
+
+    const admin = await Admin.findById(doc.adminId);
+    if (!admin) {
+      throw new ServiceError(401, 'Admin not found');
+    }
+
+    const accessToken = generateAdminToken({ id: String(admin._id), email: admin.email });
+    const refreshToken = await rotateAdminRefreshToken(oldRefreshToken, String(admin._id));
+
+    return {
+      accessToken,
+      refreshToken,
+      admin: { id: String(admin._id), email: admin.email },
+    };
+  },
+
+  async logout(refreshToken: string): Promise<void> {
+    const { AdminRefreshToken } = await import('../models/admin-refresh-token.model');
+    await AdminRefreshToken.deleteOne({ token: refreshToken });
+  },
+
+  async logoutAll(adminId: string): Promise<void> {
+    await revokeAllAdminRefreshTokens(adminId);
   },
 
   async forgotPassword(email?: string): Promise<AdminForgotPasswordResult> {
@@ -109,5 +146,7 @@ export const adminAuthService = {
     admin.resetCodeHash = undefined;
     admin.resetCodeExpiresAt = undefined;
     await admin.save();
+
+    await revokeAllAdminRefreshTokens(String(admin._id));
   },
 };

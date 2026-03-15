@@ -19,7 +19,7 @@ const user = {
 
 export const Route = createFileRoute("/profile")({
   beforeLoad: () => {
-    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: "/auth/signin" });
   },
   component: ProfilePage,
 });

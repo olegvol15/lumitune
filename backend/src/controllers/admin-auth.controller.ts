@@ -9,6 +9,12 @@ import {
 import { adminAuthService } from '../services/admin-auth.service';
 import { ServiceError } from '../types/error/service-error';
 import { getErrorMessage } from '../utils/error.utils';
+import {
+  ADMIN_REFRESH_COOKIE_NAME,
+  clearAdminRefreshCookie,
+  getCookieValue,
+  setAdminRefreshCookie,
+} from '../utils/cookie.utils';
 
 export const adminSignup = async (req: Request, res: Response) => {
   try {
@@ -37,11 +43,12 @@ export const adminSignup = async (req: Request, res: Response) => {
 export const adminLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body as AdminCredentialsBody;
-    const { token, admin } = await adminAuthService.login(email, password);
+    const { accessToken, refreshToken, admin } = await adminAuthService.login(email, password);
+    setAdminRefreshCookie(res, refreshToken);
 
     return res.status(200).json({
       success: true,
-      token,
+      accessToken,
       admin: {
         id: admin.id,
         email: admin.email,
@@ -79,6 +86,81 @@ export const adminMe = async (req: AdminAuthRequest, res: Response) => {
     return res.status(500).json({
       success: false,
       message: getErrorMessage(error, 'Error getting admin info'),
+    });
+  }
+};
+
+export const adminRefresh = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = getCookieValue(req, ADMIN_REFRESH_COOKIE_NAME);
+    if (!refreshToken) {
+      return res.status(401).json({
+        success: false,
+        message: 'Refresh token is required',
+      });
+    }
+
+    const { accessToken, refreshToken: nextRefreshToken, admin } = await adminAuthService.refresh(refreshToken);
+    setAdminRefreshCookie(res, nextRefreshToken);
+
+    return res.status(200).json({
+      success: true,
+      accessToken,
+      admin,
+    });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: getErrorMessage(error, 'Error refreshing session'),
+    });
+  }
+};
+
+export const adminLogout = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = getCookieValue(req, ADMIN_REFRESH_COOKIE_NAME);
+    if (refreshToken) {
+      await adminAuthService.logout(refreshToken);
+    }
+
+    clearAdminRefreshCookie(res);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: getErrorMessage(error, 'Error logging out'),
+    });
+  }
+};
+
+export const adminLogoutAll = async (req: AdminAuthRequest, res: Response) => {
+  try {
+    if (!req.admin?._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized to access this route',
+      });
+    }
+
+    await adminAuthService.logoutAll(String(req.admin._id));
+    clearAdminRefreshCookie(res);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Logged out from all devices',
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: getErrorMessage(error, 'Error logging out from all devices'),
     });
   }
 };

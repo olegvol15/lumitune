@@ -14,12 +14,8 @@ import {
   RegisterUserInput,
 } from '../types/auth/auth-service.types';
 
-export interface AuthLoginWithRefreshResult extends AuthLoginResult {
-  refreshToken: string;
-}
-
 export const authService = {
-  async register(input: RegisterUserInput): Promise<AuthLoginWithRefreshResult> {
+  async register(input: RegisterUserInput): Promise<AuthLoginResult & { refreshToken: string }> {
     const { email, password, username, displayName, dateOfBirth, country, city, role } = input;
     if (!email || !password || !username || !displayName || !dateOfBirth || !country || !city || !role) {
       throw new ServiceError(400, 'All fields are required');
@@ -45,16 +41,16 @@ export const authService = {
       role,
     });
 
-    const token = generateToken({ id: String(user._id), email: user.email, username: user.username });
+    const accessToken = generateToken({ id: String(user._id), email: user.email, username: user.username });
     const refreshToken = await createRefreshToken(String(user._id));
 
     // Fire-and-forget welcome email
     sendWelcomeEmail(user.email, user.username).catch(() => {});
 
-    return { token, refreshToken, user: toAuthUserResponse(user) };
+    return { accessToken, refreshToken, user: toAuthUserResponse(user) };
   },
 
-  async login(input: LoginUserInput): Promise<AuthLoginWithRefreshResult> {
+  async login(input: LoginUserInput): Promise<AuthLoginResult & { refreshToken: string }> {
     const { email, password } = input;
     if (!email || !password) {
       throw new ServiceError(400, 'Email and password are required');
@@ -71,13 +67,13 @@ export const authService = {
       throw new ServiceError(401, 'Invalid credentials');
     }
 
-    const token = generateToken({ id: String(user._id), email: user.email, username: user.username });
+    const accessToken = generateToken({ id: String(user._id), email: user.email, username: user.username });
     const refreshToken = await createRefreshToken(String(user._id));
 
-    return { token, refreshToken, user: toAuthUserResponse(user) };
+    return { accessToken, refreshToken, user: toAuthUserResponse(user) };
   },
 
-  async refresh(oldRefreshToken: string): Promise<{ token: string; refreshToken: string }> {
+  async refresh(oldRefreshToken: string): Promise<{ accessToken: string; refreshToken: string; user: ReturnType<typeof toAuthUserResponse> }> {
     const doc = await consumeRefreshToken(oldRefreshToken);
     if (!doc) {
       throw new ServiceError(401, 'Invalid or expired refresh token');
@@ -88,10 +84,10 @@ export const authService = {
       throw new ServiceError(401, 'User not found');
     }
 
-    const token = generateToken({ id: String(user._id), email: user.email, username: user.username });
+    const accessToken = generateToken({ id: String(user._id), email: user.email, username: user.username });
     const refreshToken = await rotateRefreshToken(oldRefreshToken, String(user._id));
 
-    return { token, refreshToken };
+    return { accessToken, refreshToken, user: toAuthUserResponse(user) };
   },
 
   async logout(refreshToken: string): Promise<void> {

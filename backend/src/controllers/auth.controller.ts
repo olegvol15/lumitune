@@ -3,11 +3,18 @@ import { AuthRequest } from '../types/auth/auth.types';
 import { ServiceError } from '../types/error/service-error';
 import { getErrorMessage } from '../utils/error.utils';
 import { authService } from '../services/auth.service';
+import {
+  USER_REFRESH_COOKIE_NAME,
+  clearUserRefreshCookie,
+  getCookieValue,
+  setUserRefreshCookie,
+} from '../utils/cookie.utils';
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { token, refreshToken, user } = await authService.register(req.body);
-    res.status(201).json({ success: true, token, refreshToken, user });
+    const { accessToken, refreshToken, user } = await authService.register(req.body);
+    setUserRefreshCookie(res, refreshToken);
+    res.status(201).json({ success: true, accessToken, user });
   } catch (error) {
     if (error instanceof ServiceError) {
       return res.status(error.status).json({ success: false, message: error.message });
@@ -18,8 +25,9 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { token, refreshToken, user } = await authService.login(req.body);
-    res.status(200).json({ success: true, token, refreshToken, user });
+    const { accessToken, refreshToken, user } = await authService.login(req.body);
+    setUserRefreshCookie(res, refreshToken);
+    res.status(200).json({ success: true, accessToken, user });
   } catch (error) {
     if (error instanceof ServiceError) {
       return res.status(error.status).json({ success: false, message: error.message });
@@ -30,9 +38,14 @@ export const login = async (req: Request, res: Response) => {
 
 export const refresh = async (req: Request, res: Response) => {
   try {
-    const { refreshToken: oldToken } = req.body as { refreshToken: string };
-    const { token, refreshToken } = await authService.refresh(oldToken);
-    res.status(200).json({ success: true, token, refreshToken });
+    const oldToken = getCookieValue(req, USER_REFRESH_COOKIE_NAME);
+    if (!oldToken) {
+      return res.status(401).json({ success: false, message: 'Refresh token is required' });
+    }
+
+    const { accessToken, refreshToken, user } = await authService.refresh(oldToken);
+    setUserRefreshCookie(res, refreshToken);
+    res.status(200).json({ success: true, accessToken, user });
   } catch (error) {
     if (error instanceof ServiceError) {
       return res.status(error.status).json({ success: false, message: error.message });
@@ -43,10 +56,11 @@ export const refresh = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
   try {
-    const { refreshToken } = req.body as { refreshToken?: string };
+    const refreshToken = getCookieValue(req, USER_REFRESH_COOKIE_NAME);
     if (refreshToken) {
       await authService.logout(refreshToken);
     }
+    clearUserRefreshCookie(res);
     res.status(200).json({ success: true, message: 'Logged out successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: getErrorMessage(error, 'Error logging out') });
@@ -59,6 +73,7 @@ export const logoutAll = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
     await authService.logoutAll(String(req.user._id));
+    clearUserRefreshCookie(res);
     res.status(200).json({ success: true, message: 'Logged out from all devices' });
   } catch (error) {
     res.status(500).json({ success: false, message: getErrorMessage(error, 'Error logging out') });

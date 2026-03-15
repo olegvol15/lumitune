@@ -1,31 +1,36 @@
-import apiClient from '../lib/apiClient';
+import publicApiClient from '../lib/publicApiClient';
 import type {
   AdminAuthResponse,
   AdminLoginResponse,
+  AdminRefreshResponse,
   AdminResetCodeResponse,
   BasicAdminResponse,
 } from '../types/admin/admin-auth-api.types';
 
 const adminAuthApi = {
   signup: (email: string, password: string) =>
-    apiClient.post<AdminAuthResponse>('/admin/auth/signup', { email, password }),
+    publicApiClient.post<BasicAdminResponse>('/admin/auth/signup', { email, password }),
 
   login: (email: string, password: string) =>
-    apiClient.post<AdminLoginResponse>('/admin/auth/login', { email, password }),
+    publicApiClient.post<AdminLoginResponse>('/admin/auth/login', { email, password }),
 
-  me: (token: string) =>
-    apiClient.get<AdminAuthResponse>('/admin/auth/me', {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+  refresh: () =>
+    publicApiClient.post<AdminRefreshResponse>('/admin/auth/refresh'),
+
+  logout: () =>
+    publicApiClient.post<BasicAdminResponse>('/admin/auth/logout'),
+
+  me: () =>
+    publicApiClient.get<AdminAuthResponse>('/admin/auth/me'),
 
   forgotPassword: (email: string) =>
-    apiClient.post<AdminResetCodeResponse>('/admin/auth/forgot-password', { email }),
+    publicApiClient.post<AdminResetCodeResponse>('/admin/auth/forgot-password', { email }),
 
   verifyResetCode: (email: string, code: string) =>
-    apiClient.post<BasicAdminResponse>('/admin/auth/verify-reset-code', { email, code }),
+    publicApiClient.post<BasicAdminResponse>('/admin/auth/verify-reset-code', { email, code }),
 
   resetPassword: (email: string, code: string, newPassword: string) =>
-    apiClient.post<BasicAdminResponse>('/admin/auth/reset-password', {
+    publicApiClient.post<BasicAdminResponse>('/admin/auth/reset-password', {
       email,
       code,
       newPassword,

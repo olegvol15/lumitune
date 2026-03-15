@@ -10,7 +10,7 @@ import type { LibraryTab } from "../types/routes/route.types";
 
 export const Route = createFileRoute("/library")({
   beforeLoad: () => {
-    if (!useAuthStore.getState().token) throw redirect({ to: "/auth/signin" });
+    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: "/auth/signin" });
   },
   component: LibraryPage,
 });

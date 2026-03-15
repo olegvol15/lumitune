@@ -15,10 +15,15 @@ export interface PlaylistStore {
 }
 
 export interface AuthStore {
-  token: string | null;
+  accessToken: string | null;
   user: AuthUser | null;
-  setAuth: (token: string, user: AuthUser) => void;
-  logout: () => void;
+  isAuthenticated: boolean;
+  isBootstrapped: boolean;
+  setSession: (accessToken: string, user: AuthUser) => void;
+  clearSession: () => void;
+  bootstrap: () => Promise<void>;
+  refreshSession: () => Promise<string | null>;
+  logout: () => Promise<void>;
 }
 
 export interface PlayerStore {
