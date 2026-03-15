@@ -1,4 +1,4 @@
-import type { BackendSong } from '../api/adminSongsApi';
+import type { BackendSong } from '../types/media/song-api.types';
 import type { AdminTrack } from '../types/admin/admin-tracks.types';
 
 const toCoverUrl = (coverImage?: string): string => {

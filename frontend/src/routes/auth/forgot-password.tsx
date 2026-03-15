@@ -1,8 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import AuthBackButton from "../../components/auth/AuthBackButton";
+import AuthBottomLink from "../../components/auth/AuthBottomLink";
 import AuthLogo from "../../components/auth/AuthLogo";
+import AuthOrDivider from "../../components/auth/AuthOrDivider";
 import Button from "../../components/ui/Button";
+import { maskEmail } from "../../utils/forgot-password.utils";
 
 export const Route = createFileRoute("/auth/forgot-password")({
   component: ForgotPasswordPage,
@@ -25,12 +29,7 @@ function ForgotPasswordPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const maskedEmail = email
-    ? email[0] +
-      "*".repeat(5) +
-      email.slice(6, email.indexOf("@")) +
-      email.slice(email.indexOf("@"))
-    : "";
+  const maskedEmail = maskEmail(email);
 
   const handleResend = () => {
     // TODO: resend code
@@ -43,45 +42,12 @@ function ForgotPasswordPage() {
     navigate({ to: "/auth/signin" });
   };
 
-  const BackButton = ({ onBack }: { onBack: () => void }) => (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={onBack}
-      className="text-[#8AB8F0] underline underline-offset-4 !px-0 mb-3"
-    >
-      Назад
-    </Button>
-  );
-
-  const OrDivider = () => (
-    <div className="flex items-center gap-3 my-4">
-      <div className="flex-1 auth-muted-line" />
-      <span className="text-[#769CCF] text-sm">або</span>
-      <div className="flex-1 auth-muted-line" />
-    </div>
-  );
-
-  const BottomLink = () => (
-    <p className="text-center text-[#769CCF] text-[15px] mt-4">
-      Згадали пароль?{" "}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => navigate({ to: "/auth/signin" })}
-        className="text-[#8AB8F0] font-semibold underline underline-offset-4 !px-0"
-      >
-        Увійдіть до аккаунту
-      </Button>
-    </p>
-  );
-
   // ─── Step 0: email ────────────────────────────────────────────────────────
   if (step === 0) {
     return (
       <div className="auth-page-bg min-h-screen px-4 py-6 sm:py-8 flex flex-col sm:items-center sm:justify-center">
         <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
-          <BackButton onBack={() => navigate({ to: "/auth/signin" })} />
+          <AuthBackButton onBack={() => navigate({ to: "/auth/signin" })} />
 
           <AuthLogo heading="Забули пароль?" />
 
@@ -117,7 +83,7 @@ function ForgotPasswordPage() {
             </Button>
           </form>
 
-          <OrDivider />
+          <AuthOrDivider />
 
           <Button
             variant="auth-outline"
@@ -129,7 +95,7 @@ function ForgotPasswordPage() {
             Отримайте новий код
           </Button>
 
-          <BottomLink />
+          <AuthBottomLink onNavigateToSignIn={() => navigate({ to: "/auth/signin" })} />
         </div>
       </div>
     );
@@ -140,7 +106,7 @@ function ForgotPasswordPage() {
     return (
       <div className="auth-page-bg min-h-screen px-4 py-6 sm:py-8 flex flex-col sm:items-center sm:justify-center">
         <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
-          <BackButton onBack={() => setStep(0)} />
+          <AuthBackButton onBack={() => setStep(0)} />
 
           <AuthLogo heading="Забули пароль?" />
 
@@ -184,7 +150,7 @@ function ForgotPasswordPage() {
             </Button>
           </form>
 
-          <OrDivider />
+          <AuthOrDivider />
 
           <Button
             variant="auth-outline"
@@ -196,7 +162,7 @@ function ForgotPasswordPage() {
             Отримайте новий код
           </Button>
 
-          <BottomLink />
+          <AuthBottomLink onNavigateToSignIn={() => navigate({ to: "/auth/signin" })} />
         </div>
       </div>
     );
@@ -206,7 +172,7 @@ function ForgotPasswordPage() {
   return (
     <div className="auth-page-bg min-h-screen px-4 py-6 sm:py-8 flex flex-col sm:items-center sm:justify-center">
       <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
-        <BackButton onBack={() => setStep(1)} />
+        <AuthBackButton onBack={() => setStep(1)} />
 
         <AuthLogo heading="Придумайте новий пароль" />
 
@@ -277,7 +243,7 @@ function ForgotPasswordPage() {
           </Button>
         </div>
 
-        <OrDivider />
+        <AuthOrDivider />
 
         <Button
           variant="auth-outline"
@@ -289,7 +255,7 @@ function ForgotPasswordPage() {
           Отримайте новий код
         </Button>
 
-        <BottomLink />
+        <AuthBottomLink onNavigateToSignIn={() => navigate({ to: "/auth/signin" })} />
       </div>
     </div>
   );

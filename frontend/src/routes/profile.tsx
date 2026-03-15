@@ -1,32 +1,35 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Pencil } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  AlbumCard,
-  FollowingCard,
-  HeroActions,
-  SectionArrows,
-  SectionTitle,
-  Stat,
-  TopTrackRow,
-  TrackCard,
-  TrackSectionTools,
-} from "../components/profile/ProfileDisplay";
-import {
-  AlbumUploadModal,
-  EditProfileModal,
-  TrackEditorModal,
-} from "../components/profile/ProfileModals";
+import ProfileAlbumCard from "../components/profile/ProfileAlbumCard";
+import ProfileAlbumUploadModal from "../components/profile/ProfileAlbumUploadModal";
+import ProfileEditModal from "../components/profile/ProfileEditModal";
+import ProfileFollowingCard from "../components/profile/ProfileFollowingCard";
+import ProfileHeroActions from "../components/profile/ProfileHeroActions";
+import ProfileSectionArrows from "../components/profile/ProfileSectionArrows";
+import ProfileSectionTitle from "../components/profile/ProfileSectionTitle";
+import ProfileStat from "../components/profile/ProfileStat";
+import ProfileTopTrackRow from "../components/profile/ProfileTopTrackRow";
+import ProfileTrackCard from "../components/profile/ProfileTrackCard";
+import ProfileTrackEditorModal from "../components/profile/ProfileTrackEditorModal";
+import ProfileTrackSectionTools from "../components/profile/ProfileTrackSectionTools";
 import type {
   CreatorAlbum,
   CreatorTrack,
   TrackModalState,
-} from "../components/profile/types";
+} from "../types/profile/profile.types";
 import Button from "../components/ui/Button";
 import { albums } from "../data/albums";
 import { artists } from "../data/artists";
 import { useAuthStore } from "../store/authStore";
 import { usePlayerStore } from "../store/playerStore";
+import {
+  buildSeedAlbums,
+  buildSeedTracks,
+  PROFILE_GENRES,
+  PROFILE_MOODS,
+  readJsonFromStorage,
+} from "../utils/profile.utils";
 
 const FALLBACK_AVATAR =
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=320&q=80";
@@ -35,43 +38,6 @@ const FALLBACK_COVER =
 
 const TRACK_STORAGE_KEY = "creator_profile_tracks";
 const ALBUM_STORAGE_KEY = "creator_profile_albums";
-
-const RELEASE_DATES = ["12.11.2012", "24.06.2023", "10.10.2005"];
-const GENRES = ["Поп", "R&B", "K-Pop", "Rock", "Alternative"];
-const MOODS = ["Спокійний", "Натхненний", "Енергійний", "Мрійливий"];
-
-function readJson<T>(key: string, fallback: T): T {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-function buildSeedTracks(userName: string): CreatorTrack[] {
-  return albums.slice(0, 5).map((album, index) => ({
-    id: `creator-track-${index + 1}`,
-    title: album.title,
-    artistName: userName,
-    albumCover: album.coverUrl,
-    duration: 182,
-    genre: GENRES[index % GENRES.length],
-    mood: MOODS[index % MOODS.length],
-    releaseDate: RELEASE_DATES[index % RELEASE_DATES.length],
-    likes: 235 * (index + 1),
-  }));
-}
-
-function buildSeedAlbums(): CreatorAlbum[] {
-  return albums.slice(0, 3).map((album, index) => ({
-    id: `creator-album-${index + 1}`,
-    title: album.title,
-    coverImage: album.coverUrl,
-    trackIds: [],
-  }));
-}
 
 export const Route = createFileRoute("/profile")({
   beforeLoad: () => {
@@ -101,10 +67,10 @@ function ProfilePage() {
   const cover = user?.coverImage || FALLBACK_COVER;
 
   const [creatorTracks, setCreatorTracks] = useState<CreatorTrack[]>(() =>
-    readJson(TRACK_STORAGE_KEY, buildSeedTracks(displayName)),
+    readJsonFromStorage(TRACK_STORAGE_KEY, buildSeedTracks(displayName)),
   );
   const [creatorAlbums, setCreatorAlbums] = useState<CreatorAlbum[]>(() =>
-    readJson(ALBUM_STORAGE_KEY, buildSeedAlbums()),
+    readJsonFromStorage(ALBUM_STORAGE_KEY, buildSeedAlbums()),
   );
 
   useEffect(() => {
@@ -182,14 +148,17 @@ function ProfilePage() {
                     </h1>
 
                     <div className="flex gap-6 pb-1">
-                      <Stat value="66" label="Підписки" />
-                      <Stat value={String(Math.max(creatorTracks.length, 6))} label="Музика" />
-                      <Stat value="666" label="Слухачі" />
+                      <ProfileStat value="66" label="Підписки" />
+                      <ProfileStat
+                        value={String(Math.max(creatorTracks.length, 6))}
+                        label="Музика"
+                      />
+                      <ProfileStat value="666" label="Слухачі" />
                     </div>
                   </div>
                 </div>
 
-                <HeroActions
+                <ProfileHeroActions
                   onEditProfile={() => setIsEditProfileOpen(true)}
                   onOpenSettings={() => navigate({ to: "/settings" })}
                 />
@@ -240,11 +209,14 @@ function ProfilePage() {
             </div>
 
             <section className="mb-12">
-              <SectionTitle title="Ваші треки" right={<TrackSectionTools />} />
+              <ProfileSectionTitle
+                title="Ваші треки"
+                right={<ProfileTrackSectionTools />}
+              />
 
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
                 {creatorTracks.map((track) => (
-                  <TrackCard
+                  <ProfileTrackCard
                     key={track.id}
                     track={track}
                     onPlay={() => playTrack(track)}
@@ -257,7 +229,7 @@ function ProfilePage() {
             </section>
 
             <section className="mb-12">
-              <SectionTitle
+              <ProfileSectionTitle
                 title="Топ ваших вподобань треків цього місяця"
                 right={
                   <div className="grid grid-cols-[120px_110px_50px] gap-4 pr-4 text-sm font-semibold text-[#d2dce8]">
@@ -270,7 +242,7 @@ function ProfilePage() {
 
               <div className="space-y-3">
                 {topTracks.map((track, index) => (
-                  <TopTrackRow
+                  <ProfileTopTrackRow
                     key={track.id}
                     track={track}
                     index={index}
@@ -281,11 +253,14 @@ function ProfilePage() {
             </section>
 
             <section className="mb-12">
-              <SectionTitle title="Ваші створенні альбоми" right={<SectionArrows />} />
+              <ProfileSectionTitle
+                title="Ваші створенні альбоми"
+                right={<ProfileSectionArrows />}
+              />
 
               <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
                 {creatorAlbums.map((album) => (
-                  <AlbumCard
+                  <ProfileAlbumCard
                     key={album.id}
                     album={album}
                     onClick={() => navigate({ to: "/album/$id", params: { id: albums[0].id } })}
@@ -295,11 +270,14 @@ function ProfilePage() {
             </section>
 
             <section>
-              <SectionTitle title="Ви слідкуєте" right={<SectionArrows />} />
+              <ProfileSectionTitle
+                title="Ви слідкуєте"
+                right={<ProfileSectionArrows />}
+              />
 
               <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
                 {followingArtists.map((artist) => (
-                  <FollowingCard
+                  <ProfileFollowingCard
                     key={artist.id}
                     name={artist.name}
                     image={artist.image}
@@ -313,21 +291,21 @@ function ProfilePage() {
         </div>
       </div>
 
-      <EditProfileModal
+      <ProfileEditModal
         open={isEditProfileOpen}
         fallbackAvatar={FALLBACK_AVATAR}
         fallbackCover={FALLBACK_COVER}
         onClose={() => setIsEditProfileOpen(false)}
       />
-      <TrackEditorModal
+      <ProfileTrackEditorModal
         open={trackModal.open}
         mode={trackModal.open ? trackModal.mode : "create"}
         initialTrack={
           trackModal.open && trackModal.mode === "edit" ? editingTrack : undefined
         }
         fallbackCover={FALLBACK_COVER}
-        genres={GENRES}
-        moods={MOODS}
+        genres={PROFILE_GENRES}
+        moods={PROFILE_MOODS}
         onClose={() => setTrackModal({ open: false })}
         onSave={(track) => {
           setCreatorTracks((prev) => {
@@ -339,7 +317,7 @@ function ProfilePage() {
           setTrackModal({ open: false });
         }}
       />
-      <AlbumUploadModal
+      <ProfileAlbumUploadModal
         open={isAlbumModalOpen}
         tracks={creatorTracks}
         fallbackCover={FALLBACK_COVER}

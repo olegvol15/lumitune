@@ -1,99 +1,12 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { ChevronDown, ChevronLeft, Search } from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 import { useState } from "react";
+import SettingsItem from "../components/settings/SettingsItem";
+import SettingsSelect from "../components/settings/SettingsSelect";
+import SettingsToggle from "../components/settings/SettingsToggle";
 import Button from "../components/ui/Button";
 import { useAuthStore } from "../store/authStore";
-
-function Toggle({
-  value,
-  onChange,
-}: {
-  value: boolean;
-  onChange: (value: boolean) => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={() => onChange(!value)}
-        className={[
-          "relative inline-flex h-7 w-11 items-center rounded-lg border transition-all duration-200",
-        value
-          ? "border-[#76d0ff]/55 bg-[#213a54]"
-          : "border-white/5 bg-[#1a2430]",
-      ].join(" ")}
-    >
-      <span
-        className={[
-          "absolute h-[18px] w-[18px] rounded-[6px] transition-all duration-200",
-          value
-            ? "left-[23px] bg-[#7bd3ff] shadow-[0_0_14px_rgba(123,211,255,0.4)]"
-            : "left-1.5 bg-[#4f7c99]",
-        ].join(" ")}
-      />
-    </button>
-  );
-}
-
-function SelectControl({
-  value,
-  options,
-  onChange,
-}: {
-  value: string;
-  options: Array<{ value: string; label: string }>;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="relative w-full max-w-[170px]">
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-9 w-full appearance-none rounded-lg border border-[#274a69] bg-[#101c2a]/85 px-3 pr-9 text-xs text-[#91a9c2] outline-none transition focus:border-[#59bfff]"
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <ChevronDown
-        size={14}
-        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6e88a6]"
-      />
-    </div>
-  );
-}
-
-function SettingItem({
-  title,
-  description,
-  control,
-  compact = false,
-}: {
-  title: string;
-  description?: string;
-  control: React.ReactNode;
-  compact?: boolean;
-}) {
-  return (
-    <div
-      className={[
-        "grid gap-4 border-b border-white/[0.03] py-5",
-        compact ? "md:grid-cols-[minmax(0,1fr)_170px]" : "md:grid-cols-[minmax(0,1fr)_170px]",
-      ].join(" ")}
-    >
-      <div className="max-w-xl">
-        <h3 className="text-[15px] font-semibold text-[#eef6ff]">{title}</h3>
-        {description ? (
-          <p className="mt-1 whitespace-pre-line text-sm leading-6 text-[#7d92aa]">
-            {description}
-          </p>
-        ) : null}
-      </div>
-      <div className="flex items-start justify-start md:justify-end">{control}</div>
-    </div>
-  );
-}
+import { LANGUAGE_OPTIONS, THEME_OPTIONS } from "../utils/settings.utils";
 
 export const Route = createFileRoute("/settings")({
   beforeLoad: () => {
@@ -192,99 +105,93 @@ function SettingsPage() {
           </div>
 
           <div className="divide-y divide-white/[0.03]">
-            <SettingItem
+            <SettingsItem
               title="Офлайн-Режим"
               description="Слухайте музику без підключення до інтернету."
               control={
-                <Toggle value={offlineMode} onChange={setOfflineMode} />
+                <SettingsToggle value={offlineMode} onChange={setOfflineMode} />
               }
             />
 
-            <SettingItem
+            <SettingsItem
               title="Мова"
               description="Оберіть мову платформи. Після цього зробіть перезапуск."
               control={
-                <SelectControl
+                <SettingsSelect
                   value={language}
                   onChange={setLanguage}
-                  options={[
-                    { value: "uk-UA", label: "Українська(UA)" },
-                    { value: "en-US", label: "English(US)" },
-                    { value: "pl-PL", label: "Polski(PL)" },
-                  ]}
+                  options={LANGUAGE_OPTIONS}
                 />
               }
             />
 
-            <SettingItem
+            <SettingsItem
               title="Сповіщення"
               description="Контролюйте ваші сповіщення."
               control={
-                <Toggle value={notifications} onChange={setNotifications} />
+                <SettingsToggle value={notifications} onChange={setNotifications} />
               }
             />
 
-            <SettingItem
+            <SettingsItem
               title="Контент для дорослих(Mature)"
               description={
                 "Дозволити контент для дорослих(M)\nКонтент позначений значком M(mature).\nНа налаштування може пройти деякий час!"
               }
               control={
-                <Toggle value={matureContent} onChange={setMatureContent} />
+                <SettingsToggle value={matureContent} onChange={setMatureContent} />
               }
             />
 
-            <SettingItem
+            <SettingsItem
               title="Приватність"
               description="Керуйте тим, хто може бачити ваші плейлисти, підписки та активність у додатку."
               control={<div className="h-7 w-11" />}
               compact
             />
 
-            <SettingItem
+            <SettingsItem
               title="Дозволити іншим бачити, що я слухаю зараз?"
               control={
-                <Toggle value={shareListening} onChange={setShareListening} />
+                <SettingsToggle value={shareListening} onChange={setShareListening} />
               }
             />
 
-            <SettingItem
+            <SettingsItem
               title="Приховати мій профіль у пошуку:"
               control={
-                <Toggle value={hideProfile} onChange={setHideProfile} />
+                <SettingsToggle value={hideProfile} onChange={setHideProfile} />
               }
             />
 
-            <SettingItem
+            <SettingsItem
               title="Моя медіатека"
               description="Слухайте музику з вашого пристрою!"
               control={<div className="h-7 w-11" />}
               compact
             />
 
-            <SettingItem
+            <SettingsItem
               title="Показати файли на пристрої"
               control={
-                <Toggle value={showDeviceFiles} onChange={setShowDeviceFiles} />
+                <SettingsToggle value={showDeviceFiles} onChange={setShowDeviceFiles} />
               }
             />
 
-            <SettingItem
+            <SettingsItem
               title='Папка "Музика"'
-              control={<Toggle value={musicFolder} onChange={setMusicFolder} />}
+              control={
+                <SettingsToggle value={musicFolder} onChange={setMusicFolder} />
+              }
             />
 
-            <SettingItem
+            <SettingsItem
               title="Колір системи"
               control={
-                <SelectControl
+                <SettingsSelect
                   value={theme}
                   onChange={setTheme}
-                  options={[
-                    { value: "base", label: "Основна" },
-                    { value: "night", label: "Нічна" },
-                    { value: "ice", label: "Холодна" },
-                  ]}
+                  options={THEME_OPTIONS}
                 />
               }
             />

@@ -1,45 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Bell } from "lucide-react";
+import NotificationItem from "../components/notifications/NotificationItem";
 import { notifications } from "../data/notifications";
 import { useAuthStore } from "../store/authStore";
-import type { Notification } from "../types";
-import { Bell, Music, UserPlus, ListMusic, Mic } from "lucide-react";
-import { formatNotificationTimeAgo } from "../utils/notification.utils";
-
-const typeIcon: Record<Notification["type"], React.ReactNode> = {
-  new_release: <Music size={16} className="text-brand" />,
-  follow: <UserPlus size={16} className="text-emerald-400" />,
-  playlist: <ListMusic size={16} className="text-purple-400" />,
-  podcast: <Mic size={16} className="text-orange-400" />,
-};
-
-function NotificationItem({ n }: { n: Notification }) {
-  return (
-    <div
-      className={`flex items-start gap-3 p-3 rounded-xl transition-colors ${
-        n.read ? "" : "bg-surface-alt"
-      }`}
-    >
-      <div className="relative flex-shrink-0">
-        <img
-          src={n.imageUrl}
-          alt=""
-          className="w-12 h-12 rounded-xl object-cover"
-        />
-        <span className="absolute -bottom-1 -right-1 bg-surface p-0.5 rounded-full">
-          {typeIcon[n.type]}
-        </span>
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-white text-sm font-semibold">{n.title}</p>
-        <p className="text-muted text-xs mt-0.5 leading-relaxed">{n.body}</p>
-        <p className="text-muted text-xs mt-1">{formatNotificationTimeAgo(n.timestamp)}</p>
-      </div>
-      {!n.read && (
-        <span className="w-2 h-2 bg-brand rounded-full flex-shrink-0 mt-1" />
-      )}
-    </div>
-  );
-}
 
 export const Route = createFileRoute("/notifications")({
   beforeLoad: () => {
@@ -72,7 +35,7 @@ function NotificationsPage() {
           </p>
           <div className="space-y-1">
             {today.map((n) => (
-              <NotificationItem key={n.id} n={n} />
+              <NotificationItem key={n.id} notification={n} />
             ))}
           </div>
         </div>
@@ -85,7 +48,7 @@ function NotificationsPage() {
           </p>
           <div className="space-y-1">
             {thisWeek.map((n) => (
-              <NotificationItem key={n.id} n={n} />
+              <NotificationItem key={n.id} notification={n} />
             ))}
           </div>
         </div>

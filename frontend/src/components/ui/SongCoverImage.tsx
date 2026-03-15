@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
-import type { ImgHTMLAttributes, SyntheticEvent } from 'react';
+import type { SyntheticEvent } from 'react';
 import { Music2 } from 'lucide-react';
-
-interface SongCoverImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
-  src?: string;
-  fallbackLabel?: string;
-}
+import type { SongCoverImageProps } from '../../types/ui/song-cover-image.types';
 
 export default function SongCoverImage({
   src,

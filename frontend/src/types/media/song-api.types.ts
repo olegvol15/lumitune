@@ -14,3 +14,8 @@ export interface SongsResponse {
   success: boolean;
   songs: BackendSong[];
 }
+
+export interface SongResponse {
+  success: boolean;
+  song: BackendSong;
+}

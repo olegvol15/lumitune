@@ -1,26 +1,5 @@
 import apiClient from '../lib/apiClient';
-
-interface BackendSong {
-  _id: string;
-  title: string;
-  artist: string;
-  album?: string;
-  genre?: string;
-  duration: number;
-  filePath: string;
-  coverImage?: string;
-  plays: number;
-}
-
-interface SongsResponse {
-  success: boolean;
-  songs: BackendSong[];
-}
-
-interface SongResponse {
-  success: boolean;
-  song: BackendSong;
-}
+import type { SongResponse, SongsResponse } from '../types/media/song-api.types';
 
 const adminSongsApi = {
   list: () => apiClient.get<SongsResponse>('/admin/songs'),
@@ -43,6 +22,4 @@ const adminSongsApi = {
 
   remove: (songId: string) => apiClient.delete(`/admin/songs/${songId}`),
 };
-
-export type { BackendSong };
 export default adminSongsApi;
