@@ -1,7 +1,9 @@
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { formatListeners } from '../../utils/format';
 import type { ArtistSectionProps } from '../../types/props/component-props.types';
+import { staggerContainer, staggerItem } from '../../lib/motion';
 
 export default function ArtistSection({
   title,
@@ -47,12 +49,19 @@ export default function ArtistSection({
         </div>
       </div>
 
-      <div ref={rowRef} className="flex gap-6 overflow-x-auto pb-3 scrollbar-none snap-x snap-mandatory scroll-smooth">
+      <motion.div
+        ref={rowRef}
+        className="flex gap-6 overflow-x-auto pb-3 scrollbar-none snap-x snap-mandatory scroll-smooth"
+        variants={staggerContainer}
+        initial="initial"
+        animate="animate"
+      >
         {artists.map((artist) => (
-          <button
+          <motion.button
             key={artist.id}
             onClick={() => onArtistClick?.(artist)}
             className="flex-shrink-0 snap-start flex flex-col items-center gap-2.5 w-28 sm:w-36 group"
+            variants={staggerItem}
           >
             <img
               src={artist.image}
@@ -65,9 +74,9 @@ export default function ArtistSection({
             <p className="text-white/40 text-xs text-center">
               {formatListeners(artist.monthlyListeners)}
             </p>
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

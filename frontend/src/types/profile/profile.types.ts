@@ -102,6 +102,7 @@ export type ProfileUploadZoneProps = {
 };
 
 export type ProfileCreatorModalProps = {
+  open: boolean;
   title: string;
   children: ReactNode;
   onClose: () => void;

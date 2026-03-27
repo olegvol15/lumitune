@@ -1,8 +1,10 @@
 import { Heart, MoreVertical, Play } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { formatDuration, formatPlayCount } from '../../utils/format';
 import { usePlayerStore } from '../../store/playerStore';
 import type { TrackRowProps } from '../../types/props/component-props.types';
 import SongCoverImage from './SongCoverImage';
+import { cardHover, cardTap } from '../../lib/motion';
 
 export default function TrackRow({
   track,
@@ -23,10 +25,12 @@ export default function TrackRow({
   };
 
   return (
-    <div
+    <motion.div
       className={`flex items-center gap-3 p-2 rounded-xl group hover:bg-surface-alt transition-colors ${
         isActive ? 'bg-surface-alt' : ''
       }`}
+      whileHover={cardHover}
+      whileTap={cardTap}
     >
       {/* Index / album art */}
       <div className="relative flex-shrink-0 w-10 h-10">
@@ -80,6 +84,6 @@ export default function TrackRow({
           <MoreVertical size={14} className="text-muted" />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

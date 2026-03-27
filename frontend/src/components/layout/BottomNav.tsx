@@ -1,5 +1,6 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Home, Heart, Library, Bell } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const tabs = [
   { to: '/', icon: Home, label: 'Головна' },
@@ -26,24 +27,29 @@ export default function BottomNav() {
                 aria-label={label}
                 className="flex items-center justify-center"
               >
-                <span
-                  className={`
-                    flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-200
-                    ${
-                      isActive
-                        ? 'bg-brand/25 shadow-[0_0_18px_rgba(26,123,158,0.45),inset_0_1px_0_rgba(255,255,255,0.12)]'
-                        : 'bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
-                    }
-                  `}
-                >
-                  <Icon
-                    size={24}
-                    strokeWidth={isActive ? 2 : 1.75}
-                    className={`transition-colors duration-200 ${
-                      isActive ? 'text-brand drop-shadow-[0_0_6px_rgba(26,123,158,0.8)]' : 'text-white/50'
-                    }`}
-                    fill={isActive && (to === '/favorite') ? 'currentColor' : 'none'}
-                  />
+                <span className="relative flex items-center justify-center w-14 h-14">
+                  {isActive && (
+                    <motion.span
+                      layoutId="bottom-nav-active"
+                      className="absolute inset-0 rounded-2xl bg-brand/25 shadow-[0_0_18px_rgba(26,123,158,0.45),inset_0_1px_0_rgba(255,255,255,0.12)]"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  <span
+                    className={`
+                      flex items-center justify-center w-14 h-14 rounded-2xl relative z-10
+                      ${!isActive ? 'bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]' : ''}
+                    `}
+                  >
+                    <Icon
+                      size={24}
+                      strokeWidth={isActive ? 2 : 1.75}
+                      className={`transition-colors duration-200 ${
+                        isActive ? 'text-brand drop-shadow-[0_0_6px_rgba(26,123,158,0.8)]' : 'text-white/50'
+                      }`}
+                      fill={isActive && to === '/favorite' ? 'currentColor' : 'none'}
+                    />
+                  </span>
                 </span>
               </Link>
             );

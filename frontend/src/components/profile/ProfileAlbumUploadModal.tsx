@@ -28,12 +28,10 @@ export default function ProfileAlbumUploadModal({
     setSelectedTrackIds(tracks[0] ? [tracks[0].id] : []);
   }, [fallbackCover, open, tracks]);
 
-  if (!open) return null;
-
   const selectedTracks = tracks.filter((track) => selectedTrackIds.includes(track.id));
 
   return (
-    <ProfileCreatorModal title="Завантаження альбому" onClose={onClose}>
+    <ProfileCreatorModal open={open} title="Завантаження альбому" onClose={onClose}>
       <div className="space-y-4">
         <div>
           <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">

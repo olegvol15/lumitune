@@ -45,10 +45,9 @@ export default function ProfileTrackEditorModal({
     setCoverFile(null);
   }, [fallbackCover, initialTrack, open]);
 
-  if (!open) return null;
-
   return (
     <ProfileCreatorModal
+      open={open}
       title={mode === 'create' ? 'Завантаження треку' : 'Редагування треку'}
       onClose={onClose}
     >

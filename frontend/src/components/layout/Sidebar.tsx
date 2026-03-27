@@ -9,9 +9,11 @@ import {
   Clock,
   Music2,
 } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { usePlayerStore } from '../../store/playerStore';
 import { usePlaylistStore } from '../../store/playlistStore';
 import SongCoverImage from '../ui/SongCoverImage';
+import { staggerContainer, staggerItem } from '../../lib/motion';
 
 export default function Sidebar() {
   const { location } = useRouterState();
@@ -31,29 +33,35 @@ export default function Sidebar() {
       <div className="px-5 pt-6 pb-5">
         <h2 className="text-white text-xl font-bold mb-4">Меню</h2>
 
-        <Link
-          to="/"
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-            pathname === '/'
-              ? 'bg-[#0d2a4a] text-white'
-              : 'text-white/70 hover:text-white hover:bg-white/5'
-          }`}
-        >
-          <Home size={18} />
-          Головна
-        </Link>
+        <motion.div variants={staggerContainer} initial="initial" animate="animate">
+          <motion.div variants={staggerItem}>
+            <Link
+              to="/"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                pathname === '/'
+                  ? 'bg-[#0d2a4a] text-white'
+                  : 'text-white/70 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Home size={18} />
+              Головна
+            </Link>
+          </motion.div>
 
-        <Link
-          to="/library"
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors mt-1 ${
-            pathname.startsWith('/library')
-              ? 'bg-[#0d2a4a] text-white'
-              : 'text-white/70 hover:text-white hover:bg-white/5'
-          }`}
-        >
-          <Library size={18} />
-          Моя медіатека
-        </Link>
+          <motion.div variants={staggerItem}>
+            <Link
+              to="/library"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors mt-1 ${
+                pathname.startsWith('/library')
+                  ? 'bg-[#0d2a4a] text-white'
+                  : 'text-white/70 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Library size={18} />
+              Моя медіатека
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
 
       <div className="h-px bg-[#1a3050] mx-5" />
@@ -91,23 +99,33 @@ export default function Sidebar() {
         {playlists.length === 0 ? (
           <p className="text-muted text-xs px-3 py-2">Ще немає плейлистів</p>
         ) : (
-          playlists.map((playlist) => (
-            <button
-              key={playlist.id}
-              onClick={() => navigate({ to: '/playlist/$id', params: { id: playlist.id } })}
-              className={`flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-left transition-colors ${
-                pathname === `/playlist/${playlist.id}` ? 'bg-[#0d2a4a]' : 'hover:bg-white/5'
-              }`}
-            >
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0">
-                <Music2 size={16} className="text-[#1CA2EA]/70" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-white text-sm font-medium truncate">{playlist.title}</p>
-                <p className="text-white/40 text-xs">{playlist.trackIds.length} треків</p>
-              </div>
-            </button>
-          ))
+          <AnimatePresence>
+            {playlists.map((playlist) => (
+              <motion.div
+                key={playlist.id}
+                variants={staggerItem}
+                initial="initial"
+                animate="animate"
+                exit={{ opacity: 0, x: -12, transition: { duration: 0.15 } }}
+                layout
+              >
+                <button
+                  onClick={() => navigate({ to: '/playlist/$id', params: { id: playlist.id } })}
+                  className={`flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-left transition-colors ${
+                    pathname === `/playlist/${playlist.id}` ? 'bg-[#0d2a4a]' : 'hover:bg-white/5'
+                  }`}
+                >
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0">
+                    <Music2 size={16} className="text-[#1CA2EA]/70" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white text-sm font-medium truncate">{playlist.title}</p>
+                    <p className="text-white/40 text-xs">{playlist.trackIds.length} треків</p>
+                  </div>
+                </button>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
       </div>
 

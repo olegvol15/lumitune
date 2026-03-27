@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const banners = [
   {
@@ -45,22 +46,27 @@ export default function HeroBanner() {
 
       {/* Banner carousel */}
       <div className="relative overflow-hidden rounded-xl h-44 sm:h-60 lg:h-72">
-        <div
-          className="flex h-full transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${active * 100}%)` }}
-        >
-          {banners.map((b) => (
-            <div key={b.id} className="w-full flex-shrink-0 h-full relative cursor-pointer">
-              <img src={b.imageUrl} alt={b.label} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-5">
-                <span className="bg-black/40 backdrop-blur-sm text-white text-sm font-semibold px-4 py-1.5 rounded-full">
-                  {b.label}
-                </span>
-              </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={banners[active].id}
+            className="absolute inset-0 cursor-pointer"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0, transition: { duration: 0.35, ease: 'easeOut' } }}
+            exit={{ opacity: 0, x: -40, transition: { duration: 0.25, ease: 'easeIn' } }}
+          >
+            <img
+              src={banners[active].imageUrl}
+              alt={banners[active].label}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute bottom-4 left-5">
+              <span className="bg-black/40 backdrop-blur-sm text-white text-sm font-semibold px-4 py-1.5 rounded-full">
+                {banners[active].label}
+              </span>
             </div>
-          ))}
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

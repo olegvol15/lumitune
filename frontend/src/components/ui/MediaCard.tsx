@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion';
 import type { MediaCardProps } from '../../types/props/component-props.types';
 import SongCoverImage from './SongCoverImage';
+import { cardHover, cardTap } from '../../lib/motion';
 
 const sizes = {
   sm: 'w-28',
@@ -16,7 +18,12 @@ export default function MediaCard({
   rounded = false,
 }: MediaCardProps) {
   return (
-    <button onClick={onClick} className={`${sizes[size]} flex-shrink-0 text-left group`}>
+    <motion.button
+      onClick={onClick}
+      className={`${sizes[size]} flex-shrink-0 text-left group`}
+      whileHover={cardHover}
+      whileTap={cardTap}
+    >
       <SongCoverImage
         src={image}
         alt={title}
@@ -27,6 +34,6 @@ export default function MediaCard({
       />
       <p className="text-white text-sm font-semibold truncate">{title}</p>
       {subtitle && <p className="text-muted text-xs truncate mt-0.5">{subtitle}</p>}
-    </button>
+    </motion.button>
   );
 }

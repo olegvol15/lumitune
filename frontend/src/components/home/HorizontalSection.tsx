@@ -1,9 +1,11 @@
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { motion } from 'framer-motion';
 import MediaCard from '../ui/MediaCard';
 import type { Track } from '../../types';
 import { isAlbum } from '../../utils/typeGuards';
 import type { HorizontalSectionProps } from '../../types/props/component-props.types';
+import { staggerContainer, staggerItem } from '../../lib/motion';
 
 export default function HorizontalSection({
   title,
@@ -49,39 +51,48 @@ export default function HorizontalSection({
         </div>
       </div>
 
-      <div ref={rowRef} className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth">
+      <motion.div
+        ref={rowRef}
+        className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth"
+        variants={staggerContainer}
+        initial="initial"
+        animate="animate"
+      >
         {items.slice(0, 5).map((item) => {
           if (isAlbum(item)) {
             return (
-              <div key={item.id} className="snap-start">
+              <motion.div key={item.id} className="snap-start" variants={staggerItem}>
                 <MediaCard
                   image={item.coverUrl}
                   title={item.title}
                   subtitle={`By ${item.artistName}`}
                   onClick={() => onItemClick?.(item)}
                 />
-              </div>
+              </motion.div>
             );
           }
           const track = item as Track;
           return (
-            <div key={track.id} className="snap-start">
+            <motion.div key={track.id} className="snap-start" variants={staggerItem}>
               <MediaCard
                 image={track.albumCover}
                 title={track.title}
                 subtitle={track.artistName}
                 onClick={() => onItemClick?.(item)}
               />
-            </div>
+            </motion.div>
           );
         })}
 
         {/* "Все тут" card */}
-        <button className="w-28 sm:w-36 flex-shrink-0 snap-start flex flex-col items-center justify-center aspect-square rounded-xl border border-dashed border-[#1a3050] text-white/30 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors gap-2">
+        <motion.button
+          className="w-28 sm:w-36 flex-shrink-0 snap-start flex flex-col items-center justify-center aspect-square rounded-xl border border-dashed border-[#1a3050] text-white/30 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors gap-2"
+          variants={staggerItem}
+        >
           <Plus size={22} />
           <span className="text-xs font-medium">Все тут</span>
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </section>
   );
 }

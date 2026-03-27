@@ -1,9 +1,11 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthLogoutMutation } from '../../hooks/auth';
 import { useAuthStore } from '../../store/authStore';
 import Avatar from './Avatar';
 import Button from './Button';
+import { dropdownVariants } from '../../lib/motion';
 
 export default function AccountDropdown() {
   const navigate = useNavigate();
@@ -66,40 +68,48 @@ export default function AccountDropdown() {
         />
       </Button>
 
-      {open ? (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-[70] w-[176px]">
-          <div className="ml-auto h-0 w-0 border-x-[7px] border-b-[11px] border-x-transparent border-b-[#343b55] mr-[14px]" />
-          <div className="rounded-[10px] bg-[#343b55] px-3 py-2.5 shadow-[0_16px_32px_rgba(0,0,0,0.34)]">
-            <Link
-              to="/profile"
-              onClick={() => setOpen(false)}
-              className="block py-1.5 text-[15px] font-semibold tracking-[-0.02em] text-[#f5f7fb] transition hover:text-white"
-            >
-              Профіль
-            </Link>
-            <div className="h-px bg-[#707892]" />
-            <Link
-              to="/settings"
-              onClick={() => setOpen(false)}
-              className="block py-1.5 text-[15px] font-semibold tracking-[-0.02em] text-[#f5f7fb] transition hover:text-white"
-            >
-              Налаштування
-            </Link>
-            <div className="h-px bg-[#707892]" />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              shape="rect"
-              onClick={() => void handleLogout()}
-              disabled={logoutMutation.isPending}
-              className="!block !px-0 !py-1.5 text-[15px] font-semibold tracking-[-0.02em] !text-[#f5f7fb] transition hover:!text-white disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {logoutMutation.isPending ? 'Вихід...' : 'Вийти'}
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="absolute right-0 top-[calc(100%+8px)] z-[70] w-[176px]"
+            variants={dropdownVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <div className="ml-auto h-0 w-0 border-x-[7px] border-b-[11px] border-x-transparent border-b-[#343b55] mr-[14px]" />
+            <div className="rounded-[10px] bg-[#343b55] px-3 py-2.5 shadow-[0_16px_32px_rgba(0,0,0,0.34)]">
+              <Link
+                to="/profile"
+                onClick={() => setOpen(false)}
+                className="block py-1.5 text-[15px] font-semibold tracking-[-0.02em] text-[#f5f7fb] transition hover:text-white"
+              >
+                Профіль
+              </Link>
+              <div className="h-px bg-[#707892]" />
+              <Link
+                to="/settings"
+                onClick={() => setOpen(false)}
+                className="block py-1.5 text-[15px] font-semibold tracking-[-0.02em] text-[#f5f7fb] transition hover:text-white"
+              >
+                Налаштування
+              </Link>
+              <div className="h-px bg-[#707892]" />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                shape="rect"
+                onClick={() => void handleLogout()}
+                disabled={logoutMutation.isPending}
+                className="!block !px-0 !py-1.5 text-[15px] font-semibold tracking-[-0.02em] !text-[#f5f7fb] transition hover:!text-white disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {logoutMutation.isPending ? 'Вихід...' : 'Вийти'}
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { createRootRoute, Outlet, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { useEffect } from 'react';
 import BottomNav from '../components/layout/BottomNav';
 import MiniPlayer from '../components/layout/MiniPlayer';
 import TopBar from '../components/layout/TopBar';
@@ -21,6 +22,10 @@ function RootLayout() {
   const { location } = useRouterState();
   const pathname = location.pathname;
   const hideNav = HIDDEN_NAV_ROUTES.some((r) => pathname.startsWith(r));
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   if (hideNav) {
     return (
