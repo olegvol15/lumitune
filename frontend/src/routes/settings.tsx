@@ -7,7 +7,9 @@ import SettingsToggle from '../components/settings/SettingsToggle';
 import { useAuthLogoutMutation } from '../hooks/auth';
 import Button from '../components/ui/Button';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 import { LANGUAGE_OPTIONS, THEME_OPTIONS } from '../utils/settings.utils';
+import type { AppTheme } from '../store/themeStore';
 
 export const Route = createFileRoute('/settings')({
   beforeLoad: () => {
@@ -29,7 +31,7 @@ function SettingsPage() {
   const [showDeviceFiles, setShowDeviceFiles] = useState(true);
   const [musicFolder, setMusicFolder] = useState(true);
   const [language, setLanguage] = useState('uk-UA');
-  const [theme, setTheme] = useState('base');
+  const { theme, setTheme } = useThemeStore();
   const logoutMutation = useAuthLogoutMutation();
 
   const handleLogout = async () => {
@@ -41,12 +43,14 @@ function SettingsPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#050c16] text-white">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-24 top-[-8%] h-[420px] w-[420px] rounded-full bg-[#15386f]/30 blur-[120px]" />
-        <div className="absolute right-[-12%] top-[10%] h-[460px] w-[460px] rounded-full bg-[#1e6b71]/20 blur-[150px]" />
-        <div className="absolute bottom-[-8%] right-[8%] h-[280px] w-[280px] rounded-full bg-[#89d5ff]/10 blur-[120px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(28,88,168,0.18),transparent_34%),linear-gradient(180deg,rgba(8,16,28,0.94),rgba(4,10,18,0.98))]" />
-      </div>
+      {theme !== 'ice' && (
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-24 top-[-8%] h-[420px] w-[420px] rounded-full bg-[#15386f]/30 blur-[120px]" />
+          <div className="absolute right-[-12%] top-[10%] h-[460px] w-[460px] rounded-full bg-[#1e6b71]/20 blur-[150px]" />
+          <div className="absolute bottom-[-8%] right-[8%] h-[280px] w-[280px] rounded-full bg-[#89d5ff]/10 blur-[120px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(28,88,168,0.18),transparent_34%),linear-gradient(180deg,rgba(8,16,28,0.94),rgba(4,10,18,0.98))]" />
+        </div>
+      )}
 
       <div className="relative mx-auto max-w-4xl px-5 pb-24 pt-5 sm:px-8 lg:px-10">
         <div className="mb-8 flex items-center justify-between">
@@ -168,7 +172,13 @@ function SettingsPage() {
 
             <SettingsItem
               title="Колір системи"
-              control={<SettingsSelect value={theme} onChange={setTheme} options={THEME_OPTIONS} />}
+              control={
+                <SettingsSelect
+                  value={theme}
+                  onChange={(v) => setTheme(v as AppTheme)}
+                  options={THEME_OPTIONS}
+                />
+              }
             />
           </div>
         </section>

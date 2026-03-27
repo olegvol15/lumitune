@@ -29,7 +29,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="sticky top-16 h-[calc(100vh-4rem)] w-64 bg-[#060d19] border-r border-[#1a3050] overflow-y-auto flex flex-col flex-shrink-0">
+    <aside className="sticky top-16 h-[calc(100vh-4rem)] w-64 bg-[#060d19]/80 backdrop-blur-sm border-r border-[#1a3050] overflow-y-auto flex flex-col flex-shrink-0 z-[10]">
       {/* Меню */}
       <div className="px-5 pt-6 pb-5">
         <h2 className="text-white text-xl font-bold mb-4">Меню</h2>

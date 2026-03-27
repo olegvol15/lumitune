@@ -9,6 +9,7 @@ import RightPanel from '../components/layout/RightPanel';
 import Footer from '../components/layout/Footer';
 import DesktopPlayer from '../components/layout/DesktopPlayer';
 import AudioEngine from '../components/player/AudioEngine';
+import { useThemeStore } from '../store/themeStore';
 
 const HIDDEN_NAV_ROUTES = [
   '/player',
@@ -22,10 +23,30 @@ function RootLayout() {
   const { location } = useRouterState();
   const pathname = location.pathname;
   const hideNav = HIDDEN_NAV_ROUTES.some((r) => pathname.startsWith(r));
+  const theme = useThemeStore((s) => s.theme);
+  const setTheme = useThemeStore((s) => s.setTheme);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme === 'ice' ? 'light' : 'dark';
+  }, [theme]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 'l') {
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+        setTheme(theme === 'ice' ? 'base' : 'ice');
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [theme, setTheme]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  const isDark = theme !== 'ice';
 
   if (hideNav) {
     return (
@@ -36,7 +57,17 @@ function RootLayout() {
   }
 
   return (
-    <div className="bg-[#060d19] text-white">
+    <div className="bg-[#060d19] text-white relative">
+      {/* Dark-mode ambient background blobs */}
+      {isDark && (
+        <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+          <div className="absolute w-[600px] h-[600px] rounded-full blur-[140px] opacity-40 bg-[#0a4a5a] -top-32 left-[10%]" />
+          <div className="absolute w-[500px] h-[500px] rounded-full blur-[160px] opacity-30 bg-[#083d2a] top-[20%] right-[5%]" />
+          <div className="absolute w-[700px] h-[700px] rounded-full blur-[180px] opacity-25 bg-[#0d3a5c] bottom-[10%] left-[30%]" />
+          <div className="absolute w-[400px] h-[400px] rounded-full blur-[130px] opacity-20 bg-[#0a5040] bottom-0 right-[20%]" />
+        </div>
+      )}
+
       {/* TopBar — fixed at top, all screen sizes */}
       <TopBar />
 
@@ -48,7 +79,7 @@ function RootLayout() {
         </div>
 
         {/* Main content — shared mobile + desktop */}
-        <main className="flex-1 min-w-0 pb-36 lg:pb-[72px]">
+        <main className="flex-1 min-w-0 pb-36 lg:pb-[72px] relative z-[2]">
           <Outlet />
         </main>
 

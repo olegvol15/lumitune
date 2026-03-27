@@ -3,6 +3,26 @@
 @tailwind utilities;
 
 @layer base {
+  /* Dark theme (default) */
+  :root {
+    --app-bg-rgb: 6 13 25;         /* #060d19 */
+    --app-nav-rgb: 7 17 31;        /* #07111f */
+    --app-input-rgb: 10 25 41;     /* #0a1929 */
+    --app-active-rgb: 13 42 74;    /* #0d2a4a */
+    --app-border-rgb: 26 48 80;    /* #1a3050 */
+    --app-text-rgb: 255 255 255;   /* #ffffff */
+  }
+
+  /* Light / Холодна theme */
+  html[data-theme='light'] {
+    --app-bg-rgb: 200 223 240;     /* #c8dff0 */
+    --app-nav-rgb: 184 212 232;    /* #b8d4e8 */
+    --app-input-rgb: 216 234 248;  /* #d8eaf8 */
+    --app-active-rgb: 180 207 228; /* #b4cfe4 */
+    --app-border-rgb: 160 196 218; /* #a0c4da */
+    --app-text-rgb: 10 25 41;      /* #0a1929 */
+  }
+
   html,
   body,
   #root {
@@ -28,6 +48,176 @@
     color: #ffffff;
   }
 
+  html[data-theme='light'] input,
+  html[data-theme='light'] textarea,
+  html[data-theme='light'] select {
+    color: rgb(var(--app-text-rgb));
+  }
+}
+
+/* ─── Light theme: global class overrides ──────────────────────────────────
+   These target hardcoded Tailwind arbitrary-value classes throughout the app.
+   Higher specificity than bare Tailwind utilities; !important wins edge cases.
+   Admin routes are deliberately excluded (they stay dark).
+────────────────────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Body */
+  html[data-theme='light'] body {
+    background-color: #c8dff0;
+    color: #0a1929;
+  }
+
+  /* ── Background colours ── */
+  html[data-theme='light'] .bg-\[\#060d19\]      { background-color: #c8dff0 !important; }
+  html[data-theme='light'] .bg-\[\#060d19\]\/80 { background-color: rgba(200,223,240,0.92) !important; }
+  html[data-theme='light'] .bg-\[\#060d19\]\/85 { background-color: rgba(200,223,240,0.95) !important; }
+  html[data-theme='light'] .bg-\[\#050c16\]   { background-color: #c8dff0 !important; }
+  html[data-theme='light'] .bg-\[\#07111f\]   { background-color: #b8d4e8 !important; }
+  html[data-theme='light'] .bg-\[\#08111d\]   { background-color: #c8dff0 !important; }
+  html[data-theme='light'] .bg-\[\#0a1929\]   { background-color: #d8eaf8 !important; }
+  html[data-theme='light'] .bg-\[\#0d1c29\]   { background-color: #d8eaf8 !important; }
+  html[data-theme='light'] .bg-\[\#0d1b2e\]   { background-color: #d8eaf8 !important; }
+  html[data-theme='light'] .bg-\[\#071220\]   { background-color: #dceefa !important; }
+  html[data-theme='light'] .bg-\[\#0d2a4a\]   { background-color: #b4cfe4 !important; }
+  html[data-theme='light'] .bg-\[\#13273a\]   { background-color: #c4dcee !important; }
+  html[data-theme='light'] .bg-\[\#233b47\]   { background-color: #c4dcee !important; }
+  html[data-theme='light'] .bg-\[\#101c2a\]   { background-color: #d8eaf8 !important; }
+  html[data-theme='light'] .bg-\[\#1a2430\]   { background-color: #d8eaf8 !important; }
+  html[data-theme='light'] .bg-\[\#12283a\]   { background-color: #d8eaf8 !important; }
+  html[data-theme='light'] .bg-\[\#1d3240\]   { background-color: #c8dff0 !important; }
+  /* Tailwind semantic token surface-alt used by MiniPlayer */
+  html[data-theme='light'] .bg-surface-alt    { background-color: #d8eaf8 !important; }
+  /* Settings section card (bg-[#08111d]/55) */
+  html[data-theme='light'] .bg-\[\#08111d\]\/55 { background-color: rgba(216,234,248,0.90) !important; }
+
+  /* ── Settings decorative blobs ── */
+  html[data-theme='light'] .bg-\[\#15386f\]\/30 { background-color: rgba(26,123,158,0.12) !important; }
+  html[data-theme='light'] .bg-\[\#1e6b71\]\/20 { background-color: rgba(28,162,234,0.08) !important; }
+  html[data-theme='light'] .bg-\[\#89d5ff\]\/10 { background-color: rgba(28,162,234,0.06) !important; }
+
+  /* ── Hover bg-white/N → subtle dark-on-light hover ── */
+  html[data-theme='light'] .bg-white\/5               { background-color: rgb(10 25 41 / 0.05) !important; }
+  html[data-theme='light'] .bg-white\/10              { background-color: rgb(10 25 41 / 0.07) !important; }
+  html[data-theme='light'] .bg-white\/20              { background-color: rgb(10 25 41 / 0.12) !important; }
+  html[data-theme='light'] .hover\:bg-white\/5:hover  { background-color: rgb(10 25 41 / 0.05) !important; }
+  html[data-theme='light'] .hover\:bg-white\/10:hover { background-color: rgb(10 25 41 / 0.07) !important; }
+
+  /* ── Player progress/volume fills (bg-white.rounded-full) → dark fill ── */
+  html[data-theme='light'] .bg-white.rounded-full     { background-color: #0a1929 !important; }
+
+  /* ── Player play-button border ── */
+  html[data-theme='light'] .border-white\/60          { border-color: rgb(10 25 41 / 0.60) !important; }
+  html[data-theme='light'] .hover\:border-white:hover { border-color: #0a1929 !important; }
+
+  /* ── BottomNav glassmorphism bar ── */
+  html[data-theme='light'] .bg-\[\#07111f\]\/85       { background-color: rgba(184,212,232,0.95) !important; }
+  html[data-theme='light'] .border-white\/\[0\.06\]   { border-color: rgb(10 25 41 / 0.10) !important; }
+
+  /* ── Border colours ── */
+  html[data-theme='light'] .border-\[\#1a3050\]                { border-color: #a8c4d8 !important; }
+  html[data-theme='light'] .border-\[\#27465d\]                { border-color: #8ab4cc !important; }
+  html[data-theme='light'] .border-\[\#30586f\]                { border-color: #8ab4cc !important; }
+  html[data-theme='light'] .border-\[\#2a3a52\]                { border-color: #a8c4d8 !important; }
+  html[data-theme='light'] .border-\[\#365a7a\]                { border-color: #8ab4cc !important; }
+  html[data-theme='light'] .border-white\/20                   { border-color: rgb(10 25 41 / 0.2) !important; }
+  html[data-theme='light'] .divide-white\/\[0\.03\] > * + *   { border-color: rgb(10 25 41 / 0.08) !important; }
+
+  /* ── Text colours: text-white → dark navy ── */
+  html[data-theme='light'] .text-white        { color: #0a1929 !important; }
+  html[data-theme='light'] .text-white\/25    { color: rgb(10 25 41 / 0.25) !important; }
+  html[data-theme='light'] .text-white\/30    { color: rgb(10 25 41 / 0.30) !important; }
+  html[data-theme='light'] .text-white\/35    { color: rgb(10 25 41 / 0.35) !important; }
+  html[data-theme='light'] .text-white\/40    { color: rgb(10 25 41 / 0.40) !important; }
+  html[data-theme='light'] .text-white\/45    { color: rgb(10 25 41 / 0.45) !important; }
+  html[data-theme='light'] .text-white\/50    { color: rgb(10 25 41 / 0.50) !important; }
+  html[data-theme='light'] .text-white\/60    { color: rgb(10 25 41 / 0.60) !important; }
+  html[data-theme='light'] .text-white\/70    { color: rgb(10 25 41 / 0.70) !important; }
+  html[data-theme='light'] .text-white\/80    { color: rgb(10 25 41 / 0.80) !important; }
+  html[data-theme='light'] .text-white\/95    { color: rgb(10 25 41 / 0.95) !important; }
+  html[data-theme='light'] .hover\:text-white:hover { color: #0a1929 !important; }
+
+  /* ── SVG fill ── */
+  html[data-theme='light'] .fill-white        { fill: #0a1929 !important; }
+
+  /* ── Settings page: light-hex text colors that become invisible on light bg ── */
+  html[data-theme='light'] .text-\[\#f4f8ff\]  { color: #0a1929 !important; }
+  html[data-theme='light'] .text-\[\#8aa3bc\]  { color: #3a6a8a !important; }
+  html[data-theme='light'] .text-\[\#8fb5da\]  { color: #3a6a8a !important; }
+  html[data-theme='light'] .text-\[\#8ea8c6\]  { color: #3a6a8a !important; }
+  html[data-theme='light'] .text-\[\#c4d7eb\]  { color: #0a1929 !important; }
+  html[data-theme='light'] .text-\[\#d9ebff\]  { color: #0a1929 !important; }
+  html[data-theme='light'] .text-\[\#dbeaf8\]  { color: #0a1929 !important; }
+  html[data-theme='light'] .text-\[\#e8f1f8\]  { color: #0a1929 !important; }
+
+  /* Settings section card border (almost invisible at /0.05) */
+  html[data-theme='light'] .border-white\/\[0\.05\] { border-color: rgb(10 25 41 / 0.12) !important; }
+
+  /* Settings button borders & hover */
+  html[data-theme='light'] .border-\[\#406c90\]          { border-color: #5a8aaa !important; }
+  html[data-theme='light'] .hover\:bg-\[\#10253a\]:hover { background-color: #d4e8f4 !important; }
+
+  /* SettingsSelect dropdown */
+  html[data-theme='light'] .bg-\[\#101c2a\]\/85 { background-color: rgba(228,238,247,0.95) !important; }
+  html[data-theme='light'] .border-\[\#274a69\]  { border-color: #8ab4cc !important; }
+
+  /* Profile page: light text colors used in hero/sections */
+  html[data-theme='light'] .text-\[\#dbeaf8\]  { color: #0a1929 !important; }
+  html[data-theme='light'] .text-\[\#d2dce8\]  { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#e8f1f8\]  { color: #0a1929 !important; }
+
+  /* ── Profile page components ── */
+  html[data-theme='light'] .bg-\[\#0e2333\]\/90     { background-color: rgba(196,220,238,0.90) !important; }
+  html[data-theme='light'] .hover\:bg-\[\#14304a\]:hover { background-color: #b4d0e6 !important; }
+  html[data-theme='light'] .bg-\[\#13273a\]\/92     { background-color: rgba(196,220,238,0.92) !important; }
+  html[data-theme='light'] .text-\[\#7890a9\]       { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#7d90a7\]       { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#7288a0\]       { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#71859d\]       { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#7d97af\]       { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#9cb0c3\]       { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#8ca4bf\]       { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#d1dce8\]       { color: #0a1929 !important; }
+  html[data-theme='light'] .text-\[\#f5fbff\]       { color: #0a1929 !important; }
+  html[data-theme='light'] .text-\[\#85cbff\]       { color: #1a6a9e !important; }
+  html[data-theme='light'] .hover\:text-\[\#85cbff\]:hover { color: #1a6a9e !important; }
+  html[data-theme='light'] .text-\[\#74a6ff\]       { color: #1a6a9e !important; }
+  html[data-theme='light'] .hover\:\!text-white:hover { color: #0a1929 !important; }
+
+  /* ── Podcast section ── */
+  html[data-theme='light'] .text-\[\#DFF4FF\]  { color: #0a1929 !important; }
+  html[data-theme='light'] .text-\[\#3EA9FF\]  { color: #1a6a9e !important; }
+  html[data-theme='light'] .from-\[\#102845\]  { --tw-gradient-from: #c4dcee !important; }
+  html[data-theme='light'] .to-\[\#0A1E3A\]    { --tw-gradient-to: #b8d4e8 !important; }
+  html[data-theme='light'] .border-\[\#1F3F63\]\/80 { border-color: rgba(100,160,200,0.60) !important; }
+  html[data-theme='light'] .hover\:border-\[\#2E5D8F\]:hover { border-color: #6aaace !important; }
+  html[data-theme='light'] .text-\[\#8FA8C5\]  { color: #2a5070 !important; }
+  html[data-theme='light'] .text-\[\#6C87A8\]  { color: #3a6a8a !important; }
+  html[data-theme='light'] .text-\[\#C4D7EC\]  { color: #1a3a5a !important; }
+  html[data-theme='light'] .text-\[\#C2D2E8\]  { color: #1a3a5a !important; }
+
+  /* bg-black/N overlays → transparent on light bg */
+  html[data-theme='light'] .bg-black\/22 { background-color: rgba(10,25,41,0.05) !important; }
+  html[data-theme='light'] .bg-black\/30 { background-color: rgba(10,25,41,0.06) !important; }
+  html[data-theme='light'] .bg-black\/40 { background-color: rgba(10,25,41,0.08) !important; }
+  html[data-theme='light'] .bg-black\/50 { background-color: rgba(10,25,41,0.08) !important; }
+  html[data-theme='light'] .bg-black\/60 { background-color: rgba(10,25,41,0.10) !important; }
+  html[data-theme='light'] .from-black\/30 { --tw-gradient-from: rgba(10,25,41,0.06) !important; }
+  html[data-theme='light'] .to-surface     { --tw-gradient-to: #dce8f2 !important; }
+
+  /* ── Desktop player: mid-blue bg in light mode → dark text/icons ── */
+  html[data-theme='light'] .desktop-player .text-white        { color: #0a1929 !important; }
+  html[data-theme='light'] .desktop-player .text-white\/40    { color: rgba(10,25,41,0.40) !important; }
+  html[data-theme='light'] .desktop-player .text-white\/45    { color: rgba(10,25,41,0.45) !important; }
+  html[data-theme='light'] .desktop-player .text-white\/70    { color: rgba(10,25,41,0.70) !important; }
+  html[data-theme='light'] .desktop-player .fill-white        { fill: #0a1929 !important; }
+  html[data-theme='light'] .desktop-player .hover\:text-white:hover { color: #0a1929 !important; }
+  html[data-theme='light'] .desktop-player .bg-white\/20      { background-color: rgba(10,25,41,0.12) !important; }
+  html[data-theme='light'] .desktop-player .bg-white.rounded-full { background-color: #0a1929 !important; }
+  html[data-theme='light'] .desktop-player .border-white\/60  { border-color: rgba(10,25,41,0.55) !important; }
+  html[data-theme='light'] .desktop-player .hover\:border-white:hover { border-color: #0a1929 !important; }
+}
+
+@layer base {
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,

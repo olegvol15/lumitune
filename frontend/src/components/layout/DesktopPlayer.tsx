@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePlayerStore } from '../../store/playerStore';
+import { useThemeStore } from '../../store/themeStore';
 import { formatDuration } from '../../utils/format';
 import SongCoverImage from '../ui/SongCoverImage';
 import { slideUp } from '../../lib/motion';
@@ -36,6 +37,7 @@ export default function DesktopPlayer() {
     setVolume,
   } = usePlayerStore();
 
+  const isLight = useThemeStore((s) => s.theme === 'ice');
   const barRef = useRef<HTMLDivElement>(null);
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -51,7 +53,7 @@ export default function DesktopPlayer() {
     <AnimatePresence>
       {currentTrack && (
         <motion.div
-          className="fixed bottom-0 left-0 right-0 z-50 h-[72px] bg-[#060d19] border-t border-[#1a3050] flex items-center px-5 gap-6"
+          className={`desktop-player fixed bottom-0 left-0 right-0 z-50 h-[72px] border-t flex items-center px-5 gap-6 ${isLight ? 'bg-[#aacfe4] border-[#8fbdcf]' : 'bg-[#060d19] border-[#1a3050]'}`}
           variants={slideUp}
           initial="initial"
           animate="animate"
@@ -110,9 +112,9 @@ export default function DesktopPlayer() {
                 className="w-8 h-8 rounded-full border border-white/60 flex items-center justify-center hover:border-white transition-colors flex-shrink-0"
               >
                 {isPlaying ? (
-                  <Pause size={14} fill="white" className="text-white" />
+                  <Pause size={14} className="text-white fill-white" />
                 ) : (
-                  <Play size={14} fill="white" className="text-white ml-0.5" />
+                  <Play size={14} className="text-white fill-white ml-0.5" />
                 )}
               </button>
 

@@ -21,7 +21,7 @@ export default function MiniPlayer() {
           animate="animate"
           exit="exit"
         >
-          <div className="bg-surface-alt rounded-2xl shadow-lg overflow-hidden max-w-lg mx-auto">
+          <div className="bg-surface-alt rounded-2xl shadow-lg overflow-hidden max-w-lg mx-auto border border-[#1a3050]">
             <ProgressBar progress={progress} onSeek={seek} className="px-0" />
             <div className="flex items-center gap-3 px-3 py-2.5">
               <button onClick={() => navigate({ to: '/player' })} className="flex-shrink-0">
@@ -49,13 +49,13 @@ export default function MiniPlayer() {
                 </button>
                 <button onClick={togglePlay} className="p-2 hover:bg-white/10 rounded-full">
                   {isPlaying ? (
-                    <Pause size={20} className="text-white" fill="white" />
+                    <Pause size={20} className="text-white" fill="currentColor" />
                   ) : (
-                    <Play size={20} className="text-white" fill="white" />
+                    <Play size={20} className="text-white" fill="currentColor" />
                   )}
                 </button>
                 <button onClick={next} className="p-2 hover:bg-white/10 rounded-full">
-                  <SkipForward size={20} className="text-white" fill="white" />
+                  <SkipForward size={20} className="text-white" fill="currentColor" />
                 </button>
               </div>
             </div>

@@ -14,6 +14,7 @@ import ProfileTrackCard from '../components/profile/ProfileTrackCard';
 import ProfileTrackEditorModal from '../components/profile/ProfileTrackEditorModal';
 import ProfileTrackSectionTools from '../components/profile/ProfileTrackSectionTools';
 import { useAddSongMutation, useCreatePlaylistMutation } from '../hooks/playlists';
+import { useThemeStore } from '../store/themeStore';
 import { useUpdateCreatorTrackMutation, useUploadCreatorTrackMutation } from '../hooks/tracks';
 import type { CreatorAlbum, CreatorTrack, TrackModalState } from '../types/profile/profile.types';
 import Button from '../components/ui/Button';
@@ -51,6 +52,8 @@ export const Route = createFileRoute('/profile')({
 function ProfilePage() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const { theme } = useThemeStore();
+  const isLight = theme === 'ice';
   const play = usePlayerStore((state) => state.play);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [trackModal, setTrackModal] = useState<TrackModalState>({ open: false });
@@ -121,16 +124,23 @@ function ProfilePage() {
   return (
     <>
       <div className="px-6 pb-10 pt-5">
-        <div className="overflow-hidden rounded-[28px] border border-[#27465d] bg-[linear-gradient(180deg,#0d1c29_0%,#08141d_100%)] shadow-[0_28px_90px_rgba(0,0,0,0.42)]">
+        <div
+          className="overflow-hidden rounded-[28px] border border-[#27465d] shadow-[0_28px_90px_rgba(0,0,0,0.42)]"
+          style={{ background: isLight ? '#c8dff0' : 'linear-gradient(180deg,#0d1c29 0%,#08141d 100%)' }}
+        >
           <section
             className="relative overflow-hidden border-b border-[#30586f] px-6 py-4"
             style={{
-              backgroundImage: `linear-gradient(180deg,rgba(8,22,30,0.58),rgba(12,58,74,0.66)), url(${cover})`,
+              backgroundImage: isLight
+                ? `linear-gradient(180deg,rgba(184,211,230,0.55),rgba(200,221,237,0.7)), url(${cover})`
+                : `linear-gradient(180deg,rgba(8,22,30,0.58),rgba(12,58,74,0.66)), url(${cover})`,
               backgroundPosition: 'center',
               backgroundSize: 'cover',
             }}
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(61,150,177,0.16),transparent_25%),radial-gradient(circle_at_70%_0%,rgba(164,219,233,0.12),transparent_22%)]" />
+            {!isLight && (
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(61,150,177,0.16),transparent_25%),radial-gradient(circle_at_70%_0%,rgba(164,219,233,0.12),transparent_22%)]" />
+            )}
             <div className="relative">
               <div className="mb-2 text-[11px] font-medium text-white">Профіль</div>
 
@@ -169,7 +179,7 @@ function ProfilePage() {
               </div>
 
               <div className="mt-2 flex justify-end">
-                <div className="max-w-[440px] rounded-[8px] bg-black/22 px-4 py-3 text-[11px] italic leading-6 text-[#e8f1f8] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]">
+                <div className={`max-w-[440px] rounded-[8px] px-4 py-3 text-[11px] italic leading-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] ${isLight ? 'bg-[#c8dded]/40 text-[#0a1929]' : 'bg-black/22 text-[#e8f1f8]'}`}>
                   {bio}
                 </div>
               </div>

@@ -6,7 +6,7 @@ export default function RightPanel() {
   const artist = artists[4]; // Taylor Swift — stand-in for Lana Del Rey
 
   return (
-    <aside className="sticky top-16 h-[calc(100vh-4rem)] w-72 bg-[#060d19] border-l border-[#1a3050] overflow-y-auto flex-shrink-0">
+    <aside className="sticky top-16 h-[calc(100vh-4rem)] w-72 bg-[#060d19]/80 backdrop-blur-sm border-l border-[#1a3050] overflow-y-auto flex-shrink-0 z-[10]">
       <div className="p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
