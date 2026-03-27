@@ -26,27 +26,24 @@ function RootLayout() {
     return (
       <div className="min-h-screen bg-[#060d19] text-white">
         <Outlet />
-        <AudioEngine />
       </div>
     );
   }
 
   return (
     <div className="bg-[#060d19] text-white">
-      {/* TopBar — fixed at top, desktop only */}
-      <div className="hidden lg:block">
-        <TopBar />
-      </div>
+      {/* TopBar — fixed at top, all screen sizes */}
+      <TopBar />
 
       {/* 3-column area: Sidebar | main | RightPanel — pt-16 clears fixed TopBar */}
-      <div className="lg:flex lg:pt-16">
+      <div className="lg:flex pt-16">
         {/* Sidebar — sticky, desktop only */}
         <div className="hidden lg:block">
           <Sidebar />
         </div>
 
         {/* Main content — shared mobile + desktop */}
-        <main className="flex-1 min-w-0 pb-32 lg:pb-[72px]">
+        <main className="flex-1 min-w-0 pb-36 lg:pb-[72px]">
           <Outlet />
         </main>
 
@@ -71,7 +68,6 @@ function RootLayout() {
         <MiniPlayer />
         <BottomNav />
       </div>
-      <AudioEngine />
     </div>
   );
 }
@@ -79,6 +75,7 @@ function RootLayout() {
 export const Route = createRootRoute({
   component: () => (
     <>
+      <AudioEngine />
       <RootLayout />
       {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
     </>

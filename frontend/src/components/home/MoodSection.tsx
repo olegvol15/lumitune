@@ -24,7 +24,7 @@ export default function MoodSection() {
         </button>
       </div>
 
-      <div className="flex gap-10 justify-center overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex gap-5 sm:gap-10 sm:justify-center overflow-x-auto pb-2 scrollbar-none">
         {moods.map(({ id, icon: Icon, label }) => {
           const isActive = active === id;
           return (
@@ -35,14 +35,14 @@ export default function MoodSection() {
             >
               {/* Circle — always styled, active = stronger glow */}
               <div
-                className={`w-24 h-24 rounded-full border-2 border-[#1CA2EA] bg-[#071220] flex items-center justify-center transition-all ${
+                className={`w-16 h-16 sm:w-24 sm:h-24 rounded-full border-2 border-[#1CA2EA] bg-[#071220] flex items-center justify-center transition-all ${
                   isActive
                     ? 'shadow-[0_0_20px_rgba(28,162,234,0.6),inset_0_0_20px_rgba(28,162,234,0.15)]'
                     : 'shadow-[0_0_10px_rgba(28,162,234,0.25),inset_0_0_10px_rgba(28,162,234,0.08)]'
                 }`}
               >
                 <Icon
-                  size={34}
+                  size={22}
                   className={`transition-colors ${isActive ? 'text-[#1CA2EA]' : 'text-[#5bb8e8]'}`}
                 />
               </div>

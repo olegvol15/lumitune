@@ -33,7 +33,7 @@ export default function HorizontalSection({
           {accentWord && <span className="text-[#1CA2EA]">{accentWord}</span>}
           {after}
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-2">
           <button
             onClick={() => scroll('left')}
             className="w-7 h-7 rounded-full border border-[#1a3050] flex items-center justify-center text-white/50 hover:text-white hover:border-[#1CA2EA] transition-colors"
@@ -49,33 +49,35 @@ export default function HorizontalSection({
         </div>
       </div>
 
-      <div ref={rowRef} className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+      <div ref={rowRef} className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth">
         {items.slice(0, 5).map((item) => {
           if (isAlbum(item)) {
             return (
-              <MediaCard
-                key={item.id}
-                image={item.coverUrl}
-                title={item.title}
-                subtitle={`By ${item.artistName}`}
-                onClick={() => onItemClick?.(item)}
-              />
+              <div key={item.id} className="snap-start">
+                <MediaCard
+                  image={item.coverUrl}
+                  title={item.title}
+                  subtitle={`By ${item.artistName}`}
+                  onClick={() => onItemClick?.(item)}
+                />
+              </div>
             );
           }
           const track = item as Track;
           return (
-            <MediaCard
-              key={track.id}
-              image={track.albumCover}
-              title={track.title}
-              subtitle={track.artistName}
-              onClick={() => onItemClick?.(item)}
-            />
+            <div key={track.id} className="snap-start">
+              <MediaCard
+                image={track.albumCover}
+                title={track.title}
+                subtitle={track.artistName}
+                onClick={() => onItemClick?.(item)}
+              />
+            </div>
           );
         })}
 
         {/* "Все тут" card */}
-        <button className="w-36 flex-shrink-0 flex flex-col items-center justify-center aspect-square rounded-xl border border-dashed border-[#1a3050] text-white/30 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors gap-2">
+        <button className="w-28 sm:w-36 flex-shrink-0 snap-start flex flex-col items-center justify-center aspect-square rounded-xl border border-dashed border-[#1a3050] text-white/30 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors gap-2">
           <Plus size={22} />
           <span className="text-xs font-medium">Все тут</span>
         </button>

@@ -30,6 +30,9 @@ function HomePage() {
     }
 
     play(item, tracks);
+    if (window.innerWidth < 1024) {
+      navigate({ to: '/player' });
+    }
   };
 
   const handleArtistClick = (item: (typeof artists)[0]) => {
@@ -37,7 +40,7 @@ function HomePage() {
   };
 
   return (
-    <div className="px-6 pt-5 pb-4">
+    <div className="px-4 sm:px-6 pt-5 pb-4">
       {/* Filter tabs */}
       <div className="flex gap-2 mb-5">
         {FILTER_TABS.map((tab) => (

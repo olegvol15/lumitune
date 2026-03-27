@@ -12,7 +12,7 @@ export default function MiniPlayer() {
   if (!currentTrack) return null;
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-30 px-3 pb-1">
+    <div className="fixed bottom-20 left-0 right-0 z-30 px-3 pb-1">
       <div className="bg-surface-alt rounded-2xl shadow-lg overflow-hidden max-w-lg mx-auto">
         <ProgressBar progress={progress} onSeek={seek} className="px-0" />
         <div className="flex items-center gap-3 px-3 py-2.5">

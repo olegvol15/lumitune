@@ -31,7 +31,7 @@ export default function ArtistSection({
           {accentWord && <span className="text-[#1CA2EA]">{accentWord}</span>}
           {after}
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-2">
           <button
             onClick={() => scroll('left')}
             className="w-7 h-7 rounded-full border border-[#1a3050] flex items-center justify-center text-white/50 hover:text-white hover:border-[#1CA2EA] transition-colors"
@@ -47,17 +47,17 @@ export default function ArtistSection({
         </div>
       </div>
 
-      <div ref={rowRef} className="flex gap-6 overflow-x-auto pb-3 scrollbar-none">
+      <div ref={rowRef} className="flex gap-6 overflow-x-auto pb-3 scrollbar-none snap-x snap-mandatory scroll-smooth">
         {artists.map((artist) => (
           <button
             key={artist.id}
             onClick={() => onArtistClick?.(artist)}
-            className="flex-shrink-0 flex flex-col items-center gap-2.5 w-36 group"
+            className="flex-shrink-0 snap-start flex flex-col items-center gap-2.5 w-28 sm:w-36 group"
           >
             <img
               src={artist.image}
               alt={artist.name}
-              className="w-32 h-32 rounded-full object-cover group-hover:opacity-85 transition-opacity"
+              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover group-hover:opacity-85 transition-opacity"
             />
             <p className="text-white text-sm font-semibold text-center w-full truncate">
               {artist.name}

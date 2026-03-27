@@ -8,7 +8,7 @@ export default function TopBar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#060d19] border-b border-[#1a3050] flex items-center px-5 gap-4">
       {/* Logo only — no text */}
-      <Link to="/" className="flex items-center flex-shrink-0 w-64 pl-1">
+      <Link to="/" className="flex items-center flex-shrink-0 pl-1">
         <LogoIcon className="w-12 h-auto" />
       </Link>
 
@@ -27,7 +27,7 @@ export default function TopBar() {
       </div>
 
       {/* Right actions */}
-      <div className="flex items-center gap-4 flex-shrink-0 w-60 justify-end pr-1">
+      <div className="flex items-center gap-4 flex-shrink-0 justify-end pr-1">
         <Button
           variant="ghost"
           size="sm"

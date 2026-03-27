@@ -44,7 +44,7 @@ export default function HeroBanner() {
       </div>
 
       {/* Banner carousel */}
-      <div className="relative overflow-hidden rounded-xl h-72">
+      <div className="relative overflow-hidden rounded-xl h-44 sm:h-60 lg:h-72">
         <div
           className="flex h-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${active * 100}%)` }}
