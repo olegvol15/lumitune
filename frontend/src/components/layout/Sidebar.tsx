@@ -11,20 +11,21 @@ import {
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePlayerStore } from '../../store/playerStore';
-import { usePlaylistStore } from '../../store/playlistStore';
 import SongCoverImage from '../ui/SongCoverImage';
 import { staggerContainer, staggerItem } from '../../lib/motion';
+import { usePlaylistsQuery, useCreatePlaylistMutation } from '../../hooks/playlists';
 
 export default function Sidebar() {
   const { location } = useRouterState();
   const pathname = location.pathname;
   const navigate = useNavigate();
   const queue = usePlayerStore((s) => s.queue);
-  const { playlists, createPlaylist } = usePlaylistStore();
+  const { data: playlists = [] } = usePlaylistsQuery();
+  const createMutation = useCreatePlaylistMutation();
 
-  const handleCreatePlaylist = () => {
-    const id = createPlaylist();
-    navigate({ to: '/playlist/$id', params: { id } });
+  const handleCreatePlaylist = async () => {
+    const playlist = await createMutation.mutateAsync(`Мій плейлист №${playlists.length + 1}`);
+    navigate({ to: '/playlist/$id', params: { id: playlist.id } });
   };
 
   return (
@@ -83,7 +84,7 @@ export default function Sidebar() {
         </Link>
 
         <button
-          onClick={handleCreatePlaylist}
+          onClick={() => void handleCreatePlaylist()}
           className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors mt-1"
         >
           <ListPlus size={18} />

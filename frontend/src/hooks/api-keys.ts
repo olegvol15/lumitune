@@ -16,8 +16,13 @@ export const tracksKeys = {
   adminList: () => [...tracksKeys.all, 'adminList'] as const,
 };
 
+export const playlistKeys = {
+  all: ['playlists'] as const,
+};
+
 export const QUERY_KEYS = {
   auth: authKeys,
   adminAuth: adminAuthKeys,
   tracks: tracksKeys,
+  playlists: playlistKeys,
 } as const;

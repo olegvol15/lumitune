@@ -4,9 +4,9 @@ import { Plus, Music2 } from 'lucide-react';
 import { albums } from '../data/albums';
 import { artists } from '../data/artists';
 import Button from '../components/ui/Button';
-import { usePlaylistStore } from '../store/playlistStore';
 import { useAuthStore } from '../store/authStore';
 import type { LibraryTab } from '../types/routes/route.types';
+import { usePlaylistsQuery, useCreatePlaylistMutation } from '../hooks/playlists';
 
 export const Route = createFileRoute('/library')({
   beforeLoad: () => {
@@ -18,11 +18,14 @@ export const Route = createFileRoute('/library')({
 function LibraryPage() {
   const [tab, setTab] = useState<LibraryTab>('playlists');
   const navigate = useNavigate();
-  const { playlists, createPlaylist } = usePlaylistStore();
+  const { data: playlists = [] } = usePlaylistsQuery();
+  const createMutation = useCreatePlaylistMutation();
 
-  const handleCreatePlaylist = () => {
-    const id = createPlaylist();
-    navigate({ to: '/playlist/$id', params: { id } });
+  const handleCreatePlaylist = async () => {
+    const playlist = await createMutation.mutateAsync(
+      `Мій плейлист №${playlists.length + 1}`
+    );
+    navigate({ to: '/playlist/$id', params: { id: playlist.id } });
   };
 
   return (
@@ -31,7 +34,7 @@ function LibraryPage() {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-white text-2xl font-bold">Бібліотека</h1>
         <button
-          onClick={handleCreatePlaylist}
+          onClick={() => void handleCreatePlaylist()}
           className="p-2 bg-surface-alt rounded-full hover:bg-white/10 transition-colors"
           title="Створити плейлист"
         >
@@ -85,6 +88,7 @@ function LibraryPage() {
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold truncate">{p.title}</p>
                 <p className="text-muted text-sm">{p.trackIds.length} треків · Плейлист</p>
+
               </div>
             </button>
           ))}
@@ -92,7 +96,7 @@ function LibraryPage() {
           {playlists.length === 0 && (
             <div className="py-6 text-center">
               <p className="text-muted text-sm mb-3">У вас ще немає плейлистів</p>
-              <Button variant="outline" size="sm" onClick={handleCreatePlaylist}>
+              <Button variant="outline" size="sm" onClick={() => void handleCreatePlaylist()}>
                 Створити плейлист
               </Button>
             </div>

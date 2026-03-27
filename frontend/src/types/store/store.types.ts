@@ -7,13 +7,6 @@ export interface UserPlaylist {
   trackIds: string[];
 }
 
-export interface PlaylistStore {
-  playlists: UserPlaylist[];
-  createPlaylist: () => string;
-  addTrack: (playlistId: string, trackId: string) => void;
-  removeTrack: (playlistId: string, trackId: string) => void;
-}
-
 export interface AuthStore {
   accessToken: string | null;
   user: AuthUser | null;

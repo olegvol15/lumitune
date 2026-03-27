@@ -13,7 +13,7 @@ import ProfileTopTrackRow from '../components/profile/ProfileTopTrackRow';
 import ProfileTrackCard from '../components/profile/ProfileTrackCard';
 import ProfileTrackEditorModal from '../components/profile/ProfileTrackEditorModal';
 import ProfileTrackSectionTools from '../components/profile/ProfileTrackSectionTools';
-import { useAddSongToPlaylistMutation, useCreatePlaylistMutation } from '../hooks/playlists';
+import { useAddSongMutation, useCreatePlaylistMutation } from '../hooks/playlists';
 import { useUpdateCreatorTrackMutation, useUploadCreatorTrackMutation } from '../hooks/tracks';
 import type { CreatorAlbum, CreatorTrack, TrackModalState } from '../types/profile/profile.types';
 import Button from '../components/ui/Button';
@@ -58,7 +58,7 @@ function ProfilePage() {
   const uploadCreatorTrackMutation = useUploadCreatorTrackMutation();
   const updateCreatorTrackMutation = useUpdateCreatorTrackMutation();
   const createPlaylistMutation = useCreatePlaylistMutation();
-  const addSongToPlaylistMutation = useAddSongToPlaylistMutation();
+  const addSongToPlaylistMutation = useAddSongMutation();
 
   const displayName = user?.displayName || user?.username || 'Oleh';
   const bio =

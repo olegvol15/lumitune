@@ -1,13 +1,19 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
-import { Search, Plus, X, ChevronLeft, Music2 } from 'lucide-react';
-import { usePlaylistStore } from '../store/playlistStore';
+import { useEffect, useRef, useState } from 'react';
+import { Search, Plus, X, ChevronLeft, Music2, Pencil, Trash2 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { usePlayerStore } from '../store/playerStore';
 import { formatDuration, formatPlayCount } from '../utils/format';
 import Button from '../components/ui/Button';
 import { useCatalogTracks } from '../hooks/tracks';
 import SongCoverImage from '../components/ui/SongCoverImage';
+import {
+  usePlaylistsQuery,
+  useRenamePlaylistMutation,
+  useDeletePlaylistMutation,
+  useAddSongMutation,
+  useRemoveSongMutation,
+} from '../hooks/playlists';
 
 export const Route = createFileRoute('/playlist/$id')({
   beforeLoad: () => {
@@ -21,13 +27,54 @@ const RECS_PAGE = 8;
 function PlaylistPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
-  const { playlists, addTrack, removeTrack } = usePlaylistStore();
   const { play } = usePlayerStore();
   const { tracks } = useCatalogTracks();
+
+  const { data: playlists = [] } = usePlaylistsQuery();
+  const renameMutation = useRenamePlaylistMutation();
+  const deleteMutation = useDeletePlaylistMutation();
+  const addSongMutation = useAddSongMutation();
+  const removeSongMutation = useRemoveSongMutation();
+
   const [query, setQuery] = useState('');
   const [recsShown, setRecsShown] = useState(RECS_PAGE);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleDraft, setTitleDraft] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   const playlist = playlists.find((p) => p.id === id);
+
+  useEffect(() => {
+    if (editingTitle && titleInputRef.current) {
+      titleInputRef.current.focus();
+      titleInputRef.current.select();
+    }
+  }, [editingTitle]);
+
+  const startEditing = () => {
+    setTitleDraft(playlist?.title ?? '');
+    setEditingTitle(true);
+  };
+
+  const commitRename = () => {
+    const trimmed = titleDraft.trim();
+    if (trimmed && trimmed !== playlist?.title) {
+      renameMutation.mutate({ playlistId: id, name: trimmed });
+    }
+    setEditingTitle(false);
+  };
+
+  const handleTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') commitRename();
+    if (e.key === 'Escape') setEditingTitle(false);
+  };
+
+  const handleDelete = () => {
+    deleteMutation.mutate(id, {
+      onSuccess: () => navigate({ to: '/library' }),
+    });
+  };
 
   if (!playlist) {
     return (
@@ -85,8 +132,8 @@ function PlaylistPage() {
         </button>
 
         {/* Header */}
-        <div className="flex items-end gap-5 mb-6">
-          {/* Cover placeholder */}
+        <div className="flex items-start gap-5 mb-6">
+          {/* Cover */}
           <div className="w-32 h-32 flex-shrink-0 rounded-xl bg-gradient-to-br from-[#1CA2EA]/40 to-[#0a1929] flex items-center justify-center shadow-xl">
             {playlistTracks.length > 0 ? (
               <SongCoverImage
@@ -99,11 +146,61 @@ function PlaylistPage() {
             )}
           </div>
 
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="text-muted text-xs uppercase tracking-wider mb-1">Плейлист</p>
-            <h1 className="text-white text-3xl font-bold leading-tight mb-2">{playlist.title}</h1>
+
+            {editingTitle ? (
+              <input
+                ref={titleInputRef}
+                value={titleDraft}
+                onChange={(e) => setTitleDraft(e.target.value)}
+                onBlur={commitRename}
+                onKeyDown={handleTitleKeyDown}
+                className="text-white text-3xl font-bold leading-tight mb-2 bg-transparent outline-none w-full max-w-sm"
+              />
+            ) : (
+              <div className="flex items-center gap-2 group/title mb-2">
+                <h1 className="text-white text-3xl font-bold leading-tight">{playlist.title}</h1>
+                <button
+                  onClick={startEditing}
+                  className="text-muted hover:text-white transition-colors opacity-0 group-hover/title:opacity-100 flex-shrink-0"
+                  title="Перейменувати"
+                >
+                  <Pencil size={16} />
+                </button>
+              </div>
+            )}
+
             <p className="text-muted text-sm">Ви &bull; {playlist.trackIds.length} треків</p>
           </div>
+
+          {/* Delete */}
+          {!confirmDelete ? (
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="flex-shrink-0 p-2 rounded-full text-muted hover:text-red-400 hover:bg-white/5 transition-colors"
+              title="Видалити плейлист"
+            >
+              <Trash2 size={18} />
+            </button>
+          ) : (
+            <div className="flex-shrink-0 flex items-center gap-2 bg-[#0a1929] border border-[#1a3050] rounded-xl px-3 py-2">
+              <span className="text-sm text-white/80">Видалити?</span>
+              <button
+                onClick={handleDelete}
+                disabled={deleteMutation.isPending}
+                className="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+              >
+                Так
+              </button>
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="text-sm text-muted hover:text-white transition-colors"
+              >
+                Ні
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Play button */}
@@ -120,7 +217,7 @@ function PlaylistPage() {
           </div>
         )}
 
-        {/* Tracks already in playlist */}
+        {/* Tracks in playlist */}
         {playlistTracks.length > 0 && (
           <div className="mb-8">
             <h2 className="text-white font-bold text-base mb-3">У плейлисті</h2>
@@ -136,7 +233,6 @@ function PlaylistPage() {
                     className="w-10 h-10 rounded-lg object-cover flex-shrink-0 cursor-pointer"
                     onClick={() => play(track, playlistTracks)}
                   />
-
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-sm font-semibold truncate">{track.title}</p>
                     <p className="text-muted text-xs truncate">{track.artistName}</p>
@@ -148,8 +244,9 @@ function PlaylistPage() {
                     {formatDuration(track.duration)}
                   </span>
                   <button
-                    onClick={() => removeTrack(id, track.id)}
-                    className="p-1.5 rounded-full hover:bg-white/10 text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
+                    onClick={() => removeSongMutation.mutate({ playlistId: id, songId: track.id })}
+                    disabled={removeSongMutation.isPending}
+                    className="p-1.5 rounded-full hover:bg-white/10 text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 disabled:opacity-30"
                     title="Видалити з плейлисту"
                   >
                     <X size={14} />
@@ -219,8 +316,11 @@ function PlaylistPage() {
                       {formatDuration(track.duration)}
                     </span>
                     <button
-                      onClick={() => addTrack(id, track.id)}
-                      className="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors flex-shrink-0"
+                      onClick={() =>
+                        addSongMutation.mutate({ playlistId: id, songId: track.id })
+                      }
+                      disabled={addSongMutation.isPending}
+                      className="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors flex-shrink-0 disabled:opacity-30"
                       title="Додати до плейлисту"
                     >
                       <Plus size={14} />
