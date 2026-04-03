@@ -7,52 +7,6 @@ import { useCatalogTracks } from '../hooks/tracks';
 import { useAudiobooksQuery } from '../hooks/audiobooks';
 import { useI18n } from '../lib/i18n';
 
-const genres = [
-  { id: 'pop', label: 'Поп', color: 'from-pink-500 to-rose-600', emoji: '🎵' },
-  {
-    id: 'rock',
-    label: 'Рок',
-    color: 'from-orange-500 to-red-600',
-    emoji: '🎸',
-  },
-  {
-    id: 'hiphop',
-    label: 'Хіп-хоп',
-    color: 'from-yellow-500 to-orange-500',
-    emoji: '🎤',
-  },
-  {
-    id: 'electronic',
-    label: 'Електронна',
-    color: 'from-cyan-500 to-blue-600',
-    emoji: '🎛️',
-  },
-  {
-    id: 'kpop',
-    label: 'K-Pop',
-    color: 'from-purple-500 to-pink-600',
-    emoji: '✨',
-  },
-  {
-    id: 'jazz',
-    label: 'Джаз',
-    color: 'from-amber-600 to-yellow-500',
-    emoji: '🎷',
-  },
-  {
-    id: 'classical',
-    label: 'Класика',
-    color: 'from-emerald-500 to-teal-600',
-    emoji: '🎹',
-  },
-  {
-    id: 'rnb',
-    label: 'R&B',
-    color: 'from-indigo-500 to-purple-600',
-    emoji: '🎙️',
-  },
-];
-
 export const Route = createFileRoute('/search')({ component: SearchPage });
 
 function SearchPage() {
@@ -61,6 +15,51 @@ function SearchPage() {
   const { query, setQuery, results, hasResults } = useSearch(tracks, audiobooks);
   const navigate = useNavigate();
   const { copy } = useI18n();
+  const genres = [
+    { id: 'pop', label: copy.search.genres.pop, color: 'from-pink-500 to-rose-600', emoji: '🎵' },
+    {
+      id: 'rock',
+      label: copy.search.genres.rock,
+      color: 'from-orange-500 to-red-600',
+      emoji: '🎸',
+    },
+    {
+      id: 'hiphop',
+      label: copy.search.genres.hiphop,
+      color: 'from-yellow-500 to-orange-500',
+      emoji: '🎤',
+    },
+    {
+      id: 'electronic',
+      label: copy.search.genres.electronic,
+      color: 'from-cyan-500 to-blue-600',
+      emoji: '🎛️',
+    },
+    {
+      id: 'kpop',
+      label: copy.search.genres.kpop,
+      color: 'from-purple-500 to-pink-600',
+      emoji: '✨',
+    },
+    {
+      id: 'jazz',
+      label: copy.search.genres.jazz,
+      color: 'from-amber-600 to-yellow-500',
+      emoji: '🎷',
+    },
+    {
+      id: 'classical',
+      label: copy.search.genres.classical,
+      color: 'from-emerald-500 to-teal-600',
+      emoji: '🎹',
+    },
+    {
+      id: 'rnb',
+      label: copy.search.genres.rnb,
+      color: 'from-indigo-500 to-purple-600',
+      emoji: '🎙️',
+    },
+  ];
 
   return (
     <div className="px-4 pt-4">

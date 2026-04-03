@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Upload } from 'lucide-react';
 import { useCreatePodcastMutation, useUpdatePodcastMutation } from '../../hooks/podcasts';
+import { useI18n } from '../../lib/i18n';
 import type { Podcast } from '../../types';
 
 interface Props {
@@ -9,24 +10,12 @@ interface Props {
   onClose: () => void;
 }
 
-const CATEGORIES = [
-  'Технології',
-  'Наука',
-  'Бізнес',
-  'Здоров\'я',
-  'Освіта',
-  'Суспільство',
-  'Злочин',
-  'Мистецтво',
-  'Спорт',
-  'Розваги',
-];
-
 const labelClass = 'block text-[#7a8faa] text-xs font-medium mb-1';
 const inputClass =
   'w-full bg-[#19233a] border border-[#2a3a52] rounded-md px-3 py-2 text-sm text-white placeholder:text-[#4a5a72] focus:outline-none focus:border-[#3dc9b0] transition-colors';
 
 export default function PodcastModal({ mode, podcast, onClose }: Props) {
+  const { copy } = useI18n();
   const [title, setTitle] = useState(podcast?.title ?? '');
   const [author, setAuthor] = useState(podcast?.author ?? '');
   const [description, setDescription] = useState(podcast?.description ?? '');
@@ -61,7 +50,7 @@ export default function PodcastModal({ mode, podcast, onClose }: Props) {
       onClose();
     } catch (err) {
       const e = err as { response?: { data?: { message?: string } }; message?: string };
-      setError(e.response?.data?.message ?? e.message ?? 'Failed to save');
+      setError(e.response?.data?.message ?? e.message ?? copy.admin.saveError);
     }
     setIsSaving(false);
   };
@@ -74,7 +63,7 @@ export default function PodcastModal({ mode, podcast, onClose }: Props) {
       <div className="w-full max-w-lg bg-[#1e2638] rounded-2xl overflow-hidden shadow-2xl">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#2a3a52]">
           <h2 className="text-white font-semibold text-base">
-            {mode === 'new' ? 'New Podcast' : 'Edit Podcast'}
+            {mode === 'new' ? copy.admin.newPodcast : copy.admin.editPodcast}
           </h2>
           <button onClick={onClose} className="text-[#7a8faa] hover:text-white transition-colors">
             <X size={18} />
@@ -83,10 +72,10 @@ export default function PodcastModal({ mode, podcast, onClose }: Props) {
 
         <div className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
           <div>
-            <label className={labelClass}>Title *</label>
+            <label className={labelClass}>{copy.admin.title} *</label>
             <input
               type="text"
-              placeholder="Podcast title"
+              placeholder={copy.admin.title}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className={inputClass}
@@ -94,10 +83,10 @@ export default function PodcastModal({ mode, podcast, onClose }: Props) {
           </div>
 
           <div>
-            <label className={labelClass}>Author *</label>
+            <label className={labelClass}>{copy.admin.author} *</label>
             <input
               type="text"
-              placeholder="e.g. Науковий подкаст"
+              placeholder={copy.admin.podcastPlaceholder}
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               className={inputClass}
@@ -105,24 +94,24 @@ export default function PodcastModal({ mode, podcast, onClose }: Props) {
           </div>
 
           <div>
-            <label className={labelClass}>Category</label>
+            <label className={labelClass}>{copy.admin.category}</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className={inputClass}
             >
-              <option value="">— select category —</option>
-              {CATEGORIES.map((c) => (
+              <option value="">{copy.admin.selectCategory}</option>
+              {copy.admin.categories.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className={labelClass}>Description *</label>
+            <label className={labelClass}>{copy.common.description} *</label>
             <textarea
               rows={4}
-              placeholder="About this podcast..."
+              placeholder={copy.admin.descriptionPlaceholder}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className={`${inputClass} resize-none`}
@@ -130,10 +119,10 @@ export default function PodcastModal({ mode, podcast, onClose }: Props) {
           </div>
 
           <div>
-            <label className={labelClass}>Cover Image</label>
+            <label className={labelClass}>{copy.admin.coverImage}</label>
             <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
               <Upload size={14} />
-              <span>{coverFile ? coverFile.name : 'Choose image'}</span>
+              <span>{coverFile ? coverFile.name : copy.common.chooseImage}</span>
               <input
                 type="file"
                 accept="image/*"
@@ -151,7 +140,7 @@ export default function PodcastModal({ mode, podcast, onClose }: Props) {
             disabled={isSaving}
             className="px-5 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] disabled:opacity-50 transition-colors"
           >
-            {isSaving ? 'Saving…' : 'Save'}
+            {isSaving ? copy.admin.saving : copy.common.save}
           </button>
         </div>
       </div>

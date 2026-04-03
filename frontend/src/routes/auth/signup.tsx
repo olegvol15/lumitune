@@ -8,6 +8,7 @@ import Button from '../../components/ui/Button';
 import StepBar from '../../components/ui/StepBar';
 import PasswordRequirement from '../../components/ui/PasswordRequirement';
 import { useAuthRegisterMutation } from '../../hooks/auth';
+import { useI18n } from '../../lib/i18n';
 import { useAuthStore } from '../../store/authStore';
 
 export const Route = createFileRoute('/auth/signup')({
@@ -17,37 +18,9 @@ export const Route = createFileRoute('/auth/signup')({
   component: SignUpPage,
 });
 
-const socialButtons = [
-  {
-    id: 'facebook',
-    icon: <FaFacebook size={22} color="#1877F2" />,
-    label: 'Увійти з Facebook',
-  },
-  { id: 'google', icon: <FcGoogle size={22} />, label: 'Увійти з Google' },
-  {
-    id: 'apple',
-    icon: <FaApple size={22} color="#fff" />,
-    label: 'Увійти з Apple',
-  },
-];
-
-const MONTHS = [
-  'Січень',
-  'Лютий',
-  'Березень',
-  'Квітень',
-  'Травень',
-  'Червень',
-  'Липень',
-  'Серпень',
-  'Вересень',
-  'Жовтень',
-  'Листопад',
-  'Грудень',
-];
-
 function SignUpPage() {
   const navigate = useNavigate();
+  const { copy, language } = useI18n();
   const [step, setStep] = useState<0 | 1 | 2>(0);
 
   // Step 0
@@ -67,6 +40,47 @@ function SignUpPage() {
   const [role, setRole] = useState<'user' | 'creator'>('user');
   const [error, setError] = useState<string | null>(null);
   const registerMutation = useAuthRegisterMutation();
+  const socialButtons = [
+    {
+      id: 'facebook',
+      icon: <FaFacebook size={22} color="#1877F2" />,
+      label: copy.auth.signInWithFacebook,
+    },
+    { id: 'google', icon: <FcGoogle size={22} />, label: copy.auth.signInWithGoogle },
+    {
+      id: 'apple',
+      icon: <FaApple size={22} color="#fff" />,
+      label: copy.auth.signInWithApple,
+    },
+  ];
+  const countries =
+    language === 'uk'
+      ? [
+          { value: 'ua', label: 'Україна' },
+          { value: 'us', label: 'США' },
+          { value: 'de', label: 'Німеччина' },
+          { value: 'pl', label: 'Польща' },
+        ]
+      : [
+          { value: 'ua', label: 'Ukraine' },
+          { value: 'us', label: 'United States' },
+          { value: 'de', label: 'Germany' },
+          { value: 'pl', label: 'Poland' },
+        ];
+  const cities =
+    language === 'uk'
+      ? [
+          { value: 'kyiv', label: 'Київ' },
+          { value: 'lviv', label: 'Львів' },
+          { value: 'odesa', label: 'Одеса' },
+          { value: 'kharkiv', label: 'Харків' },
+        ]
+      : [
+          { value: 'kyiv', label: 'Kyiv' },
+          { value: 'lviv', label: 'Lviv' },
+          { value: 'odesa', label: 'Odesa' },
+          { value: 'kharkiv', label: 'Kharkiv' },
+        ];
 
   const hasLetter = /[a-zA-Zа-яА-ЯіІїЇєЄ]/.test(password);
   const hasNumberOrSpecial = /[0-9!?_&#]/.test(password);
@@ -99,7 +113,7 @@ function SignUpPage() {
       navigate({ to: '/' });
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
-      setError(axiosErr.response?.data?.message ?? 'Помилка реєстрації');
+      setError(axiosErr.response?.data?.message ?? copy.auth.signUpError);
     }
   };
 
@@ -108,7 +122,7 @@ function SignUpPage() {
     return (
       <div className="auth-page-bg min-h-screen px-4 py-6 sm:py-8 flex flex-col sm:items-center sm:justify-center">
         <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
-          <AuthLogo heading={'Пориньте вперше\nу LumiTune'} />
+          <AuthLogo heading={copy.auth.signUpHeading} />
 
           <form
             onSubmit={(e) => {
@@ -118,7 +132,7 @@ function SignUpPage() {
             className="space-y-3.5"
           >
             <div>
-              <label className="text-[#D4E3F7] text-sm mb-1.5 block">Електронна пошта</label>
+              <label className="text-[#D4E3F7] text-sm mb-1.5 block">{copy.auth.email}</label>
               <input
                 type="email"
                 value={email}
@@ -129,13 +143,13 @@ function SignUpPage() {
               />
             </div>
             <Button type="submit" variant="primary" size="lg" shape="rect" fullWidth>
-              Далі
+              {copy.auth.continue}
             </Button>
           </form>
 
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 auth-muted-line" />
-            <span className="text-[#769CCF] text-sm">або</span>
+            <span className="text-[#769CCF] text-sm">{copy.auth.or}</span>
             <div className="flex-1 auth-muted-line" />
           </div>
 
@@ -159,7 +173,7 @@ function SignUpPage() {
           <div className="auth-muted-line mt-6 mb-5" />
 
           <p className="text-center text-[#769CCF] text-[15px]">
-            Є аккаунт?{' '}
+            {copy.auth.haveAccount}{' '}
             <Button
               variant="ghost"
               size="sm"
@@ -167,7 +181,7 @@ function SignUpPage() {
               onClick={() => navigate({ to: '/auth/signin' })}
               className="text-[#8AB8F0] font-semibold underline underline-offset-4 !px-0"
             >
-              Увійдіть до нього
+              {copy.auth.signInToIt}
             </Button>
           </p>
         </div>
@@ -186,18 +200,20 @@ function SignUpPage() {
             onClick={() => setStep(0)}
             className="text-[#8AB8F0] underline underline-offset-4 !px-0 mb-3"
           >
-            Назад
+            {copy.common.back}
           </Button>
 
           <div className="flex flex-col items-center">
             <AuthLogo heading="" />
-            <p className="text-[#E8EEF8] text-[20px] font-bold -mt-4">Створіть профіль</p>
-            <p className="text-[#769CCF] text-sm mt-0.5 mb-2">Крок 1 із 2</p>
+            <p className="text-[#E8EEF8] text-[20px] font-bold -mt-4">{copy.auth.createProfile}</p>
+            <p className="text-[#769CCF] text-sm mt-0.5 mb-2">
+              {copy.auth.step} 1 {copy.auth.of} 2
+            </p>
             <StepBar currentStep={1} totalSteps={2} />
           </div>
 
           <div className="mt-4 mb-4">
-            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Пароль</label>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">{copy.auth.password}</label>
             <div className="relative">
               <input
                 type={showPwd ? 'text' : 'password'}
@@ -222,14 +238,14 @@ function SignUpPage() {
 
           <div className="mb-5 space-y-2">
             <p className="text-[#D4E3F7] text-[13px] font-medium mb-2">
-              Пароль має містити принаймні:
+              {copy.auth.passwordNeeds}
             </p>
-            <PasswordRequirement met={hasLetter} label="1 літеру" />
+            <PasswordRequirement met={hasLetter} label={copy.auth.passwordLetter} />
             <PasswordRequirement
               met={hasNumberOrSpecial}
-              label="1 число або 1 спеціальний символ (наприклад:_!?&#)"
+              label={copy.auth.passwordNumberOrSymbol}
             />
-            <PasswordRequirement met={hasLength} label="8 символів" />
+            <PasswordRequirement met={hasLength} label={copy.auth.passwordLength} />
           </div>
 
           <Button
@@ -240,7 +256,7 @@ function SignUpPage() {
             disabled={!passwordValid}
             onClick={() => setStep(2)}
           >
-            Далі
+            {copy.auth.continue}
           </Button>
         </div>
       </div>
@@ -257,26 +273,28 @@ function SignUpPage() {
           onClick={() => setStep(1)}
           className="text-[#8AB8F0] underline underline-offset-4 !px-0 mb-3"
         >
-          Назад
+          {copy.common.back}
         </Button>
 
         <div className="flex flex-col items-center">
           <AuthLogo heading="" />
-          <p className="text-[#E8EEF8] text-[20px] font-bold -mt-4">Створіть профіль</p>
-          <p className="text-[#769CCF] text-sm mt-0.5 mb-2">Крок 2 із 2</p>
+          <p className="text-[#E8EEF8] text-[20px] font-bold -mt-4">{copy.auth.createProfile}</p>
+          <p className="text-[#769CCF] text-sm mt-0.5 mb-2">
+            {copy.auth.step} 2 {copy.auth.of} 2
+          </p>
           <StepBar currentStep={2} totalSteps={2} />
         </div>
 
         <div className="space-y-4 mt-4">
           {/* Name */}
           <div>
-            <label className="text-[#D4E3F7] text-sm font-medium block mb-0.5">Ім&apos;я</label>
-            <p className="text-[#769CCF] text-xs mb-1.5">Це ім'я відображатиметься в профілі</p>
+            <label className="text-[#D4E3F7] text-sm font-medium block mb-0.5">{copy.auth.name}</label>
+            <p className="text-[#769CCF] text-xs mb-1.5">{copy.auth.profileNameHint}</p>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ім'я"
+              placeholder={copy.auth.name}
               className="w-full auth-input rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-brand/45 text-[15px]"
             />
           </div>
@@ -284,18 +302,18 @@ function SignUpPage() {
           {/* Date of birth */}
           <div>
             <label className="text-[#D4E3F7] text-sm font-medium block mb-0.5">
-              Дата народження
+              {copy.auth.dateOfBirth}
             </label>
             <p className="text-[#769CCF] text-xs mb-0.5">
-              Для чого нам потрібна ваша дата народження?{' '}
-              <span className="text-[#8AB8F0] underline cursor-pointer">Докладніше</span>
+              {copy.auth.dateOfBirthHint}{' '}
+              <span className="text-[#8AB8F0] underline cursor-pointer">{copy.auth.learnMore}</span>
             </p>
             <div className="flex gap-2 mt-1.5">
               <input
                 type="text"
                 value={dobYear}
                 onChange={(e) => setDobYear(e.target.value)}
-                placeholder="рррр"
+                placeholder="yyyy"
                 maxLength={4}
                 className="w-20 auth-input rounded-xl px-3 py-3 outline-none focus:ring-2 focus:ring-brand/45 text-[15px] text-center"
               />
@@ -306,9 +324,9 @@ function SignUpPage() {
                   className="w-full auth-input rounded-xl px-3 py-3 pr-8 outline-none focus:ring-2 focus:ring-brand/45 text-[15px] appearance-none"
                 >
                   <option value="" disabled>
-                    Місяць
+                    {copy.auth.month}
                   </option>
-                  {MONTHS.map((m, i) => (
+                  {copy.auth.months.map((m, i) => (
                     <option key={i} value={i + 1}>
                       {m}
                     </option>
@@ -323,7 +341,7 @@ function SignUpPage() {
                 type="text"
                 value={dobDay}
                 onChange={(e) => setDobDay(e.target.value)}
-                placeholder="дд"
+                placeholder="dd"
                 maxLength={2}
                 className="w-16 auth-input rounded-xl px-3 py-3 outline-none focus:ring-2 focus:ring-brand/45 text-[15px] text-center"
               />
@@ -333,27 +351,28 @@ function SignUpPage() {
           {/* Region */}
           <div>
             <label className="text-[#D4E3F7] text-sm font-medium block mb-0.5">
-              Регіон проживання
+              {copy.auth.region}
             </label>
             <p className="text-[#769CCF] text-xs mb-0.5">
-              Для чого нам потрібна ваше місце проживання?{' '}
-              <span className="text-[#8AB8F0] underline cursor-pointer">Докладніше</span>
+              {copy.auth.regionHint}{' '}
+              <span className="text-[#8AB8F0] underline cursor-pointer">{copy.auth.learnMore}</span>
             </p>
             <div className="flex gap-2 mt-1.5">
               <div className="relative flex-1">
-                <label className="text-[#A8C4E0] text-xs mb-1 block">Країна</label>
+                <label className="text-[#A8C4E0] text-xs mb-1 block">{copy.auth.country}</label>
                 <select
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   className="w-full auth-input rounded-xl px-3 py-3 pr-8 outline-none focus:ring-2 focus:ring-brand/45 text-[15px] appearance-none"
                 >
                   <option value="" disabled>
-                    Країна
+                    {copy.auth.country}
                   </option>
-                  <option value="ua">Україна</option>
-                  <option value="us">США</option>
-                  <option value="de">Німеччина</option>
-                  <option value="pl">Польща</option>
+                  {countries.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
                 </select>
                 <ChevronDown
                   size={14}
@@ -361,19 +380,20 @@ function SignUpPage() {
                 />
               </div>
               <div className="relative flex-1">
-                <label className="text-[#A8C4E0] text-xs mb-1 block">Місто</label>
+                <label className="text-[#A8C4E0] text-xs mb-1 block">{copy.auth.city}</label>
                 <select
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   className="w-full auth-input rounded-xl px-3 py-3 pr-8 outline-none focus:ring-2 focus:ring-brand/45 text-[15px] appearance-none"
                 >
                   <option value="" disabled>
-                    Місто
+                    {copy.auth.city}
                   </option>
-                  <option value="kyiv">Київ</option>
-                  <option value="lviv">Львів</option>
-                  <option value="odesa">Одеса</option>
-                  <option value="kharkiv">Харків</option>
+                  {cities.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
                 </select>
                 <ChevronDown
                   size={14}
@@ -385,12 +405,12 @@ function SignUpPage() {
 
           {/* Role */}
           <div>
-            <label className="text-[#D4E3F7] text-sm font-medium block mb-2">Хто ви?</label>
+            <label className="text-[#D4E3F7] text-sm font-medium block mb-2">{copy.auth.whoAreYou}</label>
             <div className="space-y-2">
               {(
                 [
-                  { value: 'user', label: 'Я звичайний користувач' },
-                  { value: 'creator', label: 'Я автор пісень' },
+                  { value: 'user', label: copy.auth.regularUser },
+                  { value: 'creator', label: copy.auth.creator },
                 ] as const
               ).map(({ value, label }) => (
                 <label key={value} className="flex items-center gap-2.5 cursor-pointer">
@@ -419,7 +439,7 @@ function SignUpPage() {
           onClick={handleFinalSubmit}
           className="mt-5"
         >
-          Зареєструватися
+          {copy.auth.register}
         </Button>
       </div>
     </div>

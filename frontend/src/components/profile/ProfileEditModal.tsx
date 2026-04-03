@@ -7,6 +7,7 @@ import { useAuthStore } from '../../store/authStore';
 import { fileToDataUrl } from '../../utils/file.utils';
 import Button from '../ui/Button';
 import { backdropVariants, modalVariants } from '../../lib/motion';
+import { useI18n } from '../../lib/i18n';
 
 export default function ProfileEditModal({
   open,
@@ -14,12 +15,10 @@ export default function ProfileEditModal({
   fallbackCover,
   onClose,
 }: ProfileEditModalProps) {
+  const { copy } = useI18n();
   const user = useAuthStore((state) => state.user);
   const [displayName, setDisplayName] = useState(user?.displayName || '');
-  const [bio, setBio] = useState(
-    user?.bio ||
-      'Вітаю всіх! Дякую, що завітали на мою сторінку. Тут ви знайдете мою музику, емоції та натхнення.'
-  );
+  const [bio, setBio] = useState(user?.bio || copy.profile.defaultBio);
   const [profilePicture, setProfilePicture] = useState(
     user?.profilePicture && user.profilePicture !== 'default-avatar.png'
       ? user.profilePicture
@@ -34,17 +33,14 @@ export default function ProfileEditModal({
   useEffect(() => {
     if (!open || !user) return;
     setDisplayName(user.displayName || '');
-    setBio(
-      user.bio ||
-        'Вітаю всіх! Дякую, що завітали на мою сторінку. Тут ви знайдете мою музику, емоції та натхнення.'
-    );
+    setBio(user.bio || copy.profile.defaultBio);
     setProfilePicture(
       user.profilePicture && user.profilePicture !== 'default-avatar.png'
         ? user.profilePicture
         : fallbackAvatar
     );
     setCoverImage(user.coverImage || fallbackCover);
-  }, [fallbackAvatar, fallbackCover, open, user]);
+  }, [copy.profile.defaultBio, fallbackAvatar, fallbackCover, open, user]);
 
   const handleSave = async () => {
     setError(null);
@@ -59,7 +55,7 @@ export default function ProfileEditModal({
       onClose();
     } catch (err) {
       const apiError = err as { response?: { data?: { message?: string } } };
-      setError(apiError.response?.data?.message ?? 'Не вдалося оновити профіль');
+      setError(apiError.response?.data?.message ?? copy.profile.updateProfileError);
     }
   };
 
@@ -84,7 +80,7 @@ export default function ProfileEditModal({
             <div className="w-full max-w-[700px] rounded-[22px] bg-[#233b47] px-8 py-7 shadow-[0_24px_64px_rgba(0,0,0,0.36)]">
               <div className="mb-6 flex items-start justify-between">
                 <h2 className="text-[18px] font-semibold tracking-[-0.03em] text-white">
-                  Редагування профіля
+                  {copy.profile.editProfile}
                 </h2>
                 <Button
                   variant="ghost"
@@ -117,7 +113,7 @@ export default function ProfileEditModal({
                     className="mt-6 flex h-[72px] w-[138px] flex-col items-center justify-center rounded-[12px] border border-dashed border-[#6f9abe] bg-[#1d3240] text-[#7ea3c4] transition hover:bg-[#274355]"
                   >
                     <span className="text-[18px]">↑</span>
-                    <span className="mt-1.5 text-[12px]">Обкладинка</span>
+                    <span className="mt-1.5 text-[12px]">{copy.profile.coverImage}</span>
                   </button>
 
                   <input
@@ -147,7 +143,7 @@ export default function ProfileEditModal({
                 <div className="space-y-5">
                   <label className="block">
                     <span className="mb-2 block text-[15px] font-semibold text-[#e5f2fc]">
-                      Нікнейм
+                      {copy.profile.nickname}
                     </span>
                     <input
                       value={displayName}
@@ -158,7 +154,7 @@ export default function ProfileEditModal({
 
                   <label className="block">
                     <span className="mb-2 block text-[15px] font-semibold text-[#e5f2fc]">
-                      Опис
+                      {copy.profile.description}
                     </span>
                     <textarea
                       value={bio}
@@ -179,7 +175,7 @@ export default function ProfileEditModal({
                       onClick={() => void handleSave()}
                       className="min-w-[146px] rounded-[12px] bg-[#7bc7ea] px-6 py-2.5 text-[14px] font-semibold text-[#0d2330] hover:bg-[#90d5f3]"
                     >
-                      Зберегти
+                      {copy.common.save}
                     </Button>
                   </div>
                 </div>

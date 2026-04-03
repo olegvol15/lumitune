@@ -1,7 +1,10 @@
 import type { ProfileAlbumCardProps } from '../../types/profile/profile.types';
+import { useI18n } from '../../lib/i18n';
 import SongCoverImage from '../ui/SongCoverImage';
 
 export default function ProfileAlbumCard({ album, onClick }: ProfileAlbumCardProps) {
+  const { copy } = useI18n();
+
   return (
     <button
       type="button"
@@ -18,7 +21,7 @@ export default function ProfileAlbumCard({ album, onClick }: ProfileAlbumCardPro
       <div className="px-3 pb-4">
         <div className="line-clamp-2 text-sm font-semibold text-white">{album.title}</div>
         <div className="mt-1 truncate text-[11px] uppercase tracking-[0.08em] text-[#7890a9]">
-          МУЗИКАНТ
+          {copy.profile.musician}
         </div>
       </div>
     </button>

@@ -1,26 +1,27 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-
-const banners = [
-  {
-    id: 'b1',
-    imageUrl: 'https://picsum.photos/seed/exoplanet/900/300',
-    label: 'EXO Planet — новий альбом',
-  },
-  {
-    id: 'b2',
-    imageUrl: 'https://picsum.photos/seed/kpopnight/900/300',
-    label: 'К-Поп вечір — слухай зараз',
-  },
-  {
-    id: 'b3',
-    imageUrl: 'https://picsum.photos/seed/indievibes/900/300',
-    label: 'Indie Vibes — відкрий нове',
-  },
-];
+import { useI18n } from '../../lib/i18n';
 
 export default function HeroBanner() {
+  const { copy } = useI18n();
   const [active, setActive] = useState(0);
+  const banners = [
+    {
+      id: 'b1',
+      imageUrl: 'https://picsum.photos/seed/exoplanet/900/300',
+      label: copy.home.heroBanners[0],
+    },
+    {
+      id: 'b2',
+      imageUrl: 'https://picsum.photos/seed/kpopnight/900/300',
+      label: copy.home.heroBanners[1],
+    },
+    {
+      id: 'b3',
+      imageUrl: 'https://picsum.photos/seed/indievibes/900/300',
+      label: copy.home.heroBanners[2],
+    },
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {

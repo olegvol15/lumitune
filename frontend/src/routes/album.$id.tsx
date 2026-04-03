@@ -7,6 +7,7 @@ import TrackRow from '../components/ui/TrackRow';
 import { usePlayerStore } from '../store/playerStore';
 import Button from '../components/ui/Button';
 import { useCatalogTracks } from '../hooks/tracks';
+import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/album/$id')({
   component: AlbumPage,
@@ -18,6 +19,7 @@ function AlbumPage() {
   const router = useRouter();
   const play = usePlayerStore((s) => s.play);
   const { tracks } = useCatalogTracks();
+  const { copy, language } = useI18n();
 
   const staticAlbum = getAlbum(id);
   const albumTracks = tracks.filter((t) => t.albumId === id);
@@ -42,7 +44,9 @@ function AlbumPage() {
 
   if (!album) {
     return (
-      <div className="flex items-center justify-center h-screen text-muted">Альбом не знайдено</div>
+      <div className="flex items-center justify-center h-screen text-muted">
+        {copy.media.albumNotFound}
+      </div>
     );
   }
 
@@ -51,8 +55,12 @@ function AlbumPage() {
   const totalDuration = albumTracks.reduce((acc, t) => acc + t.duration, 0);
   const fmtTotal = (s: number) => {
     const m = Math.floor(s / 60);
-    if (m >= 60) return `${Math.floor(m / 60)} год ${m % 60} хв`;
-    return `${m} хв`;
+    if (language === 'uk') {
+      if (m >= 60) return `${Math.floor(m / 60)} год ${m % 60} хв`;
+      return `${m} хв`;
+    }
+    if (m >= 60) return `${Math.floor(m / 60)} h ${m % 60} min`;
+    return `${m} min`;
   };
 
   const playAll = () => {
@@ -102,7 +110,9 @@ function AlbumPage() {
           <span className="text-muted text-sm">·</span>
           <span className="text-muted text-sm">{album.year}</span>
           <span className="text-muted text-sm">·</span>
-          <span className="text-muted text-sm">{albumTracks.length} треків</span>
+          <span className="text-muted text-sm">
+            {albumTracks.length} {copy.common.tracks}
+          </span>
           <span className="text-muted text-sm">·</span>
           <span className="text-muted text-sm">{fmtTotal(totalDuration)}</span>
         </div>
@@ -116,7 +126,7 @@ function AlbumPage() {
             onClick={playAll}
             className="px-6"
           >
-            Відтворити
+            {copy.common.play}
           </Button>
           <button onClick={shufflePlay} className="p-2.5 bg-surface-alt rounded-full">
             <Shuffle size={18} className="text-white" />
@@ -139,7 +149,7 @@ function AlbumPage() {
               className="w-14 h-14 rounded-full object-cover"
             />
             <div>
-              <p className="text-muted text-xs">Виконавець</p>
+              <p className="text-muted text-xs">{copy.common.artist}</p>
               <button
                 onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
                 className="text-white font-semibold hover:text-brand transition-colors"

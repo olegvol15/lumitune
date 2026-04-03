@@ -4,8 +4,10 @@ import { usePlayerStore } from '../../store/playerStore';
 import { usePodcastQuery } from '../../hooks/podcasts';
 import { useAudiobookQuery } from '../../hooks/audiobooks';
 import type { AudiobookChapter, Episode } from '../../types';
+import { useI18n } from '../../lib/i18n';
 
 export default function RightPanel() {
+  const { copy } = useI18n();
   const rightPanelOpen = usePlayerStore((s) => s.rightPanelOpen);
   const setRightPanelOpen = usePlayerStore((s) => s.setRightPanelOpen);
   const currentEpisode = usePlayerStore((s) => s.currentEpisode);
@@ -56,7 +58,7 @@ export default function RightPanel() {
             <button
               onClick={() => setRightPanelOpen(true)}
               className="text-white/30 hover:text-white transition-colors p-1.5"
-              aria-label="Open panel"
+              aria-label={copy.rightPanel.openPanel}
             >
               <PanelRight size={18} />
             </button>
@@ -81,7 +83,7 @@ export default function RightPanel() {
                 {currentAudiobook?.title ??
                   podcast?.title ??
                   currentEpisode?.podcastTitle ??
-                  'Подкаст'}
+                  copy.rightPanel.podcastFallback}
               </span>
               <div className="flex items-center gap-0.5 flex-shrink-0">
                 <button className="text-white/40 hover:text-white p-1.5 transition-colors">
@@ -101,7 +103,11 @@ export default function RightPanel() {
                 {/* Cover */}
                 <img
                   src={currentAudiobookChapter?.audiobookCover ?? currentEpisode?.podcastCover}
-                  alt={currentAudiobook?.title ?? currentEpisode?.podcastTitle ?? 'Current audio'}
+                  alt={
+                    currentAudiobook?.title ??
+                    currentEpisode?.podcastTitle ??
+                    copy.rightPanel.currentAudio
+                  }
                   className="w-full aspect-square object-cover rounded-xl grayscale mb-3"
                 />
 
@@ -155,7 +161,7 @@ export default function RightPanel() {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-48 text-center">
-                <p className="text-white/30 text-sm">Play a podcast episode or audiobook chapter to see it here</p>
+                <p className="text-white/30 text-sm">{copy.rightPanel.empty}</p>
               </div>
             )}
           </motion.div>
