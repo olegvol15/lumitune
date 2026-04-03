@@ -1,86 +1,136 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
-import { type ReactNode } from 'react';
-import { Users, Music2, LayoutDashboard, Puzzle, Settings, LogOut, Mic } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
+import {
+  Users, Music2, LayoutDashboard, Puzzle, Settings, LogOut, Mic,
+  BookOpen, UserRound, ListMusic, Disc3, Tag, Smile, ChevronUp,
+  ChevronDown,
+} from 'lucide-react';
 import { useAdminLogoutMutation } from '../../hooks/admin-auth';
 import LogoIcon from '../ui/LogoIcon';
 
-// Only include routes that are actually registered
-const ACTIVE_NAV = [
-  { path: '/admin/tracks', icon: Music2, label: 'Elements' },
-  { path: '/admin/podcasts', icon: Mic, label: 'Podcasts' },
+const ELEMENTS = [
+  { label: 'Tracks',      icon: Music2,     path: '/admin/tracks' },
+  { label: 'Podcasts',    icon: Mic,        path: '/admin/podcasts' },
+  { label: 'Audiobooks',  icon: BookOpen,   path: null },
+  { label: 'Authors',     icon: UserRound,  path: null },
+  { label: 'Playlists',   icon: ListMusic,  path: null },
+  { label: 'Albums',      icon: Disc3,      path: null },
+  { label: 'Genres',      icon: Tag,        path: null },
+  { label: 'Tags',        icon: Tag,        path: null },
+  { label: 'Moods',       icon: Smile,      path: null },
 ] as const;
 
-// Placeholder nav items (no route yet)
-const PLACEHOLDER_NAV = [
-  { icon: Users, label: 'Customers', matchPath: '/admin/customers' },
-  { icon: LayoutDashboard, label: 'Dashboard', matchPath: '/admin/dashboard' },
-  { icon: Puzzle, label: 'Plugins', matchPath: '/admin/plugins' },
-  { icon: Settings, label: 'Settings', matchPath: '/admin/settings' },
-];
+const TOP_NAV = [
+  { label: 'Customers', icon: Users,          path: null },
+  { label: 'Dashboard', icon: LayoutDashboard, path: null },
+] as const;
 
-// Merged for rendering in order
-const NAV_ORDER = ['Customers', 'Elements', 'Podcasts', 'Dashboard', 'Plugins', 'Settings'];
+const BOTTOM_NAV = [
+  { label: 'Plugins',  icon: Puzzle,   path: null },
+  { label: 'Settings', icon: Settings, path: null },
+] as const;
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const { location } = useRouterState();
   const navigate = useNavigate();
   const logoutMutation = useAdminLogoutMutation();
+  const [elementsOpen, setElementsOpen] = useState(true);
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
     navigate({ to: '/admin/login' });
   };
 
-  const navItemClass = (active: boolean) =>
-    `w-14 h-14 flex flex-col items-center justify-center rounded-xl gap-1 transition-colors text-[10px] font-medium ${
-      active ? 'bg-[#253050] text-[#3dc9b0]' : 'text-[#7a8faa] hover:bg-[#253050] hover:text-white'
-    }`;
+  const isActive = (path: string) => location.pathname.startsWith(path);
+  const isInElements = ELEMENTS.some((e) => e.path && isActive(e.path));
 
-  const activeNavMap = Object.fromEntries(ACTIVE_NAV.map((n) => [n.label, n]));
-  const placeholderNavMap = Object.fromEntries(PLACEHOLDER_NAV.map((n) => [n.label, n]));
+  const navItemClass = (active: boolean, disabled = false) =>
+    `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+      disabled
+        ? 'text-[#4a5a72] cursor-default'
+        : active
+        ? 'bg-[#253050] text-white font-medium'
+        : 'text-[#7a8faa] hover:bg-[#253050]/70 hover:text-white'
+    }`;
 
   return (
     <div className="flex min-h-screen bg-[#1c2235] text-white">
       {/* Sidebar */}
-      <aside className="w-20 flex flex-col items-center py-6 bg-[#1a2030] border-r border-[#2a3a52] shrink-0">
-        <div className="mb-8">
+      <aside className="w-56 flex flex-col py-5 bg-[#1a2030] border-r border-[#2a3a52] shrink-0">
+        <div className="px-4 mb-6">
           <LogoIcon className="w-10 h-auto" />
         </div>
 
-        <nav className="flex flex-col items-center gap-1 flex-1">
-          {NAV_ORDER.map((label) => {
-            if (activeNavMap[label]) {
-              const { path, icon: Icon } = activeNavMap[label];
-              const active = location.pathname.startsWith(path);
-              return (
-                <Link key={label} to={path} className={navItemClass(active)}>
-                  <Icon size={20} />
-                  <span>{label}</span>
-                </Link>
-              );
-            }
-            const { icon: Icon, matchPath } = placeholderNavMap[label];
-            const active = location.pathname.startsWith(matchPath);
-            return (
-              <span
-                key={label}
-                title="Coming soon"
-                className={`${navItemClass(active)} cursor-default opacity-50`}
-              >
-                <Icon size={20} />
-                <span>{label}</span>
+        <nav className="flex flex-col gap-0.5 flex-1 px-2 overflow-y-auto">
+          {/* Top nav */}
+          {TOP_NAV.map(({ label, icon: Icon }) => (
+            <span key={label} className={navItemClass(false, true)} title="Coming soon">
+              <Icon size={16} />
+              {label}
+            </span>
+          ))}
+
+          {/* Elements accordion */}
+          <div className="mt-1">
+            <button
+              onClick={() => setElementsOpen((o) => !o)}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                isInElements && !elementsOpen
+                  ? 'text-[#3dc9b0]'
+                  : 'text-[#7a8faa] hover:text-white'
+              }`}
+            >
+              <span className="font-medium">Elements</span>
+              {elementsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+
+            {elementsOpen && (
+              <div className="mt-0.5 flex flex-col gap-0.5">
+                {ELEMENTS.map(({ label, icon: Icon, path }) => {
+                  if (path) {
+                    const active = isActive(path);
+                    return (
+                      <Link
+                        key={label}
+                        to={path}
+                        className={navItemClass(active)}
+                      >
+                        <Icon size={15} />
+                        {label}
+                      </Link>
+                    );
+                  }
+                  return (
+                    <span key={label} className={navItemClass(false, true)} title="Coming soon">
+                      <Icon size={15} />
+                      {label}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Bottom nav */}
+          <div className="mt-1 flex flex-col gap-0.5">
+            {BOTTOM_NAV.map(({ label, icon: Icon }) => (
+              <span key={label} className={navItemClass(false, true)} title="Coming soon">
+                <Icon size={16} />
+                {label}
               </span>
-            );
-          })}
+            ))}
+          </div>
         </nav>
 
-        <button
-          onClick={() => void handleLogout()}
-          className="w-14 h-14 flex flex-col items-center justify-center rounded-xl gap-1 text-[10px] font-medium text-[#7a8faa] hover:bg-[#253050] hover:text-white transition-colors"
-        >
-          <LogOut size={20} />
-          <span>Logout</span>
-        </button>
+        <div className="px-2 pt-2 border-t border-[#2a3a52]">
+          <button
+            onClick={() => void handleLogout()}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#7a8faa] hover:bg-[#253050] hover:text-white transition-colors"
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
+        </div>
       </aside>
 
       {/* Main area */}
