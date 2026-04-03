@@ -1,4 +1,5 @@
-import express from 'express';
+// src/routes/admin-podcast.routes.ts
+import express, { RequestHandler } from 'express';
 import { protectAdmin } from '../middleware/admin-auth.middleware';
 import { adminSongUpload } from '../middleware/upload.middleware';
 import {
@@ -11,6 +12,7 @@ import {
 } from '../controllers/podcast.controller';
 
 const router = express.Router();
+const h = (fn: Function) => fn as unknown as RequestHandler;
 
 const mediaFields = adminSongUpload.fields([
   { name: 'audio', maxCount: 1 },
@@ -19,16 +21,13 @@ const mediaFields = adminSongUpload.fields([
 
 const coverOnly = adminSongUpload.fields([{ name: 'cover', maxCount: 1 }]);
 
-// Episode routes before /:id to avoid param clash
-router.put('/episodes/:episodeId', protectAdmin, mediaFields, updateEpisode);
-router.delete('/episodes/:episodeId', protectAdmin, deleteEpisode);
+router.put('/episodes/:episodeId', protectAdmin, mediaFields, h(updateEpisode));
+router.delete('/episodes/:episodeId', protectAdmin, h(deleteEpisode));
 
-// Podcast CRUD
-router.post('/', protectAdmin, coverOnly, createPodcast);
-router.put('/:id', protectAdmin, coverOnly, updatePodcast);
-router.delete('/:id', protectAdmin, deletePodcast);
+router.post('/', protectAdmin, coverOnly, h(createPodcast));
+router.put('/:id', protectAdmin, coverOnly, h(updatePodcast));
+router.delete('/:id', protectAdmin, h(deletePodcast));
 
-// Upload episode to a podcast
-router.post('/:podcastId/episodes', protectAdmin, mediaFields, uploadEpisode);
+router.post('/:podcastId/episodes', protectAdmin, mediaFields, h(uploadEpisode));
 
 export default router;

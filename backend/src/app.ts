@@ -6,8 +6,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+import passport, { initPassport } from './config/passport';
+
 // Routes
 import authRoutes from './routes/auth.routes';
+import oauthRoutes from './routes/oauth.routes';
 import adminAuthRoutes from './routes/admin-auth.routes';
 import adminSongRoutes from './routes/admin-song.routes';
 import songRoutes from './routes/song.routes';
@@ -18,7 +21,6 @@ import searchRoutes from './routes/search.routes';
 import podcastRoutes from './routes/podcast.routes';
 import adminPodcastRoutes from './routes/admin-podcast.routes';
 
-// Middleware
 import { errorHandler } from './middleware/error.middleware';
 
 const app = express();
@@ -35,21 +37,22 @@ app.use(
 );
 
 // Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use('/api', limiter);
 
-// Base64-encoded profile images can exceed Express defaults.
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Passport — initialise strategies (skips any provider missing credentials)
+initPassport();
+app.use(passport.initialize());
 
 // Static uploads
 app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/auth/oauth', oauthRoutes);
 app.use('/api/admin/auth', adminAuthRoutes);
 app.use('/api/admin/songs', adminSongRoutes);
 app.use('/api/songs', songRoutes);
@@ -61,7 +64,7 @@ app.use('/api/podcasts', podcastRoutes);
 app.use('/api/admin/podcasts', adminPodcastRoutes);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 

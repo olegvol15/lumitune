@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import {
   uploadSong,
   getAllSongs,
@@ -10,30 +10,24 @@ import { protect } from '../middleware/auth.middleware';
 import { adminSongUpload } from '../middleware/upload.middleware';
 
 const router = express.Router();
+const auth = protect as unknown as RequestHandler;
+const h = (fn: Function) => fn as unknown as RequestHandler;
 
-// Public routes
 router.get('/', getAllSongs);
 router.get('/:id', getSongById);
-router.get('/:id/stream', streamSong);
+router.get('/:id/stream', h(streamSong));
 
-// Protected routes — accept both audio + optional cover
 router.post(
   '/upload',
-  protect,
-  adminSongUpload.fields([
-    { name: 'audio', maxCount: 1 },
-    { name: 'cover', maxCount: 1 },
-  ]),
-  uploadSong
+  auth,
+  adminSongUpload.fields([{ name: 'audio', maxCount: 1 }, { name: 'cover', maxCount: 1 }]),
+  h(uploadSong)
 );
 router.put(
   '/:id',
-  protect,
-  adminSongUpload.fields([
-    { name: 'audio', maxCount: 1 },
-    { name: 'cover', maxCount: 1 },
-  ]),
-  updateOwnSong
+  auth,
+  adminSongUpload.fields([{ name: 'audio', maxCount: 1 }, { name: 'cover', maxCount: 1 }]),
+  h(updateOwnSong)
 );
 
 export default router;

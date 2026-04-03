@@ -32,13 +32,13 @@ export interface AuthUserResponse {
   email: string;
   username: string;
   displayName: string;
-  dateOfBirth: {
+  dateOfBirth?: {          // optional — OAuth users may not have this
     day: number;
     month: number;
     year: number;
   };
-  country: string;
-  city: string;
+  country?: string;        // optional — OAuth users may not have this
+  city?: string;           // optional — OAuth users may not have this
   role: 'user' | 'creator';
   bio?: string;
   coverImage?: string;

@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters'],
     select: false,
   },
@@ -34,37 +33,31 @@ const userSchema = new mongoose.Schema({
   dateOfBirth: {
     day: {
       type: Number,
-      required: [true, 'Day of birth is required'],
       min: [1, 'Day must be between 1 and 31'],
       max: [31, 'Day must be between 1 and 31'],
     },
     month: {
       type: Number,
-      required: [true, 'Month of birth is required'],
       min: [1, 'Month must be between 1 and 12'],
       max: [12, 'Month must be between 1 and 12'],
     },
     year: {
       type: Number,
-      required: [true, 'Year of birth is required'],
       min: [1900, 'Invalid year'],
       max: [new Date().getFullYear(), 'Year cannot be in the future'],
     },
   },
   country: {
     type: String,
-    required: [true, 'Country is required'],
     trim: true,
   },
   city: {
     type: String,
-    required: [true, 'City is required'],
     trim: true,
   },
   role: {
     type: String,
     enum: ['user', 'creator'],
-    required: [true, 'Role is required'],
     default: 'user',
   },
   bio: {
@@ -81,6 +74,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'default-avatar.png',
   },
+
+  oauthProvider: {
+    type: String,
+    enum: ['google', 'apple', 'facebook'],
+    select: false,
+  },
+  oauthId: {
+    type: String,
+    select: false,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,
@@ -89,7 +93,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', async function () {
   try {
-    if (this.isModified('password')) {
+    if (this.isModified('password') && this.password) {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
     }
@@ -99,6 +103,7 @@ userSchema.pre('save', async function () {
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };
 

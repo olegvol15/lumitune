@@ -1,13 +1,14 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import { protect } from '../middleware/auth.middleware';
 import { getLikedSongs, likeSong, unlikeSong, checkLiked } from '../controllers/likes.controller';
 
 const router = express.Router();
+const auth = protect as unknown as RequestHandler;
+const h = (fn: Function) => fn as unknown as RequestHandler;
 
-// All likes routes require authentication
-router.get('/', protect, getLikedSongs);
-router.get('/:songId', protect, checkLiked);
-router.post('/:songId', protect, likeSong);
-router.delete('/:songId', protect, unlikeSong);
+router.get('/', auth, h(getLikedSongs));
+router.get('/:songId', auth, h(checkLiked));
+router.post('/:songId', auth, h(likeSong));
+router.delete('/:songId', auth, h(unlikeSong));
 
 export default router;

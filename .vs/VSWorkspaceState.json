@@ -3,14 +3,13 @@
     "",
     "\\backend",
     "\\backend\\src",
-    "\\backend\\src\\controllers",
-    "\\backend\\src\\routes",
+    "\\backend\\src\\models",
+    "\\backend\\src\\services",
     "\\backend\\src\\types",
-    "\\backend\\src\\types\\auth",
     "\\backend\\src\\types\\error",
     "\\backend\\src\\types\\song",
-    "\\backend\\src\\types\\user"
+    "\\backend\\src\\types\\user",
+    "\\backend\\src\\utils"
   ],
-  "SelectedNode": "\\backend\\src\\controllers\\song.controller.ts",
   "PreviewInSolutionExplorer": false
 }

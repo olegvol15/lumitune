@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import { protect } from '../middleware/auth.middleware';
 import {
   addSongToPlaylist,
@@ -11,13 +11,15 @@ import {
 } from '../controllers/playlist.controller';
 
 const router = express.Router();
+const auth = protect as unknown as RequestHandler;
+const h = (fn: Function) => fn as unknown as RequestHandler;
 
-router.get('/', protect, getPlaylists);
-router.post('/', protect, createPlaylist);
-router.get('/:id', protect, getPlaylistById);
-router.put('/:id', protect, updatePlaylist);
-router.delete('/:id', protect, deletePlaylist);
-router.post('/:id/songs', protect, addSongToPlaylist);
-router.delete('/:id/songs/:songId', protect, removeSongFromPlaylist);
+router.get('/', auth, h(getPlaylists));
+router.post('/', auth, h(createPlaylist));
+router.get('/:id', auth, h(getPlaylistById));
+router.put('/:id', auth, h(updatePlaylist));
+router.delete('/:id', auth, h(deletePlaylist));
+router.post('/:id/songs', auth, h(addSongToPlaylist));
+router.delete('/:id/songs/:songId', auth, h(removeSongFromPlaylist));
 
 export default router;

@@ -5,9 +5,9 @@ export const toAuthUserResponse = (user: {
   email: string;
   username: string;
   displayName: string;
-  dateOfBirth: { day: number; month: number; year: number };
-  country: string;
-  city: string;
+  dateOfBirth?: { day: number; month: number; year: number };
+  country?: string;
+  city?: string;
   role: 'user' | 'creator';
   bio?: string;
   coverImage?: string;
@@ -17,9 +17,9 @@ export const toAuthUserResponse = (user: {
   email: user.email,
   username: user.username,
   displayName: user.displayName,
-  dateOfBirth: user.dateOfBirth,
-  country: user.country,
-  city: user.city,
+  dateOfBirth: user.dateOfBirth ?? { day: 0, month: 0, year: 0 },
+  country: user.country ?? '',
+  city: user.city ?? '',
   role: user.role,
   bio: user.bio,
   coverImage: user.coverImage,
