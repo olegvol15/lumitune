@@ -10,4 +10,5 @@ export const THEME_OPTIONS: SettingsSelectOption[] = [
   { value: 'base', label: 'Основна' },
   { value: 'night', label: 'Нічна' },
   { value: 'ice', label: 'Холодна' },
+  { value: 'violet', label: 'Фіол' },
 ];

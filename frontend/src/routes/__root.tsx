@@ -10,6 +10,7 @@ import Footer from '../components/layout/Footer';
 import DesktopPlayer from '../components/layout/DesktopPlayer';
 import AudioEngine from '../components/player/AudioEngine';
 import { useThemeStore } from '../store/themeStore';
+import type { AppTheme } from '../store/themeStore';
 
 const HIDDEN_NAV_ROUTES = [
   '/player',
@@ -27,7 +28,9 @@ function RootLayout() {
   const setTheme = useThemeStore((s) => s.setTheme);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme === 'ice' ? 'light' : 'dark';
+    if (theme === 'ice') document.documentElement.dataset.theme = 'light';
+    else if (theme === 'violet') document.documentElement.dataset.theme = 'violet';
+    else document.documentElement.dataset.theme = 'dark';
   }, [theme]);
 
   useEffect(() => {
@@ -35,7 +38,8 @@ function RootLayout() {
       if (e.ctrlKey && e.key === 'l') {
         const target = e.target as HTMLElement;
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
-        setTheme(theme === 'ice' ? 'base' : 'ice');
+        const cycle: AppTheme[] = ['base', 'night', 'ice', 'violet'];
+        setTheme(cycle[(cycle.indexOf(theme) + 1) % cycle.length]);
       }
     };
     window.addEventListener('keydown', handler);
@@ -46,7 +50,7 @@ function RootLayout() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const isDark = theme !== 'ice';
+  const isDark = theme !== 'ice' && theme !== 'violet';
 
   if (hideNav) {
     return (
@@ -65,6 +69,16 @@ function RootLayout() {
           <div className="absolute w-[500px] h-[500px] rounded-full blur-[160px] opacity-30 bg-[#083d2a] top-[20%] right-[5%]" />
           <div className="absolute w-[700px] h-[700px] rounded-full blur-[180px] opacity-25 bg-[#0d3a5c] bottom-[10%] left-[30%]" />
           <div className="absolute w-[400px] h-[400px] rounded-full blur-[130px] opacity-20 bg-[#0a5040] bottom-0 right-[20%]" />
+        </div>
+      )}
+
+      {/* Violet-mode ambient background blobs */}
+      {theme === 'violet' && (
+        <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+          <div className="absolute w-[600px] h-[600px] rounded-full blur-[150px] opacity-35 bg-[#4a0a7a] -top-32 left-[10%]" />
+          <div className="absolute w-[500px] h-[500px] rounded-full blur-[160px] opacity-25 bg-[#0a0a6a] top-[20%] right-[5%]" />
+          <div className="absolute w-[700px] h-[700px] rounded-full blur-[180px] opacity-20 bg-[#2d0a5c] bottom-[10%] left-[30%]" />
+          <div className="absolute w-[400px] h-[400px] rounded-full blur-[130px] opacity-25 bg-[#6a0a50] bottom-0 right-[20%]" />
         </div>
       )}
 

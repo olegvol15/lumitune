@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type AppTheme = 'base' | 'night' | 'ice';
+export type AppTheme = 'base' | 'night' | 'ice' | 'violet';
 
 interface ThemeStore {
   theme: AppTheme;

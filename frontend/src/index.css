@@ -13,6 +13,16 @@
     --app-text-rgb: 255 255 255;   /* #ffffff */
   }
 
+  /* Violet / Фіол theme */
+  html[data-theme='violet'] {
+    --app-bg-rgb: 13 8 32;          /* #0d0820 */
+    --app-nav-rgb: 17 9 43;         /* #11092b */
+    --app-input-rgb: 22 12 56;      /* #160c38 */
+    --app-active-rgb: 30 16 72;     /* #1e1048 */
+    --app-border-rgb: 45 26 104;    /* #2d1a68 */
+    --app-text-rgb: 255 255 255;    /* #ffffff */
+  }
+
   /* Light / Холодна theme */
   html[data-theme='light'] {
     --app-bg-rgb: 200 223 240;     /* #c8dff0 */
@@ -215,6 +225,94 @@
   html[data-theme='light'] .desktop-player .bg-white.rounded-full { background-color: #0a1929 !important; }
   html[data-theme='light'] .desktop-player .border-white\/60  { border-color: rgba(10,25,41,0.55) !important; }
   html[data-theme='light'] .desktop-player .hover\:border-white:hover { border-color: #0a1929 !important; }
+}
+
+/* ─── Violet theme: global class overrides ─────────────────────────────────
+   Maps hardcoded dark-blue Tailwind values to dark-purple equivalents.
+   Admin routes are deliberately excluded (they stay dark).
+────────────────────────────────────────────────────────────────────────── */
+@layer utilities {
+  html[data-theme='violet'] body {
+    background-color: #0d0820;
+    color: #ffffff;
+  }
+
+  /* ── Background colours ── */
+  html[data-theme='violet'] .bg-\[\#060d19\]       { background-color: #0d0820 !important; }
+  html[data-theme='violet'] .bg-\[\#060d19\]\/80   { background-color: rgba(13,8,32,0.92) !important; }
+  html[data-theme='violet'] .bg-\[\#060d19\]\/85   { background-color: rgba(13,8,32,0.95) !important; }
+  html[data-theme='violet'] .bg-\[\#050c16\]        { background-color: #0a0618 !important; }
+  html[data-theme='violet'] .bg-\[\#07111f\]        { background-color: #11092b !important; }
+  html[data-theme='violet'] .bg-\[\#08111d\]        { background-color: #100827 !important; }
+  html[data-theme='violet'] .bg-\[\#0a1929\]        { background-color: #160c38 !important; }
+  html[data-theme='violet'] .bg-\[\#0d1c29\]        { background-color: #180e3c !important; }
+  html[data-theme='violet'] .bg-\[\#0d1b2e\]        { background-color: #170d3a !important; }
+  html[data-theme='violet'] .bg-\[\#071220\]        { background-color: #0e0825 !important; }
+  html[data-theme='violet'] .bg-\[\#0d2a4a\]        { background-color: #1e1048 !important; }
+  html[data-theme='violet'] .bg-\[\#13273a\]        { background-color: #1c1042 !important; }
+  html[data-theme='violet'] .bg-\[\#233b47\]        { background-color: #271248 !important; }
+  html[data-theme='violet'] .bg-\[\#101c2a\]        { background-color: #160c3a !important; }
+  html[data-theme='violet'] .bg-\[\#1a2430\]        { background-color: #1e1040 !important; }
+  html[data-theme='violet'] .bg-\[\#12283a\]        { background-color: #180e3e !important; }
+  html[data-theme='violet'] .bg-\[\#1d3240\]        { background-color: #21104a !important; }
+  html[data-theme='violet'] .bg-surface-alt         { background-color: #1a0e38 !important; }
+  html[data-theme='violet'] .bg-\[\#08111d\]\/55    { background-color: rgba(16,8,39,0.88) !important; }
+
+  /* ── Settings decorative blobs ── */
+  html[data-theme='violet'] .bg-\[\#15386f\]\/30    { background-color: rgba(80,10,120,0.25) !important; }
+  html[data-theme='violet'] .bg-\[\#1e6b71\]\/20    { background-color: rgba(60,10,100,0.18) !important; }
+  html[data-theme='violet'] .bg-\[\#89d5ff\]\/10    { background-color: rgba(139,92,246,0.08) !important; }
+
+  /* ── BottomNav glassmorphism bar ── */
+  html[data-theme='violet'] .bg-\[\#07111f\]\/85    { background-color: rgba(17,9,43,0.92) !important; }
+
+  /* ── Border colours ── */
+  html[data-theme='violet'] .border-\[\#1a3050\]               { border-color: #2d1a68 !important; }
+  html[data-theme='violet'] .border-\[\#27465d\]               { border-color: #3a2072 !important; }
+  html[data-theme='violet'] .border-\[\#30586f\]               { border-color: #402878 !important; }
+  html[data-theme='violet'] .border-\[\#2a3a52\]               { border-color: #351c65 !important; }
+  html[data-theme='violet'] .border-\[\#365a7a\]               { border-color: #422882 !important; }
+  html[data-theme='violet'] .border-white\/20                  { border-color: rgb(139 92 246 / 0.20) !important; }
+  html[data-theme='violet'] .border-white\/\[0\.06\]           { border-color: rgb(139 92 246 / 0.10) !important; }
+  html[data-theme='violet'] .divide-white\/\[0\.03\] > * + *  { border-color: rgb(139 92 246 / 0.06) !important; }
+
+  /* ── Hover bg-white/N → subtle purple hover ── */
+  html[data-theme='violet'] .bg-white\/5               { background-color: rgb(139 92 246 / 0.05) !important; }
+  html[data-theme='violet'] .bg-white\/10              { background-color: rgb(139 92 246 / 0.08) !important; }
+  html[data-theme='violet'] .bg-white\/20              { background-color: rgb(139 92 246 / 0.14) !important; }
+  html[data-theme='violet'] .hover\:bg-white\/5:hover  { background-color: rgb(139 92 246 / 0.05) !important; }
+  html[data-theme='violet'] .hover\:bg-white\/10:hover { background-color: rgb(139 92 246 / 0.08) !important; }
+
+  /* ── Podcast section ── */
+  html[data-theme='violet'] .from-\[\#102845\]  { --tw-gradient-from: #1c0a40 !important; }
+  html[data-theme='violet'] .to-\[\#0A1E3A\]    { --tw-gradient-to: #120830 !important; }
+  html[data-theme='violet'] .border-\[\#1F3F63\]\/80 { border-color: rgba(80,30,140,0.60) !important; }
+  html[data-theme='violet'] .hover\:border-\[\#2E5D8F\]:hover { border-color: #5e2caa !important; }
+
+  /* bg-black/N overlays → purple-tinted */
+  html[data-theme='violet'] .bg-black\/22 { background-color: rgba(13,8,32,0.22) !important; }
+  html[data-theme='violet'] .bg-black\/30 { background-color: rgba(13,8,32,0.30) !important; }
+  html[data-theme='violet'] .bg-black\/40 { background-color: rgba(13,8,32,0.40) !important; }
+  html[data-theme='violet'] .bg-black\/50 { background-color: rgba(13,8,32,0.50) !important; }
+  html[data-theme='violet'] .bg-black\/60 { background-color: rgba(13,8,32,0.60) !important; }
+  html[data-theme='violet'] .from-black\/30 { --tw-gradient-from: rgba(13,8,32,0.30) !important; }
+  html[data-theme='violet'] .to-surface     { --tw-gradient-to: #160c38 !important; }
+
+  /* ── Settings button borders & hover ── */
+  html[data-theme='violet'] .border-\[\#406c90\]           { border-color: #5e30a0 !important; }
+  html[data-theme='violet'] .hover\:bg-\[\#10253a\]:hover  { background-color: #1e0e48 !important; }
+
+  /* ── SettingsSelect dropdown ── */
+  html[data-theme='violet'] .bg-\[\#101c2a\]\/85  { background-color: rgba(22,12,56,0.92) !important; }
+  html[data-theme='violet'] .border-\[\#274a69\]   { border-color: #3a1e72 !important; }
+
+  /* ── Profile page components ── */
+  html[data-theme='violet'] .bg-\[\#0e2333\]\/90      { background-color: rgba(20,10,48,0.90) !important; }
+  html[data-theme='violet'] .hover\:bg-\[\#14304a\]:hover { background-color: #1e1050 !important; }
+  html[data-theme='violet'] .bg-\[\#13273a\]\/92      { background-color: rgba(28,16,66,0.92) !important; }
+
+  /* ── Desktop player: violet bg → correct text/icons ── */
+  html[data-theme='violet'] .desktop-player .bg-white\/20     { background-color: rgb(139 92 246 / 0.14) !important; }
 }
 
 @layer base {
