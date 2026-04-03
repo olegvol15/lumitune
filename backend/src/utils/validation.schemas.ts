@@ -99,6 +99,29 @@ export const songQuerySchema = z.object({
   genre: z.string().max(100).optional(),
 });
 
+export const audiobookCreateSchema = z.object({
+  title: z.string().min(1).max(200),
+  authorName: z.string().min(1).max(200),
+  description: z.string().min(1).max(2000),
+  genre: z.string().max(100).optional(),
+  publishedAt: z.string().optional(),
+});
+
+export const audiobookUpdateSchema = audiobookCreateSchema.partial();
+
+export const audiobookChapterUploadBodySchema = z.object({
+  title: z.string().min(1).max(200).optional(),
+  description: z.string().max(2000).optional(),
+  chapterNumber: z.union([z.string(), z.number()]).optional(),
+  publishedAt: z.string().optional(),
+});
+
+export const audiobookProgressSchema = z.object({
+  chapterId: z.string().min(1),
+  progressSeconds: z.coerce.number().min(0),
+  progressPct: z.coerce.number().min(0).max(1),
+});
+
 // ─── Playlist ──────────────────────────────────────────────────────────────
 
 export const playlistCreateSchema = z.object({

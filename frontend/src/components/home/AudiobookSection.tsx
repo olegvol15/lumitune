@@ -1,6 +1,11 @@
-import { audiobooks } from '../../data/audiobooks';
+import { useNavigate } from '@tanstack/react-router';
+import { formatLongDuration } from '../../utils/format';
+import { useAudiobooksQuery } from '../../hooks/audiobooks';
 
 export default function AudiobookSection() {
+  const navigate = useNavigate();
+  const { data: audiobooks = [] } = useAudiobooksQuery();
+
   return (
     <section className="mb-10">
       <h2 className="text-white font-bold text-lg mb-5">
@@ -11,6 +16,7 @@ export default function AudiobookSection() {
         {audiobooks.map((book, i) => (
           <div
             key={book.id}
+            onClick={() => navigate({ to: '/audiobook/$id', params: { id: book.id } })}
             className={`flex gap-5 p-5 hover:bg-white/5 cursor-pointer transition-colors ${
               i > 0 ? 'border-t border-[#1a3050]' : ''
             }`}
@@ -18,7 +24,7 @@ export default function AudiobookSection() {
             <img
               src={book.coverUrl}
               alt={book.title}
-              className="w-36 h-36 rounded-lg object-cover flex-shrink-0"
+              className="w-44 h-44 rounded-lg object-contain bg-black/10 flex-shrink-0"
             />
 
             <div className="flex-1 min-w-0">
@@ -39,10 +45,8 @@ export default function AudiobookSection() {
 
               {/* Date + Duration on separate lines */}
               <p className="text-white/25 text-xs">{book.publishedAt}</p>
-              <p className="text-white/25 text-xs">
-                {Math.floor(book.duration / 3600)} год, {Math.floor((book.duration % 3600) / 60)}{' '}
-                хв.
-              </p>
+              <p className="text-white/25 text-xs">{formatLongDuration(book.duration)}</p>
+              <p className="text-white/25 text-xs mt-1">{book.chapterCount} розділів</p>
             </div>
           </div>
         ))}

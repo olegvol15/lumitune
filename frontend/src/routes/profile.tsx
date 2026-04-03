@@ -13,7 +13,8 @@ import ProfileTopTrackRow from '../components/profile/ProfileTopTrackRow';
 import ProfileTrackCard from '../components/profile/ProfileTrackCard';
 import ProfileTrackEditorModal from '../components/profile/ProfileTrackEditorModal';
 import ProfileTrackSectionTools from '../components/profile/ProfileTrackSectionTools';
-import { useAddSongMutation, useCreatePlaylistMutation } from '../hooks/playlists';
+import { useAddSongMutation } from '../hooks/playlists';
+import playlistsApi from '../api/playlistsApi';
 import { useThemeStore } from '../store/themeStore';
 import { useUpdateCreatorTrackMutation, useUploadCreatorTrackMutation } from '../hooks/tracks';
 import type { CreatorAlbum, CreatorTrack, TrackModalState } from '../types/profile/profile.types';
@@ -60,7 +61,6 @@ function ProfilePage() {
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
   const uploadCreatorTrackMutation = useUploadCreatorTrackMutation();
   const updateCreatorTrackMutation = useUpdateCreatorTrackMutation();
-  const createPlaylistMutation = useCreatePlaylistMutation();
   const addSongToPlaylistMutation = useAddSongMutation();
 
   const displayName = user?.displayName || user?.username || 'Oleh';
@@ -347,12 +347,7 @@ function ProfilePage() {
         fallbackCover={FALLBACK_COVER}
         onClose={() => setIsAlbumModalOpen(false)}
         onSave={async (album) => {
-          const { data } = await createPlaylistMutation.mutateAsync({
-            name: album.title,
-            description: 'Creator album',
-            coverImage: album.coverImage,
-            isPublic: true,
-          });
+          const { data } = await playlistsApi.create({ name: album.title });
 
           await Promise.all(
             album.trackIds.map((trackId) =>

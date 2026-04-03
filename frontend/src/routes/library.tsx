@@ -7,6 +7,8 @@ import Button from '../components/ui/Button';
 import { useAuthStore } from '../store/authStore';
 import type { LibraryTab } from '../types/routes/route.types';
 import { usePlaylistsQuery, useCreatePlaylistMutation } from '../hooks/playlists';
+import { useSavedAudiobooksQuery } from '../hooks/audiobooks';
+import { formatLongDuration } from '../utils/format';
 
 export const Route = createFileRoute('/library')({
   beforeLoad: () => {
@@ -19,6 +21,7 @@ function LibraryPage() {
   const [tab, setTab] = useState<LibraryTab>('playlists');
   const navigate = useNavigate();
   const { data: playlists = [] } = usePlaylistsQuery();
+  const { data: savedAudiobooks = [] } = useSavedAudiobooksQuery();
   const createMutation = useCreatePlaylistMutation();
 
   const handleCreatePlaylist = async () => {
@@ -44,7 +47,7 @@ function LibraryPage() {
 
       {/* Tabs */}
       <div className="flex gap-2 mb-5">
-        {(['playlists', 'albums', 'artists'] as LibraryTab[]).map((t) => (
+        {(['playlists', 'albums', 'artists', 'audiobooks'] as LibraryTab[]).map((t) => (
           <Button
             key={t}
             variant={tab === t ? 'secondary' : 'ghost'}
@@ -53,7 +56,13 @@ function LibraryPage() {
             onClick={() => setTab(t)}
             className={tab !== t ? 'bg-surface-alt text-sm' : 'text-sm'}
           >
-            {t === 'playlists' ? 'Плейлисти' : t === 'albums' ? 'Альбоми' : 'Виконавці'}
+            {t === 'playlists'
+              ? 'Плейлисти'
+              : t === 'albums'
+              ? 'Альбоми'
+              : t === 'artists'
+              ? 'Виконавці'
+              : 'Аудіокниги'}
           </Button>
         ))}
       </div>
@@ -139,6 +148,36 @@ function LibraryPage() {
               </div>
             </button>
           ))}
+        </div>
+      )}
+
+      {tab === 'audiobooks' && (
+        <div className="space-y-3">
+          {savedAudiobooks.map((book) => (
+            <button
+              key={book.id}
+              onClick={() => navigate({ to: '/audiobook/$id', params: { id: book.id } })}
+              className="flex items-center gap-3 w-full text-left p-2 rounded-xl hover:bg-surface-alt transition-colors"
+            >
+              <img
+                src={book.coverUrl}
+                alt={book.title}
+                className="w-14 h-14 rounded-xl object-cover"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-white font-semibold truncate">{book.title}</p>
+                <p className="text-muted text-sm truncate">
+                  {book.author} · {book.chapterCount} розділів · {formatLongDuration(book.duration)}
+                </p>
+              </div>
+            </button>
+          ))}
+
+          {savedAudiobooks.length === 0 && (
+            <div className="py-6 text-center">
+              <p className="text-muted text-sm">У вас ще немає збережених аудіокниг</p>
+            </div>
+          )}
         </div>
       )}
     </div>

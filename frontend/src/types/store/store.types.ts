@@ -1,4 +1,4 @@
-import type { Track, Episode } from '../index';
+import type { Track, Episode, Audiobook, AudiobookChapter } from '../index';
 import type { AuthUser } from '../auth/auth-types';
 
 export interface UserPlaylist {
@@ -42,6 +42,14 @@ export interface PlayerStore {
   toggleLike: () => void;
   currentEpisode: Episode | null;
   playEpisode: (episode: Episode) => void;
+  currentAudiobook: Audiobook | null;
+  currentAudiobookChapter: AudiobookChapter | null;
+  audiobookQueue: AudiobookChapter[];
+  playAudiobookChapter: (
+    chapter: AudiobookChapter,
+    audiobook: Audiobook,
+    chapters?: AudiobookChapter[]
+  ) => void;
   rightPanelOpen: boolean;
   setRightPanelOpen: (open: boolean) => void;
 }

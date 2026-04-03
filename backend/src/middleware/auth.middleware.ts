@@ -40,3 +40,28 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
     });
   }
 };
+
+export const optionalProtect = async (req: AuthRequest, _res: Response, next: NextFunction) => {
+  try {
+    let token: string | undefined;
+
+    if (req.headers.authorization?.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      next();
+      return;
+    }
+
+    const decoded = verifyToken(token);
+    const user = await User.findById(decoded.id).select('-password');
+    if (user) {
+      req.user = user;
+    }
+  } catch {
+    // Ignore invalid optional auth; public response still succeeds.
+  }
+
+  next();
+};

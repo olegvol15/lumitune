@@ -7,7 +7,18 @@ import SongCoverImage from '../ui/SongCoverImage';
 import { slideUp } from '../../lib/motion';
 
 export default function MiniPlayer() {
-  const { currentTrack, currentEpisode, isPlaying, togglePlay, next, seek, progress, toggleLike } =
+  const {
+    currentTrack,
+    currentEpisode,
+    currentAudiobook,
+    currentAudiobookChapter,
+    isPlaying,
+    togglePlay,
+    next,
+    seek,
+    progress,
+    toggleLike,
+  } =
     usePlayerStore();
   const navigate = useNavigate();
 
@@ -15,6 +26,14 @@ export default function MiniPlayer() {
     ? { cover: currentTrack.albumCover, label: currentTrack.albumTitle, title: currentTrack.title, subtitle: currentTrack.artistName, isEpisode: false }
     : currentEpisode
     ? { cover: currentEpisode.podcastCover, label: currentEpisode.podcastTitle, title: currentEpisode.title, subtitle: currentEpisode.podcastTitle, isEpisode: true }
+    : currentAudiobook && currentAudiobookChapter
+    ? {
+        cover: currentAudiobookChapter.audiobookCover,
+        label: currentAudiobook.title,
+        title: currentAudiobookChapter.title,
+        subtitle: `${currentAudiobook.author} · ${currentAudiobook.title}`,
+        isEpisode: true,
+      }
     : null;
 
   return (

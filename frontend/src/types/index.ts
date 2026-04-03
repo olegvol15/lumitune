@@ -98,4 +98,29 @@ export interface Audiobook {
   description: string;
   publishedAt: string;
   duration: number; // seconds
+  chapterCount: number;
+  saved?: boolean;
+  progress?: AudiobookProgress | null;
+}
+
+export interface AudiobookChapter {
+  id: string;
+  audiobookId: string;
+  audiobookTitle: string;
+  audiobookCover: string;
+  author: string;
+  title: string;
+  description: string;
+  duration: number;
+  chapterNumber: number;
+  publishedAt: string;
+  plays: number;
+}
+
+export interface AudiobookProgress {
+  audiobookId: string;
+  currentChapterId: string;
+  progressSeconds: number;
+  progressPct: number;
+  lastPlayedAt: string;
 }

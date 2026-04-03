@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
 import { albums } from '../data/albums';
 import { artists } from '../data/artists';
-import type { Track } from '../types';
+import type { Audiobook, Track } from '../types';
 
-export function useSearch(tracks: Track[]) {
+export function useSearch(tracks: Track[], audiobooks: Audiobook[] = []) {
   const [query, setQuery] = useState('');
 
   const results = useMemo(() => {
     const q = query.toLowerCase().trim();
-    if (!q) return { tracks: [], artists: [], albums: [] };
+    if (!q) return { tracks: [], artists: [], albums: [], audiobooks: [] };
 
     return {
       tracks: tracks.filter(
@@ -26,11 +26,20 @@ export function useSearch(tracks: Track[]) {
           a.artistName.toLowerCase().includes(q) ||
           a.genre.toLowerCase().includes(q)
       ),
+      audiobooks: audiobooks.filter(
+        (a) =>
+          a.title.toLowerCase().includes(q) ||
+          a.author.toLowerCase().includes(q) ||
+          a.genre.toLowerCase().includes(q)
+      ),
     };
-  }, [query, tracks]);
+  }, [audiobooks, query, tracks]);
 
   const hasResults =
-    results.tracks.length > 0 || results.artists.length > 0 || results.albums.length > 0;
+    results.tracks.length > 0 ||
+    results.artists.length > 0 ||
+    results.albums.length > 0 ||
+    results.audiobooks.length > 0;
 
   return { query, setQuery, results, hasResults };
 }

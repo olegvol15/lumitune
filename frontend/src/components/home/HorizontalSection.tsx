@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import MediaCard from '../ui/MediaCard';
-import type { Track } from '../../types';
+import type { Audiobook, Track } from '../../types';
 import { isAlbum } from '../../utils/typeGuards';
 import type { HorizontalSectionProps } from '../../types/props/component-props.types';
 import { staggerContainer, staggerItem } from '../../lib/motion';
@@ -71,6 +71,20 @@ export default function HorizontalSection({
               </motion.div>
             );
           }
+          if ('chapterCount' in item) {
+            const audiobook = item as Audiobook;
+            return (
+              <motion.div key={audiobook.id} className="snap-start" variants={staggerItem}>
+                <MediaCard
+                  image={audiobook.coverUrl}
+                  title={audiobook.title}
+                  subtitle={audiobook.author}
+                  onClick={() => onItemClick?.(audiobook)}
+                />
+              </motion.div>
+            );
+          }
+
           const track = item as Track;
           return (
             <motion.div key={track.id} className="snap-start" variants={staggerItem}>

@@ -27,10 +27,20 @@ export const podcastKeys = {
   episode: (id: string) => [...podcastKeys.all, 'episode', id] as const,
 };
 
+export const audiobookKeys = {
+  all: ['audiobooks'] as const,
+  list: () => [...audiobookKeys.all, 'list'] as const,
+  detail: (id: string) => [...audiobookKeys.all, 'detail', id] as const,
+  chapter: (id: string) => [...audiobookKeys.all, 'chapter', id] as const,
+  saved: () => [...audiobookKeys.all, 'saved'] as const,
+  progress: (id: string) => [...audiobookKeys.all, 'progress', id] as const,
+};
+
 export const QUERY_KEYS = {
   auth: authKeys,
   adminAuth: adminAuthKeys,
   tracks: tracksKeys,
   playlists: playlistKeys,
   podcasts: podcastKeys,
+  audiobooks: audiobookKeys,
 } as const;

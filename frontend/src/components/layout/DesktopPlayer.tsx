@@ -23,6 +23,8 @@ export default function DesktopPlayer() {
   const {
     currentTrack,
     currentEpisode,
+    currentAudiobook,
+    currentAudiobookChapter,
     isPlaying,
     togglePlay,
     next,
@@ -52,6 +54,15 @@ export default function DesktopPlayer() {
     ? { cover: currentTrack.albumCover, label: currentTrack.albumTitle, title: currentTrack.title, subtitle: currentTrack.artistName, duration: currentTrack.duration, isEpisode: false }
     : currentEpisode
     ? { cover: currentEpisode.podcastCover, label: currentEpisode.podcastTitle, title: currentEpisode.title, subtitle: currentEpisode.podcastTitle, duration: currentEpisode.duration, isEpisode: true }
+    : currentAudiobookChapter && currentAudiobook
+    ? {
+        cover: currentAudiobookChapter.audiobookCover,
+        label: currentAudiobook.title,
+        title: currentAudiobookChapter.title,
+        subtitle: `${currentAudiobook.author} · ${currentAudiobook.title}`,
+        duration: currentAudiobookChapter.duration,
+        isEpisode: true,
+      }
     : null;
 
   const elapsed = activeMedia ? progress * activeMedia.duration : 0;
@@ -93,23 +104,29 @@ export default function DesktopPlayer() {
                 />
               </button>
             )}
-            <button className="flex-shrink-0 text-white/45 hover:text-white transition-colors">
-              <Plus size={16} />
-            </button>
+            {!currentAudiobookChapter && (
+              <button className="flex-shrink-0 text-white/45 hover:text-white transition-colors">
+                <Plus size={16} />
+              </button>
+            )}
           </div>
 
           {/* Center: transport controls + progress row */}
           <div className="flex-1 min-w-0 flex flex-col items-center gap-2">
             {/* Transport controls */}
             <div className="flex items-center gap-5">
-              <button
-                onClick={toggleRepeat}
-                className={`transition-colors ${
-                  repeat !== 'off' ? 'text-[#1CA2EA]' : 'text-white/45 hover:text-white'
-                }`}
-              >
-                {repeat === 'one' ? <Repeat1 size={15} /> : <Repeat size={15} />}
-              </button>
+              {!currentAudiobookChapter ? (
+                <button
+                  onClick={toggleRepeat}
+                  className={`transition-colors ${
+                    repeat !== 'off' ? 'text-[#1CA2EA]' : 'text-white/45 hover:text-white'
+                  }`}
+                >
+                  {repeat === 'one' ? <Repeat1 size={15} /> : <Repeat size={15} />}
+                </button>
+              ) : (
+                <div className="w-[15px]" />
+              )}
 
               <button onClick={prev} className="text-white/70 hover:text-white transition-colors">
                 <SkipBack size={17} fill="currentColor" />
@@ -131,14 +148,18 @@ export default function DesktopPlayer() {
                 <SkipForward size={17} fill="currentColor" />
               </button>
 
-              <button
-                onClick={toggleShuffle}
-                className={`transition-colors ${
-                  shuffle ? 'text-[#1CA2EA]' : 'text-white/45 hover:text-white'
-                }`}
-              >
-                <Shuffle size={15} />
-              </button>
+              {!currentAudiobookChapter ? (
+                <button
+                  onClick={toggleShuffle}
+                  className={`transition-colors ${
+                    shuffle ? 'text-[#1CA2EA]' : 'text-white/45 hover:text-white'
+                  }`}
+                >
+                  <Shuffle size={15} />
+                </button>
+              ) : (
+                <div className="w-[15px]" />
+              )}
             </div>
 
             {/* Progress row: elapsed | bar | total */}

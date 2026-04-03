@@ -4,6 +4,7 @@ import { useSearch } from '../hooks/search';
 import TrackRow from '../components/ui/TrackRow';
 import MediaCard from '../components/ui/MediaCard';
 import { useCatalogTracks } from '../hooks/tracks';
+import { useAudiobooksQuery } from '../hooks/audiobooks';
 
 const genres = [
   { id: 'pop', label: 'Поп', color: 'from-pink-500 to-rose-600', emoji: '🎵' },
@@ -55,7 +56,8 @@ export const Route = createFileRoute('/search')({ component: SearchPage });
 
 function SearchPage() {
   const { tracks } = useCatalogTracks();
-  const { query, setQuery, results, hasResults } = useSearch(tracks);
+  const { data: audiobooks = [] } = useAudiobooksQuery();
+  const { query, setQuery, results, hasResults } = useSearch(tracks, audiobooks);
   const navigate = useNavigate();
 
   return (
@@ -128,6 +130,22 @@ function SearchPage() {
                     title={al.title}
                     subtitle={al.artistName}
                     onClick={() => navigate({ to: '/album/$id', params: { id: al.id } })}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          {results.audiobooks.length > 0 && (
+            <div>
+              <h2 className="text-white font-bold mb-3">Аудіокниги</h2>
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+                {results.audiobooks.map((book) => (
+                  <MediaCard
+                    key={book.id}
+                    image={book.coverUrl}
+                    title={book.title}
+                    subtitle={book.author}
+                    onClick={() => navigate({ to: '/audiobook/$id', params: { id: book.id } })}
                   />
                 ))}
               </div>
