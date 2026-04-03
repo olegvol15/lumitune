@@ -11,7 +11,6 @@ import DesktopPlayer from '../components/layout/DesktopPlayer';
 import AudioEngine from '../components/player/AudioEngine';
 import { useThemeStore } from '../store/themeStore';
 import type { AppTheme } from '../store/themeStore';
-import { usePlayerStore } from '../store/playerStore';
 
 const HIDDEN_NAV_ROUTES = [
   '/player',
@@ -27,8 +26,6 @@ function RootLayout() {
   const hideNav = HIDDEN_NAV_ROUTES.some((r) => pathname.startsWith(r));
   const theme = useThemeStore((s) => s.theme);
   const setTheme = useThemeStore((s) => s.setTheme);
-  const rightPanelOpen = usePlayerStore((s) => s.rightPanelOpen);
-
   useEffect(() => {
     if (theme === 'ice') document.documentElement.dataset.theme = 'light';
     else if (theme === 'violet') document.documentElement.dataset.theme = 'violet';
@@ -99,12 +96,10 @@ function RootLayout() {
           <Outlet />
         </main>
 
-        {/* RightPanel — sticky, desktop only, visible only when open */}
-        {rightPanelOpen && (
-          <div className="hidden lg:block">
-            <RightPanel />
-          </div>
-        )}
+        {/* RightPanel — sticky, desktop only */}
+        <div className="hidden lg:flex flex-shrink-0">
+          <RightPanel />
+        </div>
       </div>
 
       {/* Footer — outside 3-column area, spans true full width (desktop only) */}
