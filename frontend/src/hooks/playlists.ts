@@ -41,17 +41,6 @@ export function useRenamePlaylistMutation() {
   return useMutation({
     mutationFn: ({ playlistId, name }: { playlistId: string; name: string }) =>
       playlistsApi.rename(playlistId, name),
-    onMutate: async ({ playlistId, name }) => {
-      await qc.cancelQueries({ queryKey: playlistKeys.all });
-      const previous = qc.getQueryData<UserPlaylist[]>(playlistKeys.all);
-      qc.setQueryData<UserPlaylist[]>(playlistKeys.all, (old = []) =>
-        old.map((p) => (p.id === playlistId ? { ...p, title: name } : p))
-      );
-      return { previous };
-    },
-    onError: (_err, _vars, ctx) => {
-      if (ctx?.previous) qc.setQueryData(playlistKeys.all, ctx.previous);
-    },
     onSuccess: (res, { playlistId }) => {
       qc.setQueryData<UserPlaylist[]>(playlistKeys.all, (old = []) =>
         old.map((p) => (p.id === playlistId ? mapPlaylist(res.data.playlist) : p))

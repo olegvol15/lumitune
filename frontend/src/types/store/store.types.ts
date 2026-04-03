@@ -1,4 +1,4 @@
-import type { Track } from '../index';
+import type { Track, Episode } from '../index';
 import type { AuthUser } from '../auth/auth-types';
 
 export interface UserPlaylist {
@@ -40,4 +40,8 @@ export interface PlayerStore {
   toggleShuffle: () => void;
   toggleRepeat: () => void;
   toggleLike: () => void;
+  currentEpisode: Episode | null;
+  playEpisode: (episode: Episode) => void;
+  rightPanelOpen: boolean;
+  setRightPanelOpen: (open: boolean) => void;
 }

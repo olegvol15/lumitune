@@ -22,6 +22,7 @@ import { slideUp } from '../../lib/motion';
 export default function DesktopPlayer() {
   const {
     currentTrack,
+    currentEpisode,
     isPlaying,
     togglePlay,
     next,
@@ -47,11 +48,17 @@ export default function DesktopPlayer() {
     seek(pct);
   };
 
-  const elapsed = currentTrack ? progress * currentTrack.duration : 0;
+  const activeMedia = currentTrack
+    ? { cover: currentTrack.albumCover, label: currentTrack.albumTitle, title: currentTrack.title, subtitle: currentTrack.artistName, duration: currentTrack.duration, isEpisode: false }
+    : currentEpisode
+    ? { cover: currentEpisode.podcastCover, label: currentEpisode.podcastTitle, title: currentEpisode.title, subtitle: currentEpisode.podcastTitle, duration: currentEpisode.duration, isEpisode: true }
+    : null;
+
+  const elapsed = activeMedia ? progress * activeMedia.duration : 0;
 
   return (
     <AnimatePresence>
-      {currentTrack && (
+      {activeMedia && (
         <motion.div
           className={`desktop-player fixed bottom-0 left-0 right-0 z-50 h-[72px] border-t flex items-center px-5 gap-6 ${isLight ? 'bg-[#aacfe4] border-[#8fbdcf]' : 'bg-[#060d19] border-[#1a3050]'}`}
           variants={slideUp}
@@ -62,28 +69,30 @@ export default function DesktopPlayer() {
           {/* Left: album art + track info + actions */}
           <div className="flex items-center gap-3 w-64 flex-shrink-0">
             <SongCoverImage
-              src={currentTrack.albumCover}
-              alt={currentTrack.albumTitle}
+              src={activeMedia.cover}
+              alt={activeMedia.label}
               className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
             />
             <div className="min-w-0 flex-1">
               <p className="text-white text-sm font-semibold truncate leading-tight">
-                {currentTrack.title}
+                {activeMedia.title}
               </p>
               <p className="text-white/45 text-xs truncate leading-tight mt-0.5">
-                {currentTrack.artistName}
+                {activeMedia.subtitle}
               </p>
             </div>
-            <button onClick={toggleLike} className="flex-shrink-0 transition-colors">
-              <Heart
-                size={16}
-                className={
-                  currentTrack.liked
-                    ? 'text-[#1CA2EA] fill-[#1CA2EA]'
-                    : 'text-white/45 hover:text-white'
-                }
-              />
-            </button>
+            {!activeMedia.isEpisode && (
+              <button onClick={toggleLike} className="flex-shrink-0 transition-colors">
+                <Heart
+                  size={16}
+                  className={
+                    currentTrack?.liked
+                      ? 'text-[#1CA2EA] fill-[#1CA2EA]'
+                      : 'text-white/45 hover:text-white'
+                  }
+                />
+              </button>
+            )}
             <button className="flex-shrink-0 text-white/45 hover:text-white transition-colors">
               <Plus size={16} />
             </button>
@@ -154,7 +163,7 @@ export default function DesktopPlayer() {
               </div>
 
               <span className="text-[11px] text-white/40 flex-shrink-0 tabular-nums">
-                {formatDuration(currentTrack.duration)}
+                {formatDuration(activeMedia.duration)}
               </span>
             </div>
           </div>

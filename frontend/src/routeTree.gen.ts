@@ -18,6 +18,7 @@ import { Route as LibraryRouteImport } from './routes/library'
 import { Route as FavoriteRouteImport } from './routes/favorite'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as PodcastIdRouteImport } from './routes/podcast.$id'
 import { Route as PlaylistIdRouteImport } from './routes/playlist.$id'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
@@ -27,6 +28,7 @@ import { Route as AlbumIdRouteImport } from './routes/album.$id'
 import { Route as AdminTracksRouteImport } from './routes/admin/tracks'
 import { Route as AdminSignupRouteImport } from './routes/admin/signup'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin/reset-password'
+import { Route as AdminPodcastsRouteImport } from './routes/admin/podcasts'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminForgotPasswordRouteImport } from './routes/admin/forgot-password'
 
@@ -75,6 +77,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PodcastIdRoute = PodcastIdRouteImport.update({
+  id: '/podcast/$id',
+  path: '/podcast/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlaylistIdRoute = PlaylistIdRouteImport.update({
   id: '/playlist/$id',
   path: '/playlist/$id',
@@ -120,6 +127,11 @@ const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
   path: '/admin/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPodcastsRoute = AdminPodcastsRouteImport.update({
+  id: '/admin/podcasts',
+  path: '/admin/podcasts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -142,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/signup': typeof AdminSignupRoute
   '/admin/tracks': typeof AdminTracksRoute
@@ -151,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/playlist/$id': typeof PlaylistIdRoute
+  '/podcast/$id': typeof PodcastIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -164,6 +178,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/signup': typeof AdminSignupRoute
   '/admin/tracks': typeof AdminTracksRoute
@@ -173,6 +188,7 @@ export interface FileRoutesByTo {
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/playlist/$id': typeof PlaylistIdRoute
+  '/podcast/$id': typeof PodcastIdRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -187,6 +203,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/signup': typeof AdminSignupRoute
   '/admin/tracks': typeof AdminTracksRoute
@@ -196,6 +213,7 @@ export interface FileRoutesById {
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/playlist/$id': typeof PlaylistIdRoute
+  '/podcast/$id': typeof PodcastIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -211,6 +229,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/admin/forgot-password'
     | '/admin/login'
+    | '/admin/podcasts'
     | '/admin/reset-password'
     | '/admin/signup'
     | '/admin/tracks'
@@ -220,6 +239,7 @@ export interface FileRouteTypes {
     | '/auth/signin'
     | '/auth/signup'
     | '/playlist/$id'
+    | '/podcast/$id'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -233,6 +253,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/admin/forgot-password'
     | '/admin/login'
+    | '/admin/podcasts'
     | '/admin/reset-password'
     | '/admin/signup'
     | '/admin/tracks'
@@ -242,6 +263,7 @@ export interface FileRouteTypes {
     | '/auth/signin'
     | '/auth/signup'
     | '/playlist/$id'
+    | '/podcast/$id'
     | '/admin'
   id:
     | '__root__'
@@ -255,6 +277,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/admin/forgot-password'
     | '/admin/login'
+    | '/admin/podcasts'
     | '/admin/reset-password'
     | '/admin/signup'
     | '/admin/tracks'
@@ -264,6 +287,7 @@ export interface FileRouteTypes {
     | '/auth/signin'
     | '/auth/signup'
     | '/playlist/$id'
+    | '/podcast/$id'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -278,6 +302,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminPodcastsRoute: typeof AdminPodcastsRoute
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   AdminSignupRoute: typeof AdminSignupRoute
   AdminTracksRoute: typeof AdminTracksRoute
@@ -287,6 +312,7 @@ export interface RootRouteChildren {
   AuthSigninRoute: typeof AuthSigninRoute
   AuthSignupRoute: typeof AuthSignupRoute
   PlaylistIdRoute: typeof PlaylistIdRoute
+  PodcastIdRoute: typeof PodcastIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -355,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/podcast/$id': {
+      id: '/podcast/$id'
+      path: '/podcast/$id'
+      fullPath: '/podcast/$id'
+      preLoaderRoute: typeof PodcastIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/playlist/$id': {
       id: '/playlist/$id'
       path: '/playlist/$id'
@@ -418,6 +451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/podcasts': {
+      id: '/admin/podcasts'
+      path: '/admin/podcasts'
+      fullPath: '/admin/podcasts'
+      preLoaderRoute: typeof AdminPodcastsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -446,6 +486,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   AdminForgotPasswordRoute: AdminForgotPasswordRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminPodcastsRoute: AdminPodcastsRoute,
   AdminResetPasswordRoute: AdminResetPasswordRoute,
   AdminSignupRoute: AdminSignupRoute,
   AdminTracksRoute: AdminTracksRoute,
@@ -455,6 +496,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSigninRoute: AuthSigninRoute,
   AuthSignupRoute: AuthSignupRoute,
   PlaylistIdRoute: PlaylistIdRoute,
+  PodcastIdRoute: PodcastIdRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport

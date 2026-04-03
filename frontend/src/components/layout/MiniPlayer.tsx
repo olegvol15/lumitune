@@ -7,13 +7,19 @@ import SongCoverImage from '../ui/SongCoverImage';
 import { slideUp } from '../../lib/motion';
 
 export default function MiniPlayer() {
-  const { currentTrack, isPlaying, togglePlay, next, seek, progress, toggleLike } =
+  const { currentTrack, currentEpisode, isPlaying, togglePlay, next, seek, progress, toggleLike } =
     usePlayerStore();
   const navigate = useNavigate();
 
+  const activeMedia = currentTrack
+    ? { cover: currentTrack.albumCover, label: currentTrack.albumTitle, title: currentTrack.title, subtitle: currentTrack.artistName, isEpisode: false }
+    : currentEpisode
+    ? { cover: currentEpisode.podcastCover, label: currentEpisode.podcastTitle, title: currentEpisode.title, subtitle: currentEpisode.podcastTitle, isEpisode: true }
+    : null;
+
   return (
     <AnimatePresence>
-      {currentTrack && (
+      {activeMedia && (
         <motion.div
           className="fixed bottom-20 left-0 right-0 z-30 px-3 pb-1"
           variants={slideUp}
@@ -26,8 +32,8 @@ export default function MiniPlayer() {
             <div className="flex items-center gap-3 px-3 py-2.5">
               <button onClick={() => navigate({ to: '/player' })} className="flex-shrink-0">
                 <SongCoverImage
-                  src={currentTrack.albumCover}
-                  alt={currentTrack.albumTitle}
+                  src={activeMedia.cover}
+                  alt={activeMedia.label}
                   className="w-10 h-10 rounded-lg object-cover"
                 />
               </button>
@@ -36,17 +42,19 @@ export default function MiniPlayer() {
                 onClick={() => navigate({ to: '/player' })}
                 className="flex-1 min-w-0 text-left"
               >
-                <p className="text-white text-sm font-semibold truncate">{currentTrack.title}</p>
-                <p className="text-muted text-xs truncate">{currentTrack.artistName}</p>
+                <p className="text-white text-sm font-semibold truncate">{activeMedia.title}</p>
+                <p className="text-muted text-xs truncate">{activeMedia.subtitle}</p>
               </button>
 
               <div className="flex items-center gap-1 flex-shrink-0">
-                <button onClick={toggleLike} className="p-2 hover:bg-white/10 rounded-full">
-                  <Heart
-                    size={18}
-                    className={currentTrack.liked ? 'text-brand fill-brand' : 'text-muted'}
-                  />
-                </button>
+                {!activeMedia.isEpisode && (
+                  <button onClick={toggleLike} className="p-2 hover:bg-white/10 rounded-full">
+                    <Heart
+                      size={18}
+                      className={currentTrack?.liked ? 'text-brand fill-brand' : 'text-muted'}
+                    />
+                  </button>
+                )}
                 <button onClick={togglePlay} className="p-2 hover:bg-white/10 rounded-full">
                   {isPlaying ? (
                     <Pause size={20} className="text-white" fill="currentColor" />
@@ -54,9 +62,11 @@ export default function MiniPlayer() {
                     <Play size={20} className="text-white" fill="currentColor" />
                   )}
                 </button>
-                <button onClick={next} className="p-2 hover:bg-white/10 rounded-full">
-                  <SkipForward size={20} className="text-white" fill="currentColor" />
-                </button>
+                {!activeMedia.isEpisode && (
+                  <button onClick={next} className="p-2 hover:bg-white/10 rounded-full">
+                    <SkipForward size={20} className="text-white" fill="currentColor" />
+                  </button>
+                )}
               </div>
             </div>
           </div>

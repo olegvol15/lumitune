@@ -1,11 +1,14 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { type ReactNode } from 'react';
-import { Users, Music2, LayoutDashboard, Puzzle, Settings, LogOut } from 'lucide-react';
+import { Users, Music2, LayoutDashboard, Puzzle, Settings, LogOut, Mic } from 'lucide-react';
 import { useAdminLogoutMutation } from '../../hooks/admin-auth';
 import LogoIcon from '../ui/LogoIcon';
 
 // Only include routes that are actually registered
-const ACTIVE_NAV = [{ path: '/admin/tracks', icon: Music2, label: 'Elements' }] as const;
+const ACTIVE_NAV = [
+  { path: '/admin/tracks', icon: Music2, label: 'Elements' },
+  { path: '/admin/podcasts', icon: Mic, label: 'Podcasts' },
+] as const;
 
 // Placeholder nav items (no route yet)
 const PLACEHOLDER_NAV = [
@@ -16,7 +19,7 @@ const PLACEHOLDER_NAV = [
 ];
 
 // Merged for rendering in order
-const NAV_ORDER = ['Customers', 'Elements', 'Dashboard', 'Plugins', 'Settings'];
+const NAV_ORDER = ['Customers', 'Elements', 'Podcasts', 'Dashboard', 'Plugins', 'Settings'];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const { location } = useRouterState();

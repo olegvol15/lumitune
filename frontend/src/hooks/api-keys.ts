@@ -20,9 +20,17 @@ export const playlistKeys = {
   all: ['playlists'] as const,
 };
 
+export const podcastKeys = {
+  all: ['podcasts'] as const,
+  list: () => [...podcastKeys.all, 'list'] as const,
+  detail: (id: string) => [...podcastKeys.all, 'detail', id] as const,
+  episode: (id: string) => [...podcastKeys.all, 'episode', id] as const,
+};
+
 export const QUERY_KEYS = {
   auth: authKeys,
   adminAuth: adminAuthKeys,
   tracks: tracksKeys,
   playlists: playlistKeys,
+  podcasts: podcastKeys,
 } as const;

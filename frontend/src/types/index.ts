@@ -46,10 +46,14 @@ export interface Playlist {
 export interface Episode {
   id: string;
   title: string;
-  podcastName: string;
-  coverUrl: string;
+  description: string;
+  podcastId: string;
+  podcastTitle: string;
+  podcastCover: string;
   duration: number;
+  episodeNumber: number;
   publishedAt: string;
+  plays: number;
 }
 
 export interface Notification {
@@ -78,11 +82,11 @@ export interface User {
 export interface Podcast {
   id: string;
   title: string;
-  podcastName: string;
-  coverUrl: string;
+  author: string;
   description: string;
-  publishedAt: string;
-  duration: number; // seconds
+  coverUrl: string;
+  category?: string;
+  episodes?: Episode[];
 }
 
 export interface Audiobook {

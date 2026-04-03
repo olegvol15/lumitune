@@ -3,19 +3,32 @@ import type { PlayerStore } from '../types/store/store.types';
 
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
   currentTrack: null,
+  currentEpisode: null,
   queue: [],
   isPlaying: false,
   volume: 0.8,
   progress: 0,
   shuffle: false,
   repeat: 'off',
+  rightPanelOpen: false,
 
   play: (track, queue) =>
     set({
       currentTrack: track,
+      currentEpisode: null,
       queue: queue ?? get().queue,
       isPlaying: true,
       progress: 0,
+    }),
+
+  playEpisode: (episode) =>
+    set({
+      currentEpisode: episode,
+      currentTrack: null,
+      queue: [],
+      isPlaying: true,
+      progress: 0,
+      rightPanelOpen: true,
     }),
 
   pause: () => set({ isPlaying: false }),
@@ -24,9 +37,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
   togglePlay: () =>
     set((s) => {
-      if (!s.currentTrack) {
-        return s;
-      }
+      if (!s.currentTrack && !s.currentEpisode) return s;
       return { isPlaying: !s.isPlaying };
     }),
 
@@ -80,4 +91,6 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
         currentTrack: { ...s.currentTrack, liked: !s.currentTrack.liked },
       };
     }),
+
+  setRightPanelOpen: (open) => set({ rightPanelOpen: open }),
 }));

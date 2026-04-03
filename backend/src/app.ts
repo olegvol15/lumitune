@@ -15,6 +15,8 @@ import playlistRoutes from './routes/playlist.routes';
 import likesRoutes from './routes/likes.routes';
 import recentlyPlayedRoutes from './routes/recently-played.routes';
 import searchRoutes from './routes/search.routes';
+import podcastRoutes from './routes/podcast.routes';
+import adminPodcastRoutes from './routes/admin-podcast.routes';
 
 // Middleware
 import { errorHandler } from './middleware/error.middleware';
@@ -55,6 +57,8 @@ app.use('/api/playlists', playlistRoutes);
 app.use('/api/likes', likesRoutes);
 app.use('/api/recently-played', recentlyPlayedRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/podcasts', podcastRoutes);
+app.use('/api/admin/podcasts', adminPodcastRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

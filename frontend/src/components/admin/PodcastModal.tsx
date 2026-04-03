@@ -1,0 +1,160 @@
+import { useState } from 'react';
+import { X, Upload } from 'lucide-react';
+import { useCreatePodcastMutation, useUpdatePodcastMutation } from '../../hooks/podcasts';
+import type { Podcast } from '../../types';
+
+interface Props {
+  mode: 'new' | 'edit';
+  podcast?: Podcast;
+  onClose: () => void;
+}
+
+const CATEGORIES = [
+  'Технології',
+  'Наука',
+  'Бізнес',
+  'Здоров\'я',
+  'Освіта',
+  'Суспільство',
+  'Злочин',
+  'Мистецтво',
+  'Спорт',
+  'Розваги',
+];
+
+const labelClass = 'block text-[#7a8faa] text-xs font-medium mb-1';
+const inputClass =
+  'w-full bg-[#19233a] border border-[#2a3a52] rounded-md px-3 py-2 text-sm text-white placeholder:text-[#4a5a72] focus:outline-none focus:border-[#3dc9b0] transition-colors';
+
+export default function PodcastModal({ mode, podcast, onClose }: Props) {
+  const [title, setTitle] = useState(podcast?.title ?? '');
+  const [author, setAuthor] = useState(podcast?.author ?? '');
+  const [description, setDescription] = useState(podcast?.description ?? '');
+  const [category, setCategory] = useState(podcast?.category ?? '');
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const createMutation = useCreatePodcastMutation();
+  const updateMutation = useUpdatePodcastMutation();
+
+  const handleSave = async () => {
+    if (!title.trim() || !author.trim() || !description.trim()) {
+      setError('Title, author, and description are required');
+      return;
+    }
+    setIsSaving(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append('title', title.trim());
+      formData.append('author', author.trim());
+      formData.append('description', description.trim());
+      if (category) formData.append('category', category);
+      if (coverFile) formData.append('cover', coverFile);
+
+      if (mode === 'new') {
+        await createMutation.mutateAsync(formData);
+      } else if (podcast) {
+        await updateMutation.mutateAsync({ id: podcast.id, formData });
+      }
+      onClose();
+    } catch (err) {
+      const e = err as { response?: { data?: { message?: string } }; message?: string };
+      setError(e.response?.data?.message ?? e.message ?? 'Failed to save');
+    }
+    setIsSaving(false);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div className="w-full max-w-lg bg-[#1e2638] rounded-2xl overflow-hidden shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#2a3a52]">
+          <h2 className="text-white font-semibold text-base">
+            {mode === 'new' ? 'New Podcast' : 'Edit Podcast'}
+          </h2>
+          <button onClick={onClose} className="text-[#7a8faa] hover:text-white transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
+          <div>
+            <label className={labelClass}>Title *</label>
+            <input
+              type="text"
+              placeholder="Podcast title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Author *</label>
+            <input
+              type="text"
+              placeholder="e.g. Науковий подкаст"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Category</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className={inputClass}
+            >
+              <option value="">— select category —</option>
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className={labelClass}>Description *</label>
+            <textarea
+              rows={4}
+              placeholder="About this podcast..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className={`${inputClass} resize-none`}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Cover Image</label>
+            <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
+              <Upload size={14} />
+              <span>{coverFile ? coverFile.name : 'Choose image'}</span>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
+          </div>
+        </div>
+
+        <div className="px-6 py-4 border-t border-[#2a3a52] flex justify-end gap-3">
+          {error && <p className="mr-auto text-xs text-red-400 self-center">{error}</p>}
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="px-5 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] disabled:opacity-50 transition-colors"
+          >
+            {isSaving ? 'Saving…' : 'Save'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
