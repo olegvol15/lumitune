@@ -18,6 +18,7 @@ import { useThemeStore } from '../../store/themeStore';
 import { formatDuration } from '../../utils/format';
 import SongCoverImage from '../ui/SongCoverImage';
 import { slideUp } from '../../lib/motion';
+import { useToggleTrackLikeMutation } from '../../hooks/likes';
 
 export default function DesktopPlayer() {
   const {
@@ -31,7 +32,6 @@ export default function DesktopPlayer() {
     prev,
     seek,
     progress,
-    toggleLike,
     shuffle,
     repeat,
     toggleShuffle,
@@ -39,6 +39,7 @@ export default function DesktopPlayer() {
     volume,
     setVolume,
   } = usePlayerStore();
+  const toggleTrackLikeMutation = useToggleTrackLikeMutation();
 
   const isLight = useThemeStore((s) => s.theme === 'ice');
   const barRef = useRef<HTMLDivElement>(null);
@@ -93,7 +94,17 @@ export default function DesktopPlayer() {
               </p>
             </div>
             {!activeMedia.isEpisode && (
-              <button onClick={toggleLike} className="flex-shrink-0 transition-colors">
+              <button
+                onClick={() => {
+                  if (currentTrack) {
+                    toggleTrackLikeMutation.mutate({
+                      songId: currentTrack.id,
+                      liked: currentTrack.liked,
+                    });
+                  }
+                }}
+                className="flex-shrink-0 transition-colors"
+              >
                 <Heart
                   size={16}
                   className={

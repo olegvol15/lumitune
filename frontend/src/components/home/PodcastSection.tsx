@@ -1,15 +1,17 @@
 import { Link } from '@tanstack/react-router';
 import { usePodcastsQuery } from '../../hooks/podcasts';
 import { formatLongDuration } from '../../utils/format';
+import { useI18n } from '../../lib/i18n';
 
 export default function PodcastSection() {
   const { data: podcasts = [], isLoading } = usePodcastsQuery();
+  const { copy, language } = useI18n();
 
   if (isLoading) {
     return (
       <section className="mb-10">
         <h2 className="text-[#DFF4FF] font-bold text-2xl lg:text-3xl tracking-tight mb-5">
-          Нові релізи <span className="text-[#3EA9FF]">подкастів</span>
+          {copy.home.newPodcastBefore} <span className="text-[#3EA9FF]">{copy.home.newPodcastAccent}</span>
         </h2>
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
           {[1, 2, 3].map((i) => (
@@ -30,7 +32,7 @@ export default function PodcastSection() {
   return (
     <section className="mb-10">
       <h2 className="text-[#DFF4FF] font-bold text-2xl lg:text-3xl tracking-tight mb-5">
-        Нові релізи <span className="text-[#3EA9FF]">подкастів</span>
+        {copy.home.newPodcastBefore} <span className="text-[#3EA9FF]">{copy.home.newPodcastAccent}</span>
       </h2>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
@@ -69,7 +71,7 @@ export default function PodcastSection() {
                 <p className="text-[#C2D2E8] text-sm leading-[1.45]">
                   {latestEpisode && (
                     <>
-                      {new Date(latestEpisode.publishedAt).toLocaleDateString('uk-UA', {
+                      {new Date(latestEpisode.publishedAt).toLocaleDateString(language === 'en' ? 'en-US' : 'uk-UA', {
                         month: 'short',
                         year: 'numeric',
                       })}{' '}

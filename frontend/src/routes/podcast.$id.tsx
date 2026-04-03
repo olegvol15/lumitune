@@ -4,6 +4,7 @@ import { usePodcastQuery } from '../hooks/podcasts';
 import { usePlayerStore } from '../store/playerStore';
 import { formatLongDuration } from '../utils/format';
 import type { Episode } from '../types';
+import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/podcast/$id')({
   component: PodcastPage,
@@ -13,6 +14,7 @@ function PodcastPage() {
   const { id } = Route.useParams();
   const router = useRouter();
   const { data: podcast, isLoading } = usePodcastQuery(id);
+  const { copy } = useI18n();
   const currentEpisode = usePlayerStore((s) => s.currentEpisode);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const playEpisode = usePlayerStore((s) => s.playEpisode);
@@ -21,7 +23,7 @@ function PodcastPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] text-white/50">
-        Завантаження...
+        {copy.common.loading}
       </div>
     );
   }
@@ -29,7 +31,7 @@ function PodcastPage() {
   if (!podcast) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] text-white/50">
-        Подкаст не знайдено
+        {copy.common.podcast} not found
       </div>
     );
   }
@@ -61,7 +63,7 @@ function PodcastPage() {
             className="flex items-center gap-1.5 text-white/60 hover:text-white mb-6 transition-colors"
           >
             <ChevronLeft size={20} />
-            <span className="text-sm">Назад</span>
+            <span className="text-sm">{copy.common.back}</span>
           </button>
 
           <div className="flex flex-col sm:flex-row gap-6 items-start">
@@ -71,7 +73,7 @@ function PodcastPage() {
               className="w-40 h-40 rounded-xl object-cover flex-shrink-0 shadow-2xl"
             />
             <div className="flex flex-col justify-end min-w-0">
-              <p className="text-white/50 text-xs uppercase tracking-widest mb-1">Подкаст</p>
+              <p className="text-white/50 text-xs uppercase tracking-widest mb-1">{copy.common.podcast}</p>
               <h1 className="text-white text-3xl font-bold leading-tight mb-2">{podcast.title}</h1>
               <p className="text-white/70 text-sm mb-1">{podcast.author}</p>
               {podcast.category && (
@@ -90,12 +92,12 @@ function PodcastPage() {
       {/* Episodes */}
       <div className="px-6 pb-20">
         <h2 className="text-white font-bold text-xl mb-4">
-          Епізоди{' '}
+          {copy.common.episodes}{' '}
           <span className="text-white/30 font-normal text-base">({episodes.length})</span>
         </h2>
 
         {episodes.length === 0 ? (
-          <p className="text-white/40 text-sm">Епізодів ще немає</p>
+          <p className="text-white/40 text-sm">{copy.common.episodeListEmpty}</p>
         ) : (
           <div className="flex flex-col gap-2">
             {episodes.map((episode) => {

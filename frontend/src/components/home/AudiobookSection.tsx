@@ -1,15 +1,17 @@
 import { useNavigate } from '@tanstack/react-router';
 import { formatLongDuration } from '../../utils/format';
 import { useAudiobooksQuery } from '../../hooks/audiobooks';
+import { useI18n } from '../../lib/i18n';
 
 export default function AudiobookSection() {
   const navigate = useNavigate();
   const { data: audiobooks = [] } = useAudiobooksQuery();
+  const { copy } = useI18n();
 
   return (
     <section className="mb-10">
       <h2 className="text-white font-bold text-lg mb-5">
-        Нові релізи <span className="text-[#1CA2EA]">Аудиокниг</span>
+        {copy.home.newAudiobookBefore} <span className="text-[#1CA2EA]">{copy.home.newAudiobookAccent}</span>
       </h2>
 
       <div className="bg-[#0a1929] border border-[#1a3050] rounded-xl overflow-hidden">
@@ -46,7 +48,7 @@ export default function AudiobookSection() {
               {/* Date + Duration on separate lines */}
               <p className="text-white/25 text-xs">{book.publishedAt}</p>
               <p className="text-white/25 text-xs">{formatLongDuration(book.duration)}</p>
-              <p className="text-white/25 text-xs mt-1">{book.chapterCount} розділів</p>
+              <p className="text-white/25 text-xs mt-1">{book.chapterCount} {copy.common.chapters}</p>
             </div>
           </div>
         ))}

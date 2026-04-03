@@ -4,7 +4,9 @@ import songsApi from '../api/songsApi';
 import { queryClient } from '../lib/queryClient';
 import type { AdminTrack } from '../types/admin/admin-tracks.types';
 import { mapBackendSongToAdminTrack } from '../utils/admin-song-mapper.utils';
+import { useLikedSongsQuery } from './likes';
 import { tracksKeys } from './api-keys';
+import { useAuthStore } from '../store/authStore';
 
 function buildTrackFormData(track: AdminTrack, coverFile?: File | null) {
   const formData = new FormData();
@@ -19,13 +21,21 @@ function buildTrackFormData(track: AdminTrack, coverFile?: File | null) {
 }
 
 export function useCatalogTracks() {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { data, isLoading, isFetching, error, refetch } = useQuery({
     queryKey: tracksKeys.catalog(),
     queryFn: songsApi.listCatalogTracks,
   });
+  const { data: likedTracks = [] } = useLikedSongsQuery();
+
+  const likedTrackIds = new Set(likedTracks.map((track) => track.id));
+  const tracks = (data ?? []).map((track) => ({
+    ...track,
+    liked: isAuthenticated ? likedTrackIds.has(track.id) : false,
+  }));
 
   return {
-    tracks: data ?? [],
+    tracks,
     isLoading,
     hasLoaded: data !== undefined || error !== null,
     error: error instanceof Error ? error.message : null,

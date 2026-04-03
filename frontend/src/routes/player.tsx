@@ -17,6 +17,8 @@ import { useAuthStore } from '../store/authStore';
 import ProgressBar from '../components/player/ProgressBar';
 import SongCoverImage from '../components/ui/SongCoverImage';
 import Button from '../components/ui/Button';
+import { useToggleTrackLikeMutation } from '../hooks/likes';
+import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/player')({
   beforeLoad: () => {
@@ -27,6 +29,7 @@ export const Route = createFileRoute('/player')({
 
 function PlayerPage() {
   const navigate = useNavigate();
+  const { copy } = useI18n();
   const {
     currentTrack,
     currentEpisode,
@@ -35,7 +38,6 @@ function PlayerPage() {
     queue,
     seek,
     progress,
-    toggleLike,
     isPlaying,
     togglePlay,
     next,
@@ -46,6 +48,7 @@ function PlayerPage() {
     toggleRepeat,
     play,
   } = usePlayerStore();
+  const toggleTrackLikeMutation = useToggleTrackLikeMutation();
 
   const activeMedia = currentTrack
     ? {
@@ -85,9 +88,9 @@ function PlayerPage() {
   if (!activeMedia) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-[#060d19] px-4 text-center">
-        <p className="text-muted mb-4">Немає активного треку</p>
+        <p className="text-muted mb-4">{copy.common.noActiveTrack}</p>
         <Button variant="secondary" shape="pill" onClick={() => navigate({ to: '/' })} className="px-6">
-          Перейти на головну
+          {copy.common.goHome}
         </Button>
       </div>
     );
@@ -130,7 +133,17 @@ function PlayerPage() {
           <p className="text-white/50 text-sm mt-1">{activeMedia.subtitle}</p>
         </div>
         {activeMedia.showLike && (
-          <button onClick={toggleLike} className="p-1 mt-1 flex-shrink-0">
+          <button
+            onClick={() => {
+              if (currentTrack) {
+                toggleTrackLikeMutation.mutate({
+                  songId: currentTrack.id,
+                  liked: currentTrack.liked,
+                });
+              }
+            }}
+            className="p-1 mt-1 flex-shrink-0"
+          >
             <Heart
               size={24}
               className={activeMedia.liked ? 'text-brand fill-brand' : 'text-white/50'}

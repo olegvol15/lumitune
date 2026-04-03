@@ -32,6 +32,7 @@ import {
   PROFILE_MOODS,
   readJsonFromStorage,
 } from '../utils/profile.utils';
+import { useI18n } from '../lib/i18n';
 
 const FALLBACK_AVATAR =
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=320&q=80';
@@ -52,6 +53,7 @@ export const Route = createFileRoute('/profile')({
 
 function ProfilePage() {
   const navigate = useNavigate();
+  const { copy, language } = useI18n();
   const user = useAuthStore((state) => state.user);
   const { theme } = useThemeStore();
   const isLight = theme === 'ice';
@@ -66,7 +68,7 @@ function ProfilePage() {
   const displayName = user?.displayName || user?.username || 'Oleh';
   const bio =
     user?.bio ||
-    'Вітаю всіх! Дякую, що завітали на мою сторінку. Тут ви знайдете мою музику, емоції та натхнення.';
+    copy.profile.defaultBio;
   const avatar =
     user?.profilePicture && user.profilePicture !== 'default-avatar.png'
       ? user.profilePicture
@@ -142,7 +144,7 @@ function ProfilePage() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(61,150,177,0.16),transparent_25%),radial-gradient(circle_at_70%_0%,rgba(164,219,233,0.12),transparent_22%)]" />
             )}
             <div className="relative">
-              <div className="mb-2 text-[11px] font-medium text-white">Профіль</div>
+              <div className="mb-2 text-[11px] font-medium text-white">{copy.profile.title}</div>
 
               <div className="grid gap-4 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-start">
                 <div className="flex items-center">
@@ -162,12 +164,12 @@ function ProfilePage() {
                     </h1>
 
                     <div className="flex gap-6 pb-1">
-                      <ProfileStat value="66" label="Підписки" />
+                      <ProfileStat value="66" label={copy.profile.following} />
                       <ProfileStat
                         value={String(Math.max(creatorTracks.length, 6))}
-                        label="Музика"
+                        label={copy.profile.music}
                       />
-                      <ProfileStat value="666" label="Слухачі" />
+                      <ProfileStat value="666" label={copy.profile.listeners} />
                     </div>
                   </div>
                 </div>
@@ -196,7 +198,7 @@ function ProfilePage() {
                   onClick={() => setTrackModal({ open: true, mode: 'create' })}
                   className="rounded-md border-[#365a7a] bg-[#12283a] px-4 text-[12px] text-[#dbeaf8] hover:bg-[#173247]"
                 >
-                  Завантажити трек
+                  {copy.profile.uploadTrack}
                 </Button>
                 <Button
                   variant="auth-outline"
@@ -205,7 +207,7 @@ function ProfilePage() {
                   onClick={() => setIsAlbumModalOpen(true)}
                   className="rounded-md border-[#365a7a] bg-[#12283a] px-4 text-[12px] text-[#dbeaf8] hover:bg-[#173247]"
                 >
-                  Створити альбом
+                  {copy.profile.createAlbum}
                 </Button>
               </div>
               <Button
@@ -223,7 +225,7 @@ function ProfilePage() {
             </div>
 
             <section className="mb-12">
-              <ProfileSectionTitle title="Ваші треки" right={<ProfileTrackSectionTools />} />
+              <ProfileSectionTitle title={copy.profile.yourTracks} right={<ProfileTrackSectionTools />} />
 
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
                 {creatorTracks.map((track) => (
@@ -239,12 +241,12 @@ function ProfilePage() {
 
             <section className="mb-12">
               <ProfileSectionTitle
-                title="Топ ваших вподобань треків цього місяця"
+                title={copy.profile.topTracks}
                 right={
                   <div className="grid grid-cols-[120px_110px_50px] gap-4 pr-4 text-sm font-semibold text-[#d2dce8]">
-                    <span>Дата релізу</span>
-                    <span>Вподобання</span>
-                    <span className="text-right">Час</span>
+                    <span>{copy.profile.releaseDate}</span>
+                    <span>{copy.profile.likes}</span>
+                    <span className="text-right">{copy.profile.time}</span>
                   </div>
                 }
               />
@@ -263,7 +265,7 @@ function ProfilePage() {
 
             <section className="mb-12">
               <ProfileSectionTitle
-                title="Ваші створенні альбоми"
+                title={copy.profile.yourAlbums}
                 right={<ProfileSectionArrows />}
               />
 
@@ -279,7 +281,7 @@ function ProfilePage() {
             </section>
 
             <section>
-              <ProfileSectionTitle title="Ви слідкуєте" right={<ProfileSectionArrows />} />
+              <ProfileSectionTitle title={copy.profile.followingArtists} right={<ProfileSectionArrows />} />
 
               <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
                 {followingArtists.map((artist) => (
@@ -287,7 +289,7 @@ function ProfilePage() {
                     key={artist.id}
                     name={artist.name}
                     image={artist.image}
-                    listeners={artist.monthlyListeners.toLocaleString('uk-UA')}
+                    listeners={artist.monthlyListeners.toLocaleString(language === 'en' ? 'en-US' : 'uk-UA')}
                     onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
                   />
                 ))}

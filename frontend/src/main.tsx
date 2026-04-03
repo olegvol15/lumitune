@@ -7,6 +7,7 @@ import { queryClient } from './lib/queryClient';
 import { routeTree } from './routeTree.gen';
 import { useAdminAuthStore } from './store/adminAuthStore';
 import { useAuthStore } from './store/authStore';
+import { useLanguageStore } from './store/languageStore';
 
 const router = createRouter({ routeTree });
 
@@ -21,6 +22,13 @@ async function startApp() {
     useAuthStore.getState().bootstrap(),
     useAdminAuthStore.getState().bootstrap(),
   ]);
+
+  const syncDocumentLanguage = (language: 'uk' | 'en') => {
+    document.documentElement.lang = language;
+  };
+
+  syncDocumentLanguage(useLanguageStore.getState().language);
+  useLanguageStore.subscribe((state) => syncDocumentLanguage(state.language));
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>

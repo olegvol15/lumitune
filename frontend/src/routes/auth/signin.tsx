@@ -7,6 +7,7 @@ import AuthLogo from '../../components/auth/AuthLogo';
 import Button from '../../components/ui/Button';
 import { useAuthLoginMutation } from '../../hooks/auth';
 import { useAuthStore } from '../../store/authStore';
+import { useI18n } from '../../lib/i18n';
 
 export const Route = createFileRoute('/auth/signin')({
   beforeLoad: () => {
@@ -15,22 +16,14 @@ export const Route = createFileRoute('/auth/signin')({
   component: SignInPage,
 });
 
-const socialButtons = [
-  {
-    id: 'facebook',
-    icon: <FaFacebook size={22} color="#1877F2" />,
-    label: 'Увійти з Facebook',
-  },
-  { id: 'google', icon: <FcGoogle size={22} />, label: 'Увійти з Google' },
-  {
-    id: 'apple',
-    icon: <FaApple size={22} color="#fff" />,
-    label: 'Увійти з Apple',
-  },
-];
-
 function SignInPage() {
   const navigate = useNavigate();
+  const { copy } = useI18n();
+  const socialButtons = [
+    { id: 'facebook', icon: <FaFacebook size={22} color="#1877F2" />, label: `${copy.auth.signIn} Facebook` },
+    { id: 'google', icon: <FcGoogle size={22} />, label: `${copy.auth.signIn} Google` },
+    { id: 'apple', icon: <FaApple size={22} color="#fff" />, label: `${copy.auth.signIn} Apple` },
+  ];
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
@@ -45,14 +38,14 @@ function SignInPage() {
       navigate({ to: '/' });
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
-      setError(axiosErr.response?.data?.message ?? 'Помилка входу');
+      setError(axiosErr.response?.data?.message ?? copy.auth.signInError);
     }
   };
 
   return (
     <div className="auth-page-bg min-h-screen px-4 py-6 sm:py-8 flex flex-col sm:items-center sm:justify-center">
       <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
-        <AuthLogo heading="Пориньте у LumiTune" />
+        <AuthLogo heading={copy.auth.signInHeading} />
 
         <div className="space-y-2.5">
           {socialButtons.map(({ id, icon, label }) => (
@@ -76,7 +69,7 @@ function SignInPage() {
         <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
             <label className="text-[#D4E3F7] text-sm mb-1.5 block">
-              Електронна пошта або ім&apos;я користувача
+              {copy.auth.emailOrUsername}
             </label>
             <input
               type="email"
@@ -90,7 +83,7 @@ function SignInPage() {
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-[#D4E3F7] text-sm block">Пароль</label>
+              <label className="text-[#D4E3F7] text-sm block">{copy.auth.password}</label>
               <Button
                 variant="ghost"
                 size="sm"
@@ -98,7 +91,7 @@ function SignInPage() {
                 onClick={() => navigate({ to: '/auth/forgot-password' })}
                 className="text-[#79A9E4] !px-0 underline"
               >
-                Забули пароль?
+                {copy.auth.forgotPassword}
               </Button>
             </div>
             <div className="relative">
@@ -135,21 +128,21 @@ function SignInPage() {
             loading={loginMutation.isPending}
             className="mt-4"
           >
-            Увійти
+            {copy.auth.signIn}
           </Button>
         </form>
 
         <div className="auth-muted-line w-4/5 mx-auto mt-6 mb-5" />
 
         <p className="text-center text-[#769CCF] text-[15px]">
-          Немає акаунта?{' '}
+          {copy.auth.noAccount}{' '}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate({ to: '/auth/signup' })}
             className="text-[#8AB8F0] font-semibold underline underline-offset-4 !px-0"
           >
-            Реєстрація у LumiTune
+            {copy.auth.signUpLumiTune}
           </Button>
         </p>
       </div>

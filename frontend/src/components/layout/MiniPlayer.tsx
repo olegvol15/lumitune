@@ -5,6 +5,7 @@ import { usePlayerStore } from '../../store/playerStore';
 import ProgressBar from '../player/ProgressBar';
 import SongCoverImage from '../ui/SongCoverImage';
 import { slideUp } from '../../lib/motion';
+import { useToggleTrackLikeMutation } from '../../hooks/likes';
 
 export default function MiniPlayer() {
   const {
@@ -17,9 +18,9 @@ export default function MiniPlayer() {
     next,
     seek,
     progress,
-    toggleLike,
   } =
     usePlayerStore();
+  const toggleTrackLikeMutation = useToggleTrackLikeMutation();
   const navigate = useNavigate();
 
   const activeMedia = currentTrack
@@ -67,7 +68,17 @@ export default function MiniPlayer() {
 
               <div className="flex items-center gap-1 flex-shrink-0">
                 {!activeMedia.isEpisode && (
-                  <button onClick={toggleLike} className="p-2 hover:bg-white/10 rounded-full">
+                  <button
+                    onClick={() => {
+                      if (currentTrack) {
+                        toggleTrackLikeMutation.mutate({
+                          songId: currentTrack.id,
+                          liked: currentTrack.liked,
+                        });
+                      }
+                    }}
+                    className="p-2 hover:bg-white/10 rounded-full"
+                  >
                     <Heart
                       size={18}
                       className={currentTrack?.liked ? 'text-brand fill-brand' : 'text-muted'}

@@ -1,8 +1,10 @@
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { FaFacebook, FaTwitter, FaPinterest, FaRss } from 'react-icons/fa';
 import LogoIcon from '../ui/LogoIcon';
+import { useI18n } from '../../lib/i18n';
 
 export default function Footer() {
+  const { copy } = useI18n();
   return (
     <footer className="bg-[#060d19] border-t border-[#1a3050]">
       {/* Main footer content — inset to clear fixed sidebars */}
@@ -17,7 +19,7 @@ export default function Footer() {
           {/* Address */}
           <div className="flex items-center gap-2">
             <MapPin size={14} className="text-white/60 flex-shrink-0" />
-            <span>вул. Музична 42, Київ, Україна</span>
+            <span>{copy.footer.address}</span>
           </div>
 
           {/* Phone + Email on same row */}
@@ -52,11 +54,11 @@ export default function Footer() {
 
       {/* Bottom bar — full width divider + centered links */}
       <div className="px-12 py-4 border-t border-[#1a3050] flex items-center justify-center gap-8 text-xs text-white/30">
-        <button className="hover:text-white transition-colors">About us</button>
-        <button className="hover:text-white transition-colors">Contact us</button>
-        <button className="hover:text-white transition-colors">Help</button>
-        <button className="hover:text-white transition-colors">Privacy Policy</button>
-        <button className="hover:text-white transition-colors">Disclaimer</button>
+        <button className="hover:text-white transition-colors">{copy.footer.about}</button>
+        <button className="hover:text-white transition-colors">{copy.footer.contact}</button>
+        <button className="hover:text-white transition-colors">{copy.footer.help}</button>
+        <button className="hover:text-white transition-colors">{copy.footer.privacy}</button>
+        <button className="hover:text-white transition-colors">{copy.footer.disclaimer}</button>
       </div>
     </footer>
   );

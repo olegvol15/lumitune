@@ -66,6 +66,10 @@ export interface TrackRowProps {
   queue?: Track[];
   showIndex?: boolean;
   showPlayCount?: boolean;
+  disableHoverEffects?: boolean;
+  disableTapAnimation?: boolean;
+  playOnRowClick?: boolean;
+  alwaysShowPlayButton?: boolean;
 }
 
 export interface MoodPillProps {

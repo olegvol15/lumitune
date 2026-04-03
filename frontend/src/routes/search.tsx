@@ -5,6 +5,7 @@ import TrackRow from '../components/ui/TrackRow';
 import MediaCard from '../components/ui/MediaCard';
 import { useCatalogTracks } from '../hooks/tracks';
 import { useAudiobooksQuery } from '../hooks/audiobooks';
+import { useI18n } from '../lib/i18n';
 
 const genres = [
   { id: 'pop', label: 'Поп', color: 'from-pink-500 to-rose-600', emoji: '🎵' },
@@ -59,18 +60,19 @@ function SearchPage() {
   const { data: audiobooks = [] } = useAudiobooksQuery();
   const { query, setQuery, results, hasResults } = useSearch(tracks, audiobooks);
   const navigate = useNavigate();
+  const { copy } = useI18n();
 
   return (
     <div className="px-4 pt-4">
       {/* Header */}
-      <h1 className="text-white text-2xl font-bold mb-4">Пошук</h1>
+      <h1 className="text-white text-2xl font-bold mb-4">{copy.search.title}</h1>
 
       {/* Search bar */}
       <div className="relative mb-5">
         <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
         <input
           type="text"
-          placeholder="Виконавці, треки, альбоми..."
+          placeholder={copy.search.placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full bg-surface-alt text-white placeholder-muted rounded-xl py-3 pl-10 pr-10 outline-none focus:ring-2 focus:ring-brand/50 text-sm"
@@ -94,7 +96,7 @@ function SearchPage() {
         <div className="space-y-6">
           {results.tracks.length > 0 && (
             <div>
-              <h2 className="text-white font-bold mb-2">Треки</h2>
+              <h2 className="text-white font-bold mb-2">{copy.search.tracks}</h2>
               <div className="space-y-1">
                 {results.tracks.map((t) => (
                   <TrackRow key={t.id} track={t} queue={tracks} />
@@ -104,7 +106,7 @@ function SearchPage() {
           )}
           {results.artists.length > 0 && (
             <div>
-              <h2 className="text-white font-bold mb-3">Виконавці</h2>
+              <h2 className="text-white font-bold mb-3">{copy.search.artists}</h2>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
                 {results.artists.map((a) => (
                   <MediaCard
@@ -121,7 +123,7 @@ function SearchPage() {
           )}
           {results.albums.length > 0 && (
             <div>
-              <h2 className="text-white font-bold mb-3">Альбоми</h2>
+              <h2 className="text-white font-bold mb-3">{copy.search.albums}</h2>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
                 {results.albums.map((al) => (
                   <MediaCard
@@ -137,7 +139,7 @@ function SearchPage() {
           )}
           {results.audiobooks.length > 0 && (
             <div>
-              <h2 className="text-white font-bold mb-3">Аудіокниги</h2>
+              <h2 className="text-white font-bold mb-3">{copy.search.audiobooks}</h2>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
                 {results.audiobooks.map((book) => (
                   <MediaCard
@@ -155,12 +157,12 @@ function SearchPage() {
       ) : query && !hasResults ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <Search size={48} className="text-muted mb-4" />
-          <p className="text-white font-semibold mb-1">Нічого не знайдено</p>
-          <p className="text-muted text-sm">Спробуйте інший запит</p>
+          <p className="text-white font-semibold mb-1">{copy.common.noResults}</p>
+          <p className="text-muted text-sm">{copy.common.tryAnotherQuery}</p>
         </div>
       ) : (
         <>
-          <h2 className="text-white font-bold mb-3">Перегляд за жанрами</h2>
+          <h2 className="text-white font-bold mb-3">{copy.search.browseGenres}</h2>
           <div className="grid grid-cols-2 gap-3">
             {genres.map((g) => (
               <button

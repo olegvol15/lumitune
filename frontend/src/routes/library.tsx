@@ -9,6 +9,7 @@ import type { LibraryTab } from '../types/routes/route.types';
 import { usePlaylistsQuery, useCreatePlaylistMutation } from '../hooks/playlists';
 import { useSavedAudiobooksQuery } from '../hooks/audiobooks';
 import { formatLongDuration } from '../utils/format';
+import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/library')({
   beforeLoad: () => {
@@ -20,13 +21,14 @@ export const Route = createFileRoute('/library')({
 function LibraryPage() {
   const [tab, setTab] = useState<LibraryTab>('playlists');
   const navigate = useNavigate();
+  const { copy } = useI18n();
   const { data: playlists = [] } = usePlaylistsQuery();
   const { data: savedAudiobooks = [] } = useSavedAudiobooksQuery();
   const createMutation = useCreatePlaylistMutation();
 
   const handleCreatePlaylist = async () => {
     const playlist = await createMutation.mutateAsync(
-      `Мій плейлист №${playlists.length + 1}`
+      `${copy.nav.createPlaylist} #${playlists.length + 1}`
     );
     navigate({ to: '/playlist/$id', params: { id: playlist.id } });
   };
@@ -35,11 +37,11 @@ function LibraryPage() {
     <div className="px-4 pt-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-white text-2xl font-bold">Бібліотека</h1>
+        <h1 className="text-white text-2xl font-bold">{copy.library.title}</h1>
         <button
           onClick={() => void handleCreatePlaylist()}
           className="p-2 bg-surface-alt rounded-full hover:bg-white/10 transition-colors"
-          title="Створити плейлист"
+          title={copy.nav.createPlaylist}
         >
           <Plus size={20} className="text-white" />
         </button>
@@ -57,12 +59,12 @@ function LibraryPage() {
             className={tab !== t ? 'bg-surface-alt text-sm' : 'text-sm'}
           >
             {t === 'playlists'
-              ? 'Плейлисти'
+              ? copy.library.playlists
               : t === 'albums'
-              ? 'Альбоми'
+              ? copy.library.albums
               : t === 'artists'
-              ? 'Виконавці'
-              : 'Аудіокниги'}
+              ? copy.library.artists
+              : copy.library.audiobooks}
           </Button>
         ))}
       </div>
@@ -79,8 +81,8 @@ function LibraryPage() {
               <span className="text-white text-xl">♥</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-semibold truncate">Улюблені треки</p>
-              <p className="text-muted text-sm">Плейлист</p>
+              <p className="text-white font-semibold truncate">{copy.nav.favoriteTracks}</p>
+              <p className="text-muted text-sm">{copy.library.playlist}</p>
             </div>
           </button>
 
@@ -96,7 +98,7 @@ function LibraryPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold truncate">{p.title}</p>
-                <p className="text-muted text-sm">{p.trackIds.length} треків · Плейлист</p>
+                <p className="text-muted text-sm">{p.trackIds.length} {copy.common.tracks} · {copy.library.playlist}</p>
 
               </div>
             </button>
@@ -104,9 +106,9 @@ function LibraryPage() {
 
           {playlists.length === 0 && (
             <div className="py-6 text-center">
-              <p className="text-muted text-sm mb-3">У вас ще немає плейлистів</p>
+              <p className="text-muted text-sm mb-3">{copy.library.noPlaylists}</p>
               <Button variant="outline" size="sm" onClick={() => void handleCreatePlaylist()}>
-                Створити плейлист
+                {copy.nav.createPlaylist}
               </Button>
             </div>
           )}
@@ -167,7 +169,7 @@ function LibraryPage() {
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold truncate">{book.title}</p>
                 <p className="text-muted text-sm truncate">
-                  {book.author} · {book.chapterCount} розділів · {formatLongDuration(book.duration)}
+                  {book.author} · {book.chapterCount} {copy.common.chapters} · {formatLongDuration(book.duration)}
                 </p>
               </div>
             </button>
@@ -175,7 +177,7 @@ function LibraryPage() {
 
           {savedAudiobooks.length === 0 && (
             <div className="py-6 text-center">
-              <p className="text-muted text-sm">У вас ще немає збережених аудіокниг</p>
+              <p className="text-muted text-sm">{copy.library.noSavedAudiobooks}</p>
             </div>
           )}
         </div>

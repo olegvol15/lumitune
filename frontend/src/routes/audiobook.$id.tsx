@@ -4,6 +4,7 @@ import { formatDuration, formatLongDuration } from '../utils/format';
 import { useAudiobookQuery, useSaveAudiobookMutation } from '../hooks/audiobooks';
 import { usePlayerStore } from '../store/playerStore';
 import type { AudiobookChapter } from '../types';
+import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/audiobook/$id')({
   component: AudiobookPage,
@@ -13,6 +14,7 @@ function AudiobookPage() {
   const { id } = Route.useParams();
   const router = useRouter();
   const { data, isLoading } = useAudiobookQuery(id);
+  const { copy } = useI18n();
   const saveMutation = useSaveAudiobookMutation();
   const currentAudiobookChapter = usePlayerStore((s) => s.currentAudiobookChapter);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
@@ -20,11 +22,11 @@ function AudiobookPage() {
   const togglePlay = usePlayerStore((s) => s.togglePlay);
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-[60vh] text-white/50">Завантаження...</div>;
+    return <div className="flex items-center justify-center min-h-[60vh] text-white/50">{copy.common.loading}</div>;
   }
 
   if (!data) {
-    return <div className="flex items-center justify-center min-h-[60vh] text-white/50">Аудіокнигу не знайдено</div>;
+    return <div className="flex items-center justify-center min-h-[60vh] text-white/50">{copy.common.audioBook} not found</div>;
   }
 
   const { audiobook, chapters, saved } = data;
@@ -56,7 +58,7 @@ function AudiobookPage() {
             className="flex items-center gap-1.5 text-white/60 hover:text-white mb-6 transition-colors"
           >
             <ChevronLeft size={20} />
-            <span className="text-sm">Назад</span>
+            <span className="text-sm">{copy.common.back}</span>
           </button>
 
           <div className="flex flex-col sm:flex-row gap-6 items-start">
@@ -66,12 +68,12 @@ function AudiobookPage() {
               className="w-40 max-w-full rounded-xl object-contain flex-shrink-0 shadow-2xl bg-black/10"
             />
             <div className="min-w-0">
-              <p className="text-white/50 text-xs uppercase tracking-widest mb-1">Аудіокнига</p>
+              <p className="text-white/50 text-xs uppercase tracking-widest mb-1">{copy.common.audioBook}</p>
               <h1 className="text-white text-3xl font-bold leading-tight mb-2">{audiobook.title}</h1>
               <p className="text-white/70 text-sm mb-2">{audiobook.author}</p>
               <div className="flex flex-wrap gap-2 text-xs text-white/60 mb-4">
-                <span className="px-2 py-1 rounded-full bg-white/10">{audiobook.genre || 'Без жанру'}</span>
-                <span className="px-2 py-1 rounded-full bg-white/10">{audiobook.chapterCount} розділів</span>
+                <span className="px-2 py-1 rounded-full bg-white/10">{audiobook.genre || copy.common.unknownGenre}</span>
+                <span className="px-2 py-1 rounded-full bg-white/10">{audiobook.chapterCount} {copy.common.chapters}</span>
                 <span className="px-2 py-1 rounded-full bg-white/10">{formatLongDuration(audiobook.duration)}</span>
               </div>
               <p className="text-white/55 text-sm max-w-2xl leading-relaxed">{audiobook.description}</p>
@@ -83,7 +85,7 @@ function AudiobookPage() {
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-medium"
                   >
                     <Play size={16} fill="currentColor" />
-                    Продовжити
+                    {copy.common.continue}
                   </button>
                 )}
                 <button
@@ -91,7 +93,7 @@ function AudiobookPage() {
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/80 hover:text-white"
                 >
                   <Bookmark size={16} className={saved ? 'fill-current' : ''} />
-                  {saved ? 'Збережено' : 'Зберегти'}
+                  {saved ? copy.common.saved : copy.common.save}
                 </button>
               </div>
             </div>
@@ -101,7 +103,7 @@ function AudiobookPage() {
 
       <div className="px-6 pb-20">
         <h2 className="text-white font-bold text-xl mb-4">
-          Розділи <span className="text-white/30 font-normal text-base">({chapters.length})</span>
+          {copy.common.chaptersLabel} <span className="text-white/30 font-normal text-base">({chapters.length})</span>
         </h2>
 
         <div className="flex flex-col gap-2">

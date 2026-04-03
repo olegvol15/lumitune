@@ -12,14 +12,15 @@ import type { Album, Audiobook, Track } from '../types';
 import type { HomeFilterTab } from '../types/routes/route.types';
 import { useCatalogTracks } from '../hooks/tracks';
 import { usePlayerStore } from '../store/playerStore';
-
-const FILTER_TABS: HomeFilterTab[] = ['Всі', 'Треки', 'Інше'];
+import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/')({ component: HomePage });
 
 function HomePage() {
   const { tracks } = useCatalogTracks();
-  const [activeTab, setActiveTab] = useState<HomeFilterTab>('Всі');
+  const { copy } = useI18n();
+  const FILTER_TABS: HomeFilterTab[] = [copy.home.all, copy.home.tracks, copy.home.other] as HomeFilterTab[];
+  const [activeTab, setActiveTab] = useState<HomeFilterTab>(FILTER_TABS[0]);
   const navigate = useNavigate();
   const play = usePlayerStore((state) => state.play);
 
@@ -67,22 +68,22 @@ function HomePage() {
       <MoodSection />
 
       <HorizontalSection
-        title="Топ ВАША музика сьогодні!"
-        accentWord="музика"
+        title={copy.home.topMusic}
+        accentWord={copy.home.topMusicAccent}
         items={tracks.slice(0, 5) as Track[]}
         onItemClick={handleMediaClick}
       />
 
       <HorizontalSection
-        title="Нові музичні релізи"
-        accentWord="музичні"
+        title={copy.home.newMusic}
+        accentWord={copy.home.newMusicAccent}
         items={albums.slice(0, 6) as Album[]}
         onItemClick={handleMediaClick}
       />
 
       <ArtistSection
-        title="Твої улюблені виконавці"
-        accentWord="виконавці"
+        title={copy.home.favoriteArtists}
+        accentWord={copy.home.favoriteArtistsAccent}
         artists={artists}
         onArtistClick={handleArtistClick}
       />

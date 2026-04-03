@@ -1,26 +1,28 @@
 import { useState } from 'react';
 import { Sun, Droplets, Heart, Zap, Music2, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const moods = [
-  { id: 'happy', icon: Sun, label: 'Хепні' },
-  { id: 'melancholy', icon: Droplets, label: 'Меланхолія' },
-  { id: 'romance', icon: Heart, label: 'Романтика' },
-  { id: 'drive', icon: Zap, label: 'Драйв' },
-  { id: 'party', icon: Music2, label: 'Туса' },
-];
+import { useI18n } from '../../lib/i18n';
 
 export default function MoodSection() {
   const [active, setActive] = useState<string | null>(null);
+  const { copy } = useI18n();
+  const moods = [
+    { id: 'happy', icon: Sun, label: copy.home.moods.happy },
+    { id: 'melancholy', icon: Droplets, label: copy.home.moods.melancholy },
+    { id: 'romance', icon: Heart, label: copy.home.moods.romance },
+    { id: 'drive', icon: Zap, label: copy.home.moods.drive },
+    { id: 'party', icon: Music2, label: copy.home.moods.party },
+  ];
 
   return (
     <section className="mb-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-white font-bold text-xl">
-          Саундреки на основі твого <span className="text-[#1CA2EA]">настрою</span>
+          {copy.home.moodTitleBefore}
+          <span className="text-[#1CA2EA]">{copy.home.moodAccent}</span>
         </h2>
         <button className="flex items-center gap-1.5 text-white/60 text-sm border border-[#1a3050] rounded-full px-4 py-1.5 hover:border-[#1CA2EA]/60 hover:text-white/80 transition-colors">
-          Настрій
+          {copy.common.mood}
           <ChevronDown size={13} />
         </button>
       </div>

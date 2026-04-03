@@ -7,6 +7,7 @@ import AuthLogo from '../../components/auth/AuthLogo';
 import AuthOrDivider from '../../components/auth/AuthOrDivider';
 import Button from '../../components/ui/Button';
 import { maskEmail } from '../../utils/forgot-password.utils';
+import { useI18n } from '../../lib/i18n';
 
 export const Route = createFileRoute('/auth/forgot-password')({
   component: ForgotPasswordPage,
@@ -14,6 +15,7 @@ export const Route = createFileRoute('/auth/forgot-password')({
 
 function ForgotPasswordPage() {
   const navigate = useNavigate();
+  const { copy } = useI18n();
   const [step, setStep] = useState<0 | 1 | 2>(0);
 
   // Step 0
@@ -49,7 +51,7 @@ function ForgotPasswordPage() {
         <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
           <AuthBackButton onBack={() => navigate({ to: '/auth/signin' })} />
 
-          <AuthLogo heading="Забули пароль?" />
+          <AuthLogo heading={copy.auth.forgotHeading} />
 
           <form
             onSubmit={(e) => {
@@ -60,7 +62,7 @@ function ForgotPasswordPage() {
           >
             <div>
               <label className="text-[#D4E3F7] text-sm mb-1.5 block">
-                Електронна пошта або ім&apos;я користувача
+                {copy.auth.emailOrUsername}
               </label>
               <input
                 type="email"
@@ -73,14 +75,14 @@ function ForgotPasswordPage() {
             </div>
 
             <Button type="submit" variant="primary" size="lg" shape="rect" fullWidth>
-              Продовжити
+              {copy.auth.continue}
             </Button>
           </form>
 
           <AuthOrDivider />
 
           <Button variant="auth-outline" size="lg" shape="rect" fullWidth onClick={handleResend}>
-            Отримайте новий код
+            {copy.auth.getNewCode}
           </Button>
 
           <AuthBottomLink onNavigateToSignIn={() => navigate({ to: '/auth/signin' })} />
@@ -96,10 +98,10 @@ function ForgotPasswordPage() {
         <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
           <AuthBackButton onBack={() => setStep(0)} />
 
-          <AuthLogo heading="Забули пароль?" />
+          <AuthLogo heading={copy.auth.forgotHeading} />
 
           <p className="text-[#769CCF] text-sm text-center -mt-2 mb-4">
-            Введіть 6-значний код, який ми відправили вам на адресу{' '}
+            {copy.auth.enterCodePrefix}{' '}
             <span className="text-[#8AB8F0]">{maskedEmail || 'G*****2@G*l.com'}</span>
           </p>
 
@@ -111,7 +113,7 @@ function ForgotPasswordPage() {
             className="space-y-3.5"
           >
             <div>
-              <label className="text-[#D4E3F7] text-sm mb-1.5 block">Код підтвердження</label>
+              <label className="text-[#D4E3F7] text-sm mb-1.5 block">{copy.auth.verificationCode}</label>
               <input
                 type="text"
                 value={code}
@@ -124,14 +126,14 @@ function ForgotPasswordPage() {
             </div>
 
             <Button type="submit" variant="primary" size="lg" shape="rect" fullWidth>
-              Продовжити
+              {copy.auth.continue}
             </Button>
           </form>
 
           <AuthOrDivider />
 
           <Button variant="auth-outline" size="lg" shape="rect" fullWidth onClick={handleResend}>
-            Отримайте новий код
+            {copy.auth.getNewCode}
           </Button>
 
           <AuthBottomLink onNavigateToSignIn={() => navigate({ to: '/auth/signin' })} />
@@ -146,11 +148,11 @@ function ForgotPasswordPage() {
       <div className="w-full max-w-[440px] auth-modal px-4 py-5 sm:px-5 sm:py-6">
         <AuthBackButton onBack={() => setStep(1)} />
 
-        <AuthLogo heading="Придумайте новий пароль" />
+        <AuthLogo heading={copy.auth.newPasswordHeading} />
 
         <div className="space-y-3.5 mt-1">
           <div>
-            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Пароль</label>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">{copy.auth.password}</label>
             <div className="relative">
               <input
                 type={showPwd ? 'text' : 'password'}
@@ -174,7 +176,7 @@ function ForgotPasswordPage() {
           </div>
 
           <div>
-            <label className="text-[#D4E3F7] text-sm mb-1.5 block">Підтвердіть пароль</label>
+            <label className="text-[#D4E3F7] text-sm mb-1.5 block">{copy.auth.confirmPassword}</label>
             <div className="relative">
               <input
                 type={showConfirm ? 'text' : 'password'}
@@ -207,14 +209,14 @@ function ForgotPasswordPage() {
             onClick={handleFinalSubmit}
             className="mt-2"
           >
-            Змінити пароль
+            {copy.auth.changePassword}
           </Button>
         </div>
 
         <AuthOrDivider />
 
         <Button variant="auth-outline" size="lg" shape="rect" fullWidth onClick={handleResend}>
-          Отримайте новий код
+          {copy.auth.getNewCode}
         </Button>
 
         <AuthBottomLink onNavigateToSignIn={() => navigate({ to: '/auth/signin' })} />

@@ -6,6 +6,7 @@ import type { Audiobook, Track } from '../../types';
 import { isAlbum } from '../../utils/typeGuards';
 import type { HorizontalSectionProps } from '../../types/props/component-props.types';
 import { staggerContainer, staggerItem } from '../../lib/motion';
+import { useI18n } from '../../lib/i18n';
 
 export default function HorizontalSection({
   title,
@@ -14,6 +15,7 @@ export default function HorizontalSection({
   onItemClick,
 }: HorizontalSectionProps) {
   const rowRef = useRef<HTMLDivElement>(null);
+  const { copy } = useI18n();
 
   const scroll = (dir: 'left' | 'right') => {
     if (!rowRef.current) return;
@@ -104,7 +106,7 @@ export default function HorizontalSection({
           variants={staggerItem}
         >
           <Plus size={22} />
-          <span className="text-xs font-medium">Все тут</span>
+          <span className="text-xs font-medium">{copy.home.allHere}</span>
         </motion.button>
       </motion.div>
     </section>
