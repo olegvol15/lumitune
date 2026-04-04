@@ -55,39 +55,59 @@ function AlbumPage() {
 
   return (
     <div className="pb-4">
-      {/* Cover header */}
-      <div className="relative">
-        <img src={album.coverUrl} alt={album.title} className="w-full aspect-square object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-surface" />
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          <img
+            src={album.coverUrl}
+            alt={album.title}
+            className="h-full w-full object-cover opacity-20 blur-[88px] scale-110"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-surface/55 to-surface" />
 
-        <button
-          onClick={() => router.history.back()}
-          className="absolute top-4 left-4 p-2.5 bg-black/40 backdrop-blur-sm rounded-full"
-        >
-          <ChevronLeft size={20} className="text-white" />
-        </button>
-        <button className="absolute top-4 right-4 p-2.5 bg-black/40 backdrop-blur-sm rounded-full">
-          <MoreHorizontal size={20} className="text-white" />
-        </button>
+        <div className="relative z-10 px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6">
+          <div className="mb-6 flex items-center justify-between">
+            <button
+              onClick={() => router.history.back()}
+              className="rounded-full bg-black/40 p-2.5 backdrop-blur-sm"
+            >
+              <ChevronLeft size={20} className="text-white" />
+            </button>
+            <button className="rounded-full bg-black/40 p-2.5 backdrop-blur-sm">
+              <MoreHorizontal size={20} className="text-white" />
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:gap-6">
+            <div className="flex h-48 w-48 items-center justify-center overflow-hidden rounded-2xl bg-white/5 shadow-2xl ring-1 ring-white/10 sm:h-56 sm:w-56">
+              <img
+                src={album.coverUrl}
+                alt={album.title}
+                className="h-full w-full object-contain"
+              />
+            </div>
+
+            <div className="min-w-0 flex-1 pb-1">
+              <p className="mb-2 text-xs uppercase tracking-[0.28em] text-white/45">{copy.common.album}</p>
+              <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl">{album.title}</h1>
+              <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="text-sm font-medium text-white">{album.artistName}</span>
+                <span className="text-sm text-muted">·</span>
+                <span className="text-sm text-muted">{album.year}</span>
+                <span className="text-sm text-muted">·</span>
+                <span className="text-sm text-muted">
+                  {albumTracks.length} {copy.common.tracks}
+                </span>
+                <span className="text-sm text-muted">·</span>
+                <span className="text-sm text-muted">{fmtTotal(totalDuration)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="px-4 -mt-4">
-        {/* Album info */}
-        <h1 className="text-white text-2xl font-bold">{album.title}</h1>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-white text-sm font-medium">{album.artistName}</span>
-          <span className="text-muted text-sm">·</span>
-          <span className="text-muted text-sm">{album.year}</span>
-          <span className="text-muted text-sm">·</span>
-          <span className="text-muted text-sm">
-            {albumTracks.length} {copy.common.tracks}
-          </span>
-          <span className="text-muted text-sm">·</span>
-          <span className="text-muted text-sm">{fmtTotal(totalDuration)}</span>
-        </div>
-
-        {/* Controls */}
-        <div className="flex items-center gap-3 mt-4 mb-5">
+      <div className="px-4 pt-5 sm:px-6">
+        <div className="mb-5 flex items-center gap-3">
           <Button
             variant="secondary"
             shape="pill"

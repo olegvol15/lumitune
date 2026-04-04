@@ -14,6 +14,7 @@ const auth = protect as unknown as RequestHandler;
 const h = (fn: Function) => fn as unknown as RequestHandler;
 
 router.get('/', getAllSongs);
+router.get('/mine', auth, h(getOwnSongs));
 router.get('/:id', getSongById);
 router.get('/:id/stream', h(streamSong));
 

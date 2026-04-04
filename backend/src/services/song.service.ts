@@ -7,6 +7,7 @@ import { ServiceError } from '../types/error/service-error';
 import { safeUnlink } from '../utils/file.utils';
 import { parseRangeHeader, toPositiveInt } from '../utils/song.utils';
 import { recentlyPlayedService } from './recently-played.service';
+import { getAudioContentType } from '../utils/upload.utils';
 import {
   SongListResult,
   SongQueryInput,
@@ -303,6 +304,7 @@ export const songService = {
     if (!fs.existsSync(filePath)) throw new ServiceError(404, 'Audio file not found');
 
     const fileSize = fs.statSync(filePath).size;
+    const contentType = getAudioContentType(filePath);
 
     if (rangeHeader) {
       const { start, end } = parseRangeHeader(rangeHeader, fileSize);
@@ -313,7 +315,7 @@ export const songService = {
           'Content-Range': `bytes ${start}-${end}/${fileSize}`,
           'Accept-Ranges': 'bytes',
           'Content-Length': chunkSize,
-          'Content-Type': 'audio/mpeg',
+          'Content-Type': contentType,
         },
         stream: fs.createReadStream(filePath, { start, end }),
       };
@@ -321,7 +323,7 @@ export const songService = {
 
     return {
       statusCode: 200,
-      headers: { 'Content-Length': fileSize, 'Content-Type': 'audio/mpeg' },
+      headers: { 'Content-Length': fileSize, 'Content-Type': contentType },
       stream: fs.createReadStream(filePath),
     };
   },

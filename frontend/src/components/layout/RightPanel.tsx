@@ -3,18 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayerStore } from '../../store/playerStore';
 import { usePodcastQuery } from '../../hooks/podcasts';
 import { useAudiobookQuery } from '../../hooks/audiobooks';
-import type { AudiobookChapter, Episode } from '../../types';
+import type { AudiobookChapter, Episode, Track } from '../../types';
 import { useI18n } from '../../lib/i18n';
 
 export default function RightPanel() {
   const { copy } = useI18n();
   const rightPanelOpen = usePlayerStore((s) => s.rightPanelOpen);
   const setRightPanelOpen = usePlayerStore((s) => s.setRightPanelOpen);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
+  const queue = usePlayerStore((s) => s.queue);
   const currentEpisode = usePlayerStore((s) => s.currentEpisode);
   const currentAudiobook = usePlayerStore((s) => s.currentAudiobook);
   const currentAudiobookChapter = usePlayerStore((s) => s.currentAudiobookChapter);
   const audiobookQueue = usePlayerStore((s) => s.audiobookQueue);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const play = usePlayerStore((s) => s.play);
   const playEpisode = usePlayerStore((s) => s.playEpisode);
   const playAudiobookChapter = usePlayerStore((s) => s.playAudiobookChapter);
   const togglePlay = usePlayerStore((s) => s.togglePlay);
@@ -37,6 +40,31 @@ export default function RightPanel() {
       playAudiobookChapter(chapter, currentAudiobook, audiobookData?.chapters ?? audiobookQueue);
     }
   };
+
+  const handleTrackClick = (track: Track) => {
+    if (currentTrack?.id === track.id) {
+      togglePlay();
+    } else {
+      play(track, queue.length > 0 ? queue : [track]);
+    }
+  };
+
+  const trackList = queue.length > 0 ? queue : currentTrack ? [currentTrack] : [];
+  const panelTitle =
+    currentAudiobook?.title ??
+    currentTrack?.albumTitle ??
+    podcast?.title ??
+    currentEpisode?.podcastTitle ??
+    copy.rightPanel.podcastFallback;
+  const panelCover =
+    currentAudiobookChapter?.audiobookCover ??
+    currentTrack?.albumCover ??
+    currentEpisode?.podcastCover;
+  const panelAlt =
+    currentAudiobook?.title ??
+    currentTrack?.albumTitle ??
+    currentEpisode?.podcastTitle ??
+    copy.rightPanel.currentAudio;
 
   return (
     <motion.aside
@@ -79,12 +107,7 @@ export default function RightPanel() {
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
-              <span className="text-white text-sm font-semibold truncate pr-2">
-                {currentAudiobook?.title ??
-                  podcast?.title ??
-                  currentEpisode?.podcastTitle ??
-                  copy.rightPanel.podcastFallback}
-              </span>
+              <span className="text-white text-sm font-semibold truncate pr-2">{panelTitle}</span>
               <div className="flex items-center gap-0.5 flex-shrink-0">
                 <button className="text-white/40 hover:text-white p-1.5 transition-colors">
                   <MoreHorizontal size={18} />
@@ -98,41 +121,43 @@ export default function RightPanel() {
               </div>
             </div>
 
-            {currentEpisode || currentAudiobookChapter ? (
+            {currentTrack || currentEpisode || currentAudiobookChapter ? (
               <>
                 {/* Cover */}
-                <img
-                  src={currentAudiobookChapter?.audiobookCover ?? currentEpisode?.podcastCover}
-                  alt={
-                    currentAudiobook?.title ??
-                    currentEpisode?.podcastTitle ??
-                    copy.rightPanel.currentAudio
-                  }
-                  className="w-full aspect-square object-cover rounded-xl grayscale mb-3"
-                />
+                {panelCover ? (
+                  <img
+                    src={panelCover}
+                    alt={panelAlt}
+                    className="w-full aspect-square object-cover rounded-xl grayscale mb-3"
+                  />
+                ) : null}
 
                 {/* Title */}
-                <p className="text-white text-base font-bold mb-4">
-                  {currentAudiobook?.title ?? podcast?.title ?? currentEpisode?.podcastTitle}
-                </p>
+                <p className="text-white text-base font-bold mb-4">{panelTitle}</p>
 
-                {/* Chapter/episode list */}
+                {/* Track/chapter/episode list */}
                 <div className="flex flex-col gap-1">
-                  {(currentAudiobook
+                  {(currentTrack
+                    ? trackList
+                    : currentAudiobook
                     ? audiobookData?.chapters ?? audiobookQueue
                     : podcast?.episodes ?? (currentEpisode ? [currentEpisode] : [])
-                  ).map((ep) => {
-                    const isActive = currentAudiobookChapter
-                      ? currentAudiobookChapter.id === ep.id
-                      : currentEpisode?.id === ep.id;
+                  ).map((item, index) => {
+                    const isActive = currentTrack
+                      ? currentTrack.id === item.id
+                      : currentAudiobookChapter
+                      ? currentAudiobookChapter.id === item.id
+                      : currentEpisode?.id === item.id;
                     const isThisPlaying = isActive && isPlaying;
                     return (
                       <button
-                        key={ep.id}
+                        key={item.id}
                         onClick={() =>
-                          currentAudiobookChapter
-                            ? handleAudiobookClick(ep as AudiobookChapter)
-                            : handleEpisodeClick(ep as Episode)
+                          currentTrack
+                            ? handleTrackClick(item as Track)
+                            : currentAudiobookChapter
+                            ? handleAudiobookClick(item as AudiobookChapter)
+                            : handleEpisodeClick(item as Episode)
                         }
                         className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg text-left transition-colors ${
                           isActive ? 'bg-white/10' : 'hover:bg-white/5'
@@ -145,14 +170,18 @@ export default function RightPanel() {
                             <Play size={13} className="text-brand" fill="currentColor" />
                           ) : (
                             <span className="text-white/30 text-xs tabular-nums">
-                              {'chapterNumber' in ep ? ep.chapterNumber : ep.episodeNumber}
+                              {'chapterNumber' in item
+                                ? item.chapterNumber
+                                : 'episodeNumber' in item
+                                ? item.episodeNumber
+                                : index + 1}
                             </span>
                           )}
                         </div>
                         <span
                           className={`text-xs truncate ${isActive ? 'text-brand font-medium' : 'text-white/70'}`}
                         >
-                          {ep.title}
+                          {item.title}
                         </span>
                       </button>
                     );

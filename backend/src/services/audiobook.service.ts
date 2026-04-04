@@ -11,6 +11,7 @@ import { ServiceError } from '../types/error/service-error';
 import { safeUnlink } from '../utils/file.utils';
 import { ensureObjectId } from '../utils/mongoose.utils';
 import { parseRangeHeader, toPositiveInt } from '../utils/song.utils';
+import { getAudioContentType } from '../utils/upload.utils';
 import type {
   AudiobookChapterUpdateInput,
   AudiobookChapterUploadInput,
@@ -285,6 +286,7 @@ export const audiobookService = {
     if (!fs.existsSync(filePath)) throw new ServiceError(404, 'Audio file not found');
 
     const fileSize = fs.statSync(filePath).size;
+    const contentType = getAudioContentType(filePath);
     if (rangeHeader) {
       const { start, end } = parseRangeHeader(rangeHeader, fileSize);
       const chunkSize = end - start + 1;
@@ -294,7 +296,7 @@ export const audiobookService = {
           'Content-Range': `bytes ${start}-${end}/${fileSize}`,
           'Accept-Ranges': 'bytes',
           'Content-Length': chunkSize,
-          'Content-Type': 'audio/mpeg',
+          'Content-Type': contentType,
         },
         stream: fs.createReadStream(filePath, { start, end }),
       };
@@ -302,7 +304,7 @@ export const audiobookService = {
 
     return {
       statusCode: 200,
-      headers: { 'Content-Length': fileSize, 'Content-Type': 'audio/mpeg' },
+      headers: { 'Content-Length': fileSize, 'Content-Type': contentType },
       stream: fs.createReadStream(filePath),
     };
   },

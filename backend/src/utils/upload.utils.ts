@@ -22,6 +22,15 @@ const IMAGE_MIME_TYPES = new Set([
   'image/gif',
 ]);
 
+const AUDIO_MIME_BY_EXTENSION: Record<string, string> = {
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
+  '.m4a': 'audio/mp4',
+  '.flac': 'audio/flac',
+  '.aac': 'audio/aac',
+  '.ogg': 'audio/ogg',
+};
+
 export const audioFileFilter = (req: any, file: any, cb: any) => {
   const ext = path.extname(file.originalname).toLowerCase();
   const isAllowedExtension = AUDIO_EXTENSIONS.has(ext);
@@ -41,4 +50,9 @@ export const imageFileFilter = (req: any, file: any, cb: any) => {
   }
 
   cb(new Error('Only image files are allowed for cover'));
+};
+
+export const getAudioContentType = (filePath: string) => {
+  const ext = path.extname(filePath).toLowerCase();
+  return AUDIO_MIME_BY_EXTENSION[ext] ?? 'audio/mpeg';
 };

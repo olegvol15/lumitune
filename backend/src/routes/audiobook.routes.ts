@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import { protect, optionalProtect } from '../middleware/auth.middleware';
 import {
   getAudiobook,
@@ -13,17 +13,20 @@ import {
 } from '../controllers/audiobook.controller';
 
 const router = express.Router();
+const auth = protect as unknown as RequestHandler;
+const maybeAuth = optionalProtect as unknown as RequestHandler;
+const h = (fn: Function) => fn as unknown as RequestHandler;
 
-router.get('/saved', protect, getSavedAudiobooks);
-router.post('/saved/:audiobookId', protect, saveAudiobook);
-router.delete('/saved/:audiobookId', protect, unsaveAudiobook);
-router.get('/progress/:audiobookId', protect, getAudiobookProgress);
-router.put('/progress/:audiobookId', protect, updateAudiobookProgress);
+router.get('/saved', auth, h(getSavedAudiobooks));
+router.post('/saved/:audiobookId', auth, h(saveAudiobook));
+router.delete('/saved/:audiobookId', auth, h(unsaveAudiobook));
+router.get('/progress/:audiobookId', auth, h(getAudiobookProgress));
+router.put('/progress/:audiobookId', auth, h(updateAudiobookProgress));
 
 router.get('/chapters/:chapterId', getAudiobookChapter);
-router.get('/chapters/:chapterId/stream', optionalProtect, streamAudiobookChapter);
+router.get('/chapters/:chapterId/stream', maybeAuth, h(streamAudiobookChapter));
 
-router.get('/', optionalProtect, listAudiobooks);
-router.get('/:id', optionalProtect, getAudiobook);
+router.get('/', maybeAuth, h(listAudiobooks));
+router.get('/:id', maybeAuth, h(getAudiobook));
 
 export default router;
