@@ -33,6 +33,7 @@ import { Route as AdminPodcastsRouteImport } from './routes/admin/podcasts'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminForgotPasswordRouteImport } from './routes/admin/forgot-password'
 import { Route as AdminAudiobooksRouteImport } from './routes/admin/audiobooks'
+import { Route as AdminAlbumsRouteImport } from './routes/admin/albums'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -154,6 +155,11 @@ const AdminAudiobooksRoute = AdminAudiobooksRouteImport.update({
   path: '/admin/audiobooks',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAlbumsRoute = AdminAlbumsRouteImport.update({
+  id: '/admin/albums',
+  path: '/admin/albums',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/admin/albums': typeof AdminAlbumsRoute
   '/admin/audiobooks': typeof AdminAudiobooksRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/admin/albums': typeof AdminAlbumsRoute
   '/admin/audiobooks': typeof AdminAudiobooksRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/admin/albums': typeof AdminAlbumsRoute
   '/admin/audiobooks': typeof AdminAudiobooksRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/settings'
+    | '/admin/albums'
     | '/admin/audiobooks'
     | '/admin/forgot-password'
     | '/admin/login'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/settings'
+    | '/admin/albums'
     | '/admin/audiobooks'
     | '/admin/forgot-password'
     | '/admin/login'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/settings'
+    | '/admin/albums'
     | '/admin/audiobooks'
     | '/admin/forgot-password'
     | '/admin/login'
@@ -324,6 +336,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
+  AdminAlbumsRoute: typeof AdminAlbumsRoute
   AdminAudiobooksRoute: typeof AdminAudiobooksRoute
   AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -512,6 +525,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAudiobooksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/albums': {
+      id: '/admin/albums'
+      path: '/admin/albums'
+      fullPath: '/admin/albums'
+      preLoaderRoute: typeof AdminAlbumsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -524,6 +544,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
+  AdminAlbumsRoute: AdminAlbumsRoute,
   AdminAudiobooksRoute: AdminAudiobooksRoute,
   AdminForgotPasswordRoute: AdminForgotPasswordRoute,
   AdminLoginRoute: AdminLoginRoute,

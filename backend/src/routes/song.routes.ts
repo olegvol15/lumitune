@@ -2,6 +2,7 @@ import express from 'express';
 import {
   uploadSong,
   getAllSongs,
+  getOwnSongs,
   getSongById,
   streamSong,
   updateOwnSong,
@@ -13,6 +14,7 @@ const router = express.Router();
 
 // Public routes
 router.get('/', getAllSongs);
+router.get('/mine', protect, getOwnSongs);
 router.get('/:id', getSongById);
 router.get('/:id/stream', optionalProtect, streamSong);
 

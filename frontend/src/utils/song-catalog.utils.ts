@@ -30,7 +30,9 @@ const toCoverUrl = (coverImage?: string): string => {
 
 export const mapBackendSongToTrack = (song: BackendSong): Track => {
   const artistName = song.artist?.trim() || 'Unknown Artist';
-  const albumTitle = song.album?.trim() || 'Singles';
+  const albumRecord =
+    song.albumId && typeof song.albumId !== 'string' ? song.albumId : null;
+  const albumTitle = albumRecord?.title?.trim() || song.album?.trim() || 'Singles';
   const artistSlug = slugify(artistName) || 'unknown-artist';
   const albumSlug = slugify(albumTitle) || 'single';
 
@@ -39,11 +41,13 @@ export const mapBackendSongToTrack = (song: BackendSong): Track => {
     title: song.title,
     artistId: artistSlug,
     artistName,
-    albumId: `${artistSlug}-${albumSlug}`,
+    albumId: (typeof song.albumId === 'string' && song.albumId) || `${artistSlug}-${albumSlug}`,
     albumTitle,
-    albumCover: toCoverUrl(song.coverImage),
+    albumCover: toCoverUrl(albumRecord?.coverImage || song.coverImage),
     duration: song.duration || 0,
     playCount: song.plays || 0,
     liked: false,
+    uploadedById: song.uploadedBy?._id,
+    uploadedByUsername: song.uploadedBy?.username,
   };
 };

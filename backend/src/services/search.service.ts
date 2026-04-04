@@ -1,17 +1,20 @@
 import { Song } from '../models/song.model';
 import { Playlist } from '../models/playlist.model';
 import { Audiobook } from '../models/audiobook.model';
+import { Album } from '../models/album.model';
 import { ServiceError } from '../types/error/service-error';
 
 export interface SearchResult {
   songs: unknown[];
   playlists: unknown[];
+  albums: unknown[];
   audiobooks: unknown[];
   pagination: {
     page: number;
     limit: number;
     totalSongs: number;
     totalPlaylists: number;
+    totalAlbums: number;
     totalAudiobooks: number;
   };
 }
@@ -43,6 +46,16 @@ export const searchService = {
       name: { $regex: q, $options: 'i' },
     };
 
+    const albumFilter = q.includes(' ')
+      ? { $text: { $search: q } }
+      : {
+          $or: [
+            { title: { $regex: q, $options: 'i' } },
+            { artistName: { $regex: q, $options: 'i' } },
+            { genre: { $regex: q, $options: 'i' } },
+          ],
+        };
+
     const audiobookFilter = q.includes(' ')
       ? { $text: { $search: q } }
       : {
@@ -53,7 +66,7 @@ export const searchService = {
           ],
         };
 
-    const [songs, totalSongs, playlists, totalPlaylists, audiobooks, totalAudiobooks] =
+    const [songs, totalSongs, playlists, totalPlaylists, albums, totalAlbums, audiobooks, totalAudiobooks] =
       await Promise.all([
       Song.find(songFilter)
         .populate('uploadedBy', 'username')
@@ -67,6 +80,8 @@ export const searchService = {
         .limit(limit)
         .sort({ updatedAt: -1 }),
       Playlist.countDocuments(playlistFilter),
+      Album.find(albumFilter).skip(skip).limit(limit).sort({ createdAt: -1 }),
+      Album.countDocuments(albumFilter),
       Audiobook.find(audiobookFilter).skip(skip).limit(limit).sort({ createdAt: -1 }),
       Audiobook.countDocuments(audiobookFilter),
     ]);
@@ -74,8 +89,9 @@ export const searchService = {
     return {
       songs,
       playlists,
+      albums,
       audiobooks,
-      pagination: { page, limit, totalSongs, totalPlaylists, totalAudiobooks },
+      pagination: { page, limit, totalSongs, totalPlaylists, totalAlbums, totalAudiobooks },
     };
   },
 };

@@ -14,7 +14,7 @@ const ELEMENTS = [
   { label: 'Audiobooks',  icon: BookOpen,   path: '/admin/audiobooks' },
   { label: 'Authors',     icon: UserRound,  path: null },
   { label: 'Playlists',   icon: ListMusic,  path: null },
-  { label: 'Albums',      icon: Disc3,      path: null },
+  { label: 'Albums',      icon: Disc3,      path: '/admin/albums' },
   { label: 'Genres',      icon: Tag,        path: null },
   { label: 'Tags',        icon: Tag,        path: null },
   { label: 'Moods',       icon: Smile,      path: null },

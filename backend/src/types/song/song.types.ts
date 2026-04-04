@@ -4,6 +4,7 @@ export interface ISong extends mongoose.Document {
   title: string;
   artist: string;
   album?: string;
+  albumId?: mongoose.Types.ObjectId;
   genre?: string;
   duration: number;
   filePath: string;

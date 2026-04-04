@@ -16,6 +16,11 @@ const songSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  albumId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Album',
+    required: false,
+  },
   genre: {
     type: String,
     trim: true,
@@ -51,5 +56,6 @@ const songSchema = new mongoose.Schema({
 songSchema.index({ title: 'text', artist: 'text', album: 'text' });
 songSchema.index({ genre: 1 });
 songSchema.index({ plays: -1 });
+songSchema.index({ albumId: 1 });
 
 export const Song = mongoose.model<ISong>('Song', songSchema);

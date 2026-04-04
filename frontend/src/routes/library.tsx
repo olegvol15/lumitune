@@ -1,13 +1,13 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Plus, Music2 } from 'lucide-react';
-import { albums } from '../data/albums';
 import { artists } from '../data/artists';
 import Button from '../components/ui/Button';
 import { useAuthStore } from '../store/authStore';
 import type { LibraryTab } from '../types/routes/route.types';
 import { usePlaylistsQuery, useCreatePlaylistMutation } from '../hooks/playlists';
 import { useSavedAudiobooksQuery } from '../hooks/audiobooks';
+import { useSavedAlbumsQuery } from '../hooks/albums';
 import { formatLongDuration } from '../utils/format';
 import { useI18n } from '../lib/i18n';
 
@@ -24,6 +24,7 @@ function LibraryPage() {
   const { copy } = useI18n();
   const { data: playlists = [] } = usePlaylistsQuery();
   const { data: savedAudiobooks = [] } = useSavedAudiobooksQuery();
+  const { data: savedAlbums = [] } = useSavedAlbumsQuery();
   const createMutation = useCreatePlaylistMutation();
 
   const handleCreatePlaylist = async () => {
@@ -117,7 +118,7 @@ function LibraryPage() {
 
       {tab === 'albums' && (
         <div className="space-y-3">
-          {albums.map((al) => (
+          {savedAlbums.map((al) => (
             <button
               key={al.id}
               onClick={() => navigate({ to: '/album/$id', params: { id: al.id } })}
@@ -132,6 +133,11 @@ function LibraryPage() {
               </div>
             </button>
           ))}
+          {savedAlbums.length === 0 && (
+            <div className="py-6 text-center">
+              <p className="text-muted text-sm">{copy.library.noSavedAlbums ?? copy.common.noResults}</p>
+            </div>
+          )}
         </div>
       )}
 

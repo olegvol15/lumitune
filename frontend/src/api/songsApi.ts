@@ -4,6 +4,7 @@ import { mapBackendSongToTrack } from '../utils/song-catalog.utils';
 
 const songsApi = {
   list: () => apiClient.get<SongsResponse>('/songs'),
+  listMine: () => apiClient.get<SongsResponse>('/songs/mine'),
   listCatalogTracks: async () => {
     const { data } = await apiClient.get<SongsResponse>('/songs');
     return data.songs.map(mapBackendSongToTrack);

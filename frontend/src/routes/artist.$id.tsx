@@ -2,13 +2,13 @@ import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { ChevronLeft, UserCheck, Share2, MoreHorizontal } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { getArtist, artists } from '../data/artists';
-import { albums } from '../data/albums';
 import TrackRow from '../components/ui/TrackRow';
 import MediaCard from '../components/ui/MediaCard';
 import SectionHeader from '../components/ui/SectionHeader';
 import Button from '../components/ui/Button';
 import { useCatalogTracks } from '../hooks/tracks';
 import { useI18n } from '../lib/i18n';
+import { useAlbumsQuery } from '../hooks/albums';
 
 export const Route = createFileRoute('/artist/$id')({
   component: ArtistPage,
@@ -20,6 +20,7 @@ function ArtistPage() {
   const router = useRouter();
   const [following, setFollowing] = useState(false);
   const { tracks } = useCatalogTracks();
+  const { data: albums = [] } = useAlbumsQuery();
   const { copy } = useI18n();
 
   const staticArtist = getArtist(id);
@@ -58,8 +59,10 @@ function ArtistPage() {
     );
   }
 
-  const artistTracks = tracks.filter((t) => t.artistId === id).slice(0, 5);
-  const artistAlbums = albums.filter((a) => a.artistId === id);
+  const artistTracks = tracks
+    .filter((t) => t.artistId === id || t.artistName === artist.name)
+    .slice(0, 5);
+  const artistAlbums = albums.filter((a) => a.artistId === id || a.artistName === artist.name);
   const similarArtists = artists.filter((a) => a.id !== id && a.genre === artist.genre).slice(0, 5);
 
   const fmtListeners = (n: number) => {

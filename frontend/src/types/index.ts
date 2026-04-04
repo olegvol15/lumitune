@@ -18,6 +18,12 @@ export interface Album {
   year: number;
   genre: string;
   trackIds: string[];
+  description?: string;
+  releaseDate?: string;
+  duration?: number;
+  trackCount?: number;
+  saved?: boolean;
+  artistUserId?: string;
 }
 
 export interface Track {
@@ -31,6 +37,8 @@ export interface Track {
   duration: number; // seconds
   playCount: number;
   liked: boolean;
+  uploadedById?: string;
+  uploadedByUsername?: string;
 }
 
 export interface Playlist {

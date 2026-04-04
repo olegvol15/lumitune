@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
-import { albums } from '../data/albums';
 import { artists } from '../data/artists';
-import type { Audiobook, Track } from '../types';
+import type { Album, Audiobook, Track } from '../types';
 
-export function useSearch(tracks: Track[], audiobooks: Audiobook[] = []) {
+export function useSearch(tracks: Track[], audiobooks: Audiobook[] = [], albums: Album[] = []) {
   const [query, setQuery] = useState('');
 
   const results = useMemo(() => {
@@ -33,7 +32,7 @@ export function useSearch(tracks: Track[], audiobooks: Audiobook[] = []) {
           a.genre.toLowerCase().includes(q)
       ),
     };
-  }, [audiobooks, query, tracks]);
+  }, [albums, audiobooks, query, tracks]);
 
   const hasResults =
     results.tracks.length > 0 ||
