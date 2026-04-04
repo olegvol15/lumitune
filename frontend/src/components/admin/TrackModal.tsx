@@ -3,7 +3,7 @@ import { X, Upload } from 'lucide-react';
 import { useAdminTracksStore } from '../../store/adminTracksStore';
 import { useSaveAdminTrackMutation } from '../../hooks/tracks';
 import type { AdminTrack } from '../../types/admin/admin-tracks.types';
-import { albums } from '../../data/albums';
+import { useAlbumsQuery } from '../../hooks/albums';
 
 const GENRES = [
   'Pop',
@@ -39,6 +39,7 @@ export default function TrackModal() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const saveTrackMutation = useSaveAdminTrackMutation();
+  const albumsQuery = useAlbumsQuery();
 
   useEffect(() => {
     if (track) {
@@ -55,7 +56,7 @@ export default function TrackModal() {
     setForm((prev) => (prev ? { ...prev, [field]: value } : prev));
 
   const handleAlbumChange = (albumId: string) => {
-    const album = albums.find((a) => a.id === albumId);
+    const album = (albumsQuery.data ?? []).find((a) => a.id === albumId);
     setForm((prev) =>
       prev
         ? {
@@ -161,9 +162,9 @@ export default function TrackModal() {
                 className={inputClass}
               >
                 <option value="">— select album —</option>
-                {albums.map((a) => (
+                {(albumsQuery.data ?? []).map((a) => (
                   <option key={a.id} value={a.id}>
-                    {a.id} — {a.title}
+                    {a.artistName} — {a.title}
                   </option>
                 ))}
               </select>

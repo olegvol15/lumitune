@@ -1,13 +1,10 @@
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router';
-import { useMemo } from 'react';
 import { ChevronLeft, Play, Shuffle, MoreHorizontal } from 'lucide-react';
-import { getAlbum } from '../data/albums';
-import { getArtist } from '../data/artists';
 import TrackRow from '../components/ui/TrackRow';
 import { usePlayerStore } from '../store/playerStore';
 import Button from '../components/ui/Button';
-import { useCatalogTracks } from '../hooks/tracks';
 import { useI18n } from '../lib/i18n';
+import { useAlbumQuery, useSaveAlbumMutation } from '../hooks/albums';
 
 export const Route = createFileRoute('/album/$id')({
   component: AlbumPage,
@@ -18,31 +15,13 @@ function AlbumPage() {
   const navigate = useNavigate();
   const router = useRouter();
   const play = usePlayerStore((s) => s.play);
-  const { tracks } = useCatalogTracks();
   const { copy, language } = useI18n();
+  const { data, isLoading } = useAlbumQuery(id);
+  const saveAlbumMutation = useSaveAlbumMutation();
+  const album = data?.album;
+  const albumTracks = data?.tracks ?? [];
 
-  const staticAlbum = getAlbum(id);
-  const albumTracks = tracks.filter((t) => t.albumId === id);
-  const derivedAlbum = useMemo(() => {
-    if (staticAlbum || albumTracks.length === 0) {
-      return null;
-    }
-
-    const firstTrack = albumTracks[0];
-    return {
-      id,
-      title: firstTrack.albumTitle,
-      artistId: firstTrack.artistId,
-      artistName: firstTrack.artistName,
-      coverUrl: firstTrack.albumCover,
-      year: new Date().getFullYear(),
-      genre: 'Unknown',
-      trackIds: albumTracks.map((track) => track.id),
-    };
-  }, [staticAlbum, albumTracks, id]);
-  const album = staticAlbum ?? derivedAlbum;
-
-  if (!album) {
+  if (!album && !isLoading) {
     return (
       <div className="flex items-center justify-center h-screen text-muted">
         {copy.media.albumNotFound}
@@ -50,7 +29,9 @@ function AlbumPage() {
     );
   }
 
-  const artist = getArtist(album.artistId);
+  if (!album) {
+    return <div className="flex items-center justify-center h-screen text-muted">{copy.common.loading}</div>;
+  }
 
   const totalDuration = albumTracks.reduce((acc, t) => acc + t.duration, 0);
   const fmtTotal = (s: number) => {
@@ -94,19 +75,7 @@ function AlbumPage() {
         {/* Album info */}
         <h1 className="text-white text-2xl font-bold">{album.title}</h1>
         <div className="flex items-center gap-2 mt-1">
-          {artist && (
-            <button
-              onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
-              className="flex items-center gap-1.5"
-            >
-              <img
-                src={artist.image}
-                alt={artist.name}
-                className="w-5 h-5 rounded-full object-cover"
-              />
-              <span className="text-white text-sm font-medium">{artist.name}</span>
-            </button>
-          )}
+          <span className="text-white text-sm font-medium">{album.artistName}</span>
           <span className="text-muted text-sm">·</span>
           <span className="text-muted text-sm">{album.year}</span>
           <span className="text-muted text-sm">·</span>
@@ -131,7 +100,18 @@ function AlbumPage() {
           <button onClick={shufflePlay} className="p-2.5 bg-surface-alt rounded-full">
             <Shuffle size={18} className="text-white" />
           </button>
+          <Button
+            variant={album.saved ? 'secondary' : 'outline'}
+            shape="pill"
+            onClick={() => saveAlbumMutation.mutate({ albumId: album.id, saved: Boolean(album.saved) })}
+          >
+            {album.saved ? copy.common.saved : copy.common.save}
+          </Button>
         </div>
+
+        {album.description ? (
+          <p className="mb-5 text-sm leading-6 text-muted">{album.description}</p>
+        ) : null}
 
         {/* Track list */}
         <div className="space-y-1">
@@ -141,25 +121,18 @@ function AlbumPage() {
         </div>
 
         {/* Footer info */}
-        {artist && (
-          <div className="mt-8 flex items-center gap-3">
-            <img
-              src={artist.image}
-              alt={artist.name}
-              className="w-14 h-14 rounded-full object-cover"
-            />
-            <div>
-              <p className="text-muted text-xs">{copy.common.artist}</p>
-              <button
-                onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
-                className="text-white font-semibold hover:text-brand transition-colors"
-              >
-                {artist.name}
-              </button>
-              <p className="text-muted text-xs">{artist.genre}</p>
-            </div>
+        <div className="mt-8 flex items-center gap-3">
+          <div>
+            <p className="text-muted text-xs">{copy.common.artist}</p>
+            <button
+              onClick={() => navigate({ to: '/artist/$id', params: { id: album.artistId } })}
+              className="text-white font-semibold hover:text-brand transition-colors"
+            >
+              {album.artistName}
+            </button>
+            <p className="text-muted text-xs">{album.genre}</p>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

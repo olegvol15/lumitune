@@ -6,6 +6,7 @@ export interface SongQueryInput {
   limit?: unknown;
   search?: unknown;
   genre?: unknown;
+  uploadedBy?: unknown;
 }
 
 export interface SongUploadInput {
@@ -14,6 +15,7 @@ export interface SongUploadInput {
     title?: string;
     artist?: string;
     album?: string;
+    albumId?: string;
     genre?: string;
     coverImage?: string;
   };
@@ -26,6 +28,7 @@ export interface SongUpdateInput {
   title?: string;
   artist?: string;
   album?: string;
+  albumId?: string;
   genre?: string;
   coverImage?: string;
   audioFile?: Express.Multer.File;

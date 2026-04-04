@@ -19,6 +19,8 @@ export type CreatorAlbum = {
   coverImage: string;
   trackIds: string[];
   backendId?: string;
+  artistName?: string;
+  year?: number;
 };
 
 export type CreatorTrackDraft = {

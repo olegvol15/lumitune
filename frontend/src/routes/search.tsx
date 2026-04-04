@@ -5,6 +5,7 @@ import TrackRow from '../components/ui/TrackRow';
 import MediaCard from '../components/ui/MediaCard';
 import { useCatalogTracks } from '../hooks/tracks';
 import { useAudiobooksQuery } from '../hooks/audiobooks';
+import { useAlbumsQuery } from '../hooks/albums';
 import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/search')({ component: SearchPage });
@@ -12,7 +13,8 @@ export const Route = createFileRoute('/search')({ component: SearchPage });
 function SearchPage() {
   const { tracks } = useCatalogTracks();
   const { data: audiobooks = [] } = useAudiobooksQuery();
-  const { query, setQuery, results, hasResults } = useSearch(tracks, audiobooks);
+  const { data: albums = [] } = useAlbumsQuery();
+  const { query, setQuery, results, hasResults } = useSearch(tracks, audiobooks, albums);
   const navigate = useNavigate();
   const { copy } = useI18n();
   const genres = [

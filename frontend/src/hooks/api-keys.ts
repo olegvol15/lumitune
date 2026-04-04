@@ -14,6 +14,15 @@ export const tracksKeys = {
   all: ['tracks'] as const,
   catalog: () => [...tracksKeys.all, 'catalog'] as const,
   adminList: () => [...tracksKeys.all, 'adminList'] as const,
+  mine: () => [...tracksKeys.all, 'mine'] as const,
+};
+
+export const albumKeys = {
+  all: ['albums'] as const,
+  list: () => [...albumKeys.all, 'list'] as const,
+  detail: (id: string) => [...albumKeys.all, 'detail', id] as const,
+  saved: () => [...albumKeys.all, 'saved'] as const,
+  mine: () => [...albumKeys.all, 'mine'] as const,
 };
 
 export const playlistKeys = {
@@ -40,6 +49,7 @@ export const QUERY_KEYS = {
   auth: authKeys,
   adminAuth: adminAuthKeys,
   tracks: tracksKeys,
+  albums: albumKeys,
   playlists: playlistKeys,
   podcasts: podcastKeys,
   audiobooks: audiobookKeys,

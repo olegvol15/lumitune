@@ -22,6 +22,8 @@ import podcastRoutes from './routes/podcast.routes';
 import adminPodcastRoutes from './routes/admin-podcast.routes';
 import audiobookRoutes from './routes/audiobook.routes';
 import adminAudiobookRoutes from './routes/admin-audiobook.routes';
+import albumRoutes from './routes/album.routes';
+import adminAlbumRoutes from './routes/admin-album.routes';
 
 import { errorHandler } from './middleware/error.middleware';
 
@@ -66,6 +68,8 @@ app.use('/api/podcasts', podcastRoutes);
 app.use('/api/admin/podcasts', adminPodcastRoutes);
 app.use('/api/audiobooks', audiobookRoutes);
 app.use('/api/admin/audiobooks', adminAudiobookRoutes);
+app.use('/api/albums', albumRoutes);
+app.use('/api/admin/albums', adminAlbumRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {

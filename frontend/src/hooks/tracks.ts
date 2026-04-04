@@ -5,14 +5,18 @@ import { queryClient } from '../lib/queryClient';
 import type { AdminTrack } from '../types/admin/admin-tracks.types';
 import { mapBackendSongToAdminTrack } from '../utils/admin-song-mapper.utils';
 import { useLikedSongsQuery } from './likes';
-import { tracksKeys } from './api-keys';
+import { albumKeys, tracksKeys } from './api-keys';
 import { useAuthStore } from '../store/authStore';
+import { mapBackendSongToCreatorTrack } from '../utils/profile.utils';
 
 function buildTrackFormData(track: AdminTrack, coverFile?: File | null) {
   const formData = new FormData();
   formData.append('title', track.title);
   formData.append('artist', track.artistName || track.artistId || track.artist || '');
   formData.append('album', track.albumTitle || track.albumId || track.album || '');
+  if (track.albumId) {
+    formData.append('albumId', track.albumId);
+  }
   formData.append('genre', track.genreId || track.genre || '');
   if (coverFile) {
     formData.append('cover', coverFile);
@@ -54,6 +58,16 @@ export function useAdminTracksQuery() {
   });
 }
 
+export function useCreatorTracksQuery() {
+  return useQuery({
+    queryKey: tracksKeys.mine(),
+    queryFn: async () => {
+      const { data } = await songsApi.listMine();
+      return data.songs.map(mapBackendSongToCreatorTrack);
+    },
+  });
+}
+
 export function useSaveAdminTrackMutation() {
   return useMutation({
     mutationFn: async ({
@@ -82,7 +96,11 @@ export function useSaveAdminTrackMutation() {
       return adminSongsApi.update(songId, formData);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: tracksKeys.adminList() });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: tracksKeys.adminList() }),
+        queryClient.invalidateQueries({ queryKey: tracksKeys.catalog() }),
+        queryClient.invalidateQueries({ queryKey: albumKeys.list() }),
+      ]);
     },
   });
 }
@@ -110,7 +128,11 @@ export function useUploadCreatorTrackMutation() {
   return useMutation({
     mutationFn: (formData: FormData) => songsApi.uploadCreatorTrack(formData),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: tracksKeys.catalog() });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: tracksKeys.catalog() }),
+        queryClient.invalidateQueries({ queryKey: tracksKeys.mine() }),
+        queryClient.invalidateQueries({ queryKey: albumKeys.list() }),
+      ]);
     },
   });
 }
@@ -120,7 +142,11 @@ export function useUpdateCreatorTrackMutation() {
     mutationFn: ({ songId, formData }: { songId: string; formData: FormData }) =>
       songsApi.updateCreatorTrack(songId, formData),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: tracksKeys.catalog() });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: tracksKeys.catalog() }),
+        queryClient.invalidateQueries({ queryKey: tracksKeys.mine() }),
+        queryClient.invalidateQueries({ queryKey: albumKeys.list() }),
+      ]);
     },
   });
 }

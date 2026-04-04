@@ -197,6 +197,7 @@ export const APP_COPY = {
       audiobooks: 'Аудіокниги',
       playlist: 'Плейлист',
       noPlaylists: 'У вас ще немає плейлистів',
+      noSavedAlbums: 'У вас ще немає збережених альбомів',
       noSavedAudiobooks: 'У вас ще немає збережених аудіокниг',
     },
     favorites: {
@@ -509,6 +510,7 @@ export const APP_COPY = {
       audiobooks: 'Audiobooks',
       playlist: 'Playlist',
       noPlaylists: 'You do not have playlists yet',
+      noSavedAlbums: 'You do not have saved albums yet',
       noSavedAudiobooks: 'You do not have saved audiobooks yet',
     },
     favorites: {

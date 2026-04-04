@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import * as musicMetadata from 'music-metadata';
 import { Song } from '../models/song.model';
+import { Album } from '../models/album.model';
 import { ServiceError } from '../types/error/service-error';
 import { safeUnlink } from '../utils/file.utils';
 import { parseRangeHeader, toPositiveInt } from '../utils/song.utils';
@@ -14,6 +15,48 @@ import {
   StreamSongResult,
 } from '../types/song/song-service.types';
 import { ensureObjectId } from '../utils/mongoose.utils';
+
+async function recalculateAlbumStats(albumId: string) {
+  const album = await Album.findById(albumId);
+  if (!album) return;
+
+  const tracks = await Song.find({ _id: { $in: album.trackIds } });
+  const totalDuration = tracks.reduce((sum, track) => sum + track.duration, 0);
+
+  await Album.findByIdAndUpdate(albumId, {
+    trackCount: tracks.length,
+    totalDuration,
+  });
+}
+
+async function syncSongAlbumMembership(
+  songId: string,
+  nextAlbumId?: string,
+  previousAlbumId?: string
+) {
+  if (previousAlbumId && previousAlbumId !== nextAlbumId) {
+    await Album.findByIdAndUpdate(previousAlbumId, { $pull: { trackIds: songId } });
+    await recalculateAlbumStats(previousAlbumId);
+  }
+
+  if (nextAlbumId) {
+    const album = await Album.findById(nextAlbumId);
+    if (!album) {
+      throw new ServiceError(404, 'Album not found');
+    }
+
+    await Album.updateMany(
+      { _id: { $ne: nextAlbumId }, trackIds: songId },
+      { $pull: { trackIds: songId } }
+    );
+    await Album.findByIdAndUpdate(nextAlbumId, { $addToSet: { trackIds: songId } });
+    await recalculateAlbumStats(nextAlbumId);
+
+    return album;
+  }
+
+  return null;
+}
 
 export const songService = {
   async uploadSong(input: SongUploadInput) {
@@ -35,16 +78,28 @@ export const songService = {
         throw new ServiceError(400, 'Could not read audio file duration');
       }
 
+      const nextAlbumId = input.body.albumId?.trim();
+      const album = nextAlbumId ? await Album.findById(nextAlbumId) : null;
+      if (nextAlbumId && !album) {
+        safeUnlink(file.path);
+        throw new ServiceError(404, 'Album not found');
+      }
+
       const song = await Song.create({
         title: body.title || path.basename(file.originalname, path.extname(file.originalname)),
         artist: body.artist || 'Unknown Artist',
-        album: body.album,
+        album: album?.title || body.album,
+        ...(nextAlbumId ? { albumId: nextAlbumId } : {}),
         genre: body.genre,
         coverImage: coverImage || body.coverImage,
         duration: Math.round(duration),
         filePath: file.path,
         ...(uploadedBy ? { uploadedBy } : {}),
       });
+
+      if (nextAlbumId) {
+        await syncSongAlbumMembership(String(song._id), nextAlbumId);
+      }
 
       return { song };
     } catch (error) {
@@ -58,13 +113,19 @@ export const songService = {
     const limit = toPositiveInt(input.limit, 20);
     const search = typeof input.search === 'string' ? input.search : undefined;
     const genre = typeof input.genre === 'string' ? input.genre : undefined;
+    const uploadedBy = typeof input.uploadedBy === 'string' ? input.uploadedBy : undefined;
 
     const query: Record<string, unknown> = {};
     if (search) query.$text = { $search: search };
     if (genre) query.genre = genre;
+    if (uploadedBy) {
+      ensureObjectId(uploadedBy, 'uploadedBy');
+      query.uploadedBy = uploadedBy;
+    }
 
     const songs = await Song.find(query)
       .populate('uploadedBy', 'username')
+      .populate('albumId', 'title artistName coverImage')
       .limit(limit)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
@@ -79,7 +140,9 @@ export const songService = {
 
   async getSongById(songId: string) {
     ensureObjectId(songId, 'songId');
-    const song = await Song.findById(songId).populate('uploadedBy', 'username');
+    const song = await Song.findById(songId)
+      .populate('uploadedBy', 'username')
+      .populate('albumId', 'title artistName coverImage');
     if (!song) throw new ServiceError(404, 'Song not found');
     return { song };
   },
@@ -88,9 +151,13 @@ export const songService = {
     ensureObjectId(songId, 'songId');
 
     const updateData: SongUpdateInput = {};
+    const albumIdProvided = Object.prototype.hasOwnProperty.call(input, 'albumId');
     if (typeof input.title === 'string') updateData.title = input.title.trim();
     if (typeof input.artist === 'string') updateData.artist = input.artist.trim();
     if (typeof input.album === 'string') updateData.album = input.album.trim();
+    if (albumIdProvided && typeof input.albumId === 'string') {
+      updateData.albumId = input.albumId.trim();
+    }
     if (typeof input.genre === 'string') updateData.genre = input.genre.trim();
     if (typeof input.coverImage === 'string') updateData.coverImage = input.coverImage.trim();
 
@@ -103,6 +170,7 @@ export const songService = {
 
     const existingSong = await Song.findById(songId);
     if (!existingSong) throw new ServiceError(404, 'Song not found');
+    const previousAlbumId = existingSong.albumId ? String(existingSong.albumId) : undefined;
 
     let nextAudioPath: string | undefined;
     if (input.audioFile) {
@@ -124,12 +192,40 @@ export const songService = {
       }
     }
 
-    const song = await Song.findByIdAndUpdate(songId, updateData, {
-      new: true,
-      runValidators: true,
-    }).populate('uploadedBy', 'username');
+    let nextAlbumId = previousAlbumId;
+    if (albumIdProvided) {
+      nextAlbumId = updateData.albumId || undefined;
+    }
 
-    if (!song) throw new ServiceError(404, 'Song not found');
+    if (updateData.title !== undefined) existingSong.title = updateData.title;
+    if (updateData.artist !== undefined) existingSong.artist = updateData.artist;
+    if (updateData.genre !== undefined) existingSong.genre = updateData.genre;
+    if (updateData.coverImage !== undefined) existingSong.coverImage = updateData.coverImage;
+    if (updateData.filePath !== undefined) existingSong.filePath = updateData.filePath;
+    if (updateData.duration !== undefined) existingSong.duration = updateData.duration;
+
+    if (albumIdProvided) {
+      if (nextAlbumId) {
+        const album = await Album.findById(nextAlbumId);
+        if (!album) throw new ServiceError(404, 'Album not found');
+        existingSong.albumId = album._id;
+        existingSong.album = album.title;
+      } else {
+        existingSong.albumId = undefined;
+      }
+    } else if (updateData.album !== undefined) {
+      existingSong.album = updateData.album;
+    }
+
+    const song = await existingSong.save();
+    await song.populate('uploadedBy', 'username');
+    await song.populate('albumId', 'title artistName coverImage');
+
+    if (previousAlbumId !== nextAlbumId) {
+      await syncSongAlbumMembership(songId, nextAlbumId, previousAlbumId);
+    } else if (nextAlbumId) {
+      await recalculateAlbumStats(nextAlbumId);
+    }
 
     if (
       typeof updateData.coverImage === 'string' &&
@@ -174,6 +270,11 @@ export const songService = {
 
     const song = await Song.findByIdAndDelete(songId);
     if (!song) throw new ServiceError(404, 'Song not found');
+
+    if (song.albumId) {
+      await Album.findByIdAndUpdate(String(song.albumId), { $pull: { trackIds: song._id } });
+      await recalculateAlbumStats(String(song.albumId));
+    }
 
     safeUnlink(song.filePath);
     if (typeof song.coverImage === 'string' && song.coverImage.startsWith('uploads/')) {

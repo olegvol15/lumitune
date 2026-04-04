@@ -70,6 +70,27 @@ export const getAllSongs = async (req: Request, res: Response) => {
   }
 };
 
+export const getOwnSongs = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?._id ? String(req.user._id) : undefined;
+    if (!userId) {
+      throw new ServiceError(401, 'Not authorized to access this route');
+    }
+
+    const { songs, pagination } = await songService.listSongs({
+      ...req.query,
+      uploadedBy: userId,
+    });
+    res.status(200).json({ success: true, songs, pagination });
+  } catch (error) {
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error fetching songs') });
+  }
+};
+
 export const getSongById = async (req: Request, res: Response) => {
   try {
     const { song } = await songService.getSongById(String(req.params.id));

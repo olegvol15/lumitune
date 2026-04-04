@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { Pencil } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import ProfileAlbumCard from '../components/profile/ProfileAlbumCard';
 import ProfileAlbumUploadModal from '../components/profile/ProfileAlbumUploadModal';
 import ProfileEditModal from '../components/profile/ProfileEditModal';
@@ -13,34 +13,21 @@ import ProfileTopTrackRow from '../components/profile/ProfileTopTrackRow';
 import ProfileTrackCard from '../components/profile/ProfileTrackCard';
 import ProfileTrackEditorModal from '../components/profile/ProfileTrackEditorModal';
 import ProfileTrackSectionTools from '../components/profile/ProfileTrackSectionTools';
-import { useAddSongMutation } from '../hooks/playlists';
-import playlistsApi from '../api/playlistsApi';
 import { useThemeStore } from '../store/themeStore';
-import { useUpdateCreatorTrackMutation, useUploadCreatorTrackMutation } from '../hooks/tracks';
-import type { CreatorAlbum, CreatorTrack, TrackModalState } from '../types/profile/profile.types';
+import { useCreatorTracksQuery, useUpdateCreatorTrackMutation, useUploadCreatorTrackMutation } from '../hooks/tracks';
+import type { CreatorTrack, TrackModalState } from '../types/profile/profile.types';
 import Button from '../components/ui/Button';
-import { albums } from '../data/albums';
 import { artists } from '../data/artists';
 import { useAuthStore } from '../store/authStore';
 import { usePlayerStore } from '../store/playerStore';
-import {
-  buildSeedAlbums,
-  buildSeedTracks,
-  mapBackendPlaylistToCreatorAlbum,
-  mapBackendSongToCreatorTrack,
-  PROFILE_GENRES,
-  PROFILE_MOODS,
-  readJsonFromStorage,
-} from '../utils/profile.utils';
+import { mapBackendSongToCreatorTrack, PROFILE_GENRES, PROFILE_MOODS } from '../utils/profile.utils';
 import { useI18n } from '../lib/i18n';
+import { useCreateAlbumMutation, useMyAlbumsQuery } from '../hooks/albums';
 
 const FALLBACK_AVATAR =
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=320&q=80';
 const FALLBACK_COVER =
   'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1600&q=80';
-
-const TRACK_STORAGE_KEY = 'creator_profile_tracks';
-const ALBUM_STORAGE_KEY = 'creator_profile_albums';
 
 export const Route = createFileRoute('/profile')({
   beforeLoad: () => {
@@ -61,9 +48,11 @@ function ProfilePage() {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [trackModal, setTrackModal] = useState<TrackModalState>({ open: false });
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
+  const creatorTracksQuery = useCreatorTracksQuery();
+  const myAlbumsQuery = useMyAlbumsQuery();
   const uploadCreatorTrackMutation = useUploadCreatorTrackMutation();
   const updateCreatorTrackMutation = useUpdateCreatorTrackMutation();
-  const addSongToPlaylistMutation = useAddSongMutation();
+  const createAlbumMutation = useCreateAlbumMutation();
 
   const displayName = user?.displayName || user?.username || 'Oleh';
   const bio =
@@ -75,20 +64,16 @@ function ProfilePage() {
       : FALLBACK_AVATAR;
   const cover = user?.coverImage || FALLBACK_COVER;
 
-  const [creatorTracks, setCreatorTracks] = useState<CreatorTrack[]>(() =>
-    readJsonFromStorage(TRACK_STORAGE_KEY, buildSeedTracks(displayName))
-  );
-  const [creatorAlbums, setCreatorAlbums] = useState<CreatorAlbum[]>(() =>
-    readJsonFromStorage(ALBUM_STORAGE_KEY, buildSeedAlbums())
-  );
-
-  useEffect(() => {
-    localStorage.setItem(TRACK_STORAGE_KEY, JSON.stringify(creatorTracks));
-  }, [creatorTracks]);
-
-  useEffect(() => {
-    localStorage.setItem(ALBUM_STORAGE_KEY, JSON.stringify(creatorAlbums));
-  }, [creatorAlbums]);
+  const creatorTracks = creatorTracksQuery.data ?? [];
+  const creatorAlbums = (myAlbumsQuery.data ?? []).map((album) => ({
+    id: album.id,
+    backendId: album.id,
+    title: album.title,
+    coverImage: album.coverUrl,
+    trackIds: album.trackIds,
+    artistName: album.artistName,
+    year: album.year,
+  }));
 
   const topTracks = useMemo(() => creatorTracks.slice(0, 3), [creatorTracks]);
   const followingArtists = useMemo(() => artists.slice(0, 4), []);
@@ -274,7 +259,7 @@ function ProfilePage() {
                   <ProfileAlbumCard
                     key={album.id}
                     album={album}
-                    onClick={() => navigate({ to: '/album/$id', params: { id: albums[0].id } })}
+                    onClick={() => navigate({ to: '/album/$id', params: { id: album.id } })}
                   />
                 ))}
               </div>
@@ -333,13 +318,7 @@ function ProfilePage() {
                 })
               : await uploadCreatorTrackMutation.mutateAsync(formData);
 
-          const persistedTrack = mapBackendSongToCreatorTrack(response.data.song);
-          setCreatorTracks((prev) => {
-            const exists = prev.some((item) => item.id === persistedTrack.id);
-            return exists
-              ? prev.map((item) => (item.id === persistedTrack.id ? persistedTrack : item))
-              : [persistedTrack, ...prev];
-          });
+          mapBackendSongToCreatorTrack(response.data.song);
           setTrackModal({ open: false });
         }}
       />
@@ -349,24 +328,15 @@ function ProfilePage() {
         fallbackCover={FALLBACK_COVER}
         onClose={() => setIsAlbumModalOpen(false)}
         onSave={async (album) => {
-          const { data } = await playlistsApi.create({ name: album.title });
+          const formData = new FormData();
+          formData.append('title', album.title);
+          formData.append('artistName', displayName);
+          formData.append('trackIds', JSON.stringify(album.trackIds));
+          if (album.coverFile) {
+            formData.append('cover', album.coverFile);
+          }
 
-          await Promise.all(
-            album.trackIds.map((trackId) =>
-              addSongToPlaylistMutation.mutateAsync({
-                playlistId: data.playlist._id,
-                songId: trackId,
-              })
-            )
-          );
-
-          setCreatorAlbums((prev) => [
-            {
-              ...mapBackendPlaylistToCreatorAlbum(data.playlist),
-              trackIds: album.trackIds,
-            },
-            ...prev,
-          ]);
+          await createAlbumMutation.mutateAsync(formData);
           setIsAlbumModalOpen(false);
         }}
       />

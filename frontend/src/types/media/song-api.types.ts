@@ -1,13 +1,22 @@
+interface BackendSongAlbum {
+  _id: string;
+  title: string;
+  artistName: string;
+  coverImage?: string;
+}
+
 export interface BackendSong {
   _id: string;
   title: string;
   artist: string;
   album?: string;
+  albumId?: string | BackendSongAlbum;
   genre?: string;
   duration: number;
   filePath: string;
   coverImage?: string;
   plays: number;
+  createdAt?: string;
   uploadedBy?: {
     _id: string;
     username: string;
