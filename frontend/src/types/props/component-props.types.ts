@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import type { Artist, Track, Album } from '../index';
+import type { Artist, Track, Album, Audiobook } from '../index';
 
 export interface PlayerControlsProps {
   size?: 'sm' | 'lg';
@@ -66,6 +66,10 @@ export interface TrackRowProps {
   queue?: Track[];
   showIndex?: boolean;
   showPlayCount?: boolean;
+  disableHoverEffects?: boolean;
+  disableTapAnimation?: boolean;
+  playOnRowClick?: boolean;
+  alwaysShowPlayButton?: boolean;
 }
 
 export interface MoodPillProps {
@@ -95,7 +99,7 @@ export interface ArtistSectionProps {
   onArtistClick?: (artist: Artist) => void;
 }
 
-export type HorizontalSectionItem = Album | Track;
+export type HorizontalSectionItem = Album | Track | Audiobook;
 
 export interface HorizontalSectionProps {
   title: string;

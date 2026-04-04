@@ -1,15 +1,22 @@
 import { useEffect, useRef } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
+import audiobooksApi from '../../api/audiobooksApi';
+import { useAuthStore } from '../../store/authStore';
 
 const buildTrackStreamUrl = (songId: string) => `/api/songs/${songId}/stream`;
 const buildEpisodeStreamUrl = (episodeId: string) => `/api/podcasts/episodes/${episodeId}/stream`;
+const buildAudiobookChapterStreamUrl = (chapterId: string) =>
+  audiobooksApi.chapterStreamUrl(chapterId);
 
 export default function AudioEngine() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const previousTrackIdRef = useRef<string | null>(null);
+  const lastProgressSaveRef = useRef<{ chapterId: string; progressSeconds: number } | null>(null);
 
   const currentTrack = usePlayerStore((state) => state.currentTrack);
   const currentEpisode = usePlayerStore((state) => state.currentEpisode);
+  const currentAudiobook = usePlayerStore((state) => state.currentAudiobook);
+  const currentAudiobookChapter = usePlayerStore((state) => state.currentAudiobookChapter);
   const queue = usePlayerStore((state) => state.queue);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const volume = usePlayerStore((state) => state.volume);
@@ -18,12 +25,13 @@ export default function AudioEngine() {
   const next = usePlayerStore((state) => state.next);
   const setProgress = usePlayerStore((state) => state.setProgress);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const activeId = currentTrack?.id ?? currentEpisode?.id ?? null;
+    const activeId = currentTrack?.id ?? currentEpisode?.id ?? currentAudiobookChapter?.id ?? null;
 
     if (!activeId) {
       audio.pause();
@@ -36,12 +44,22 @@ export default function AudioEngine() {
     if (previousTrackIdRef.current !== activeId) {
       audio.src = currentTrack
         ? buildTrackStreamUrl(currentTrack.id)
-        : buildEpisodeStreamUrl(currentEpisode!.id);
+        : currentEpisode
+        ? buildEpisodeStreamUrl(currentEpisode.id)
+        : buildAudiobookChapterStreamUrl(currentAudiobookChapter!.id);
       audio.load();
       previousTrackIdRef.current = activeId;
-      setProgress(0);
+      if (
+        currentAudiobook &&
+        currentAudiobookChapter &&
+        currentAudiobook.progress?.currentChapterId === currentAudiobookChapter.id
+      ) {
+        setProgress(currentAudiobook.progress.progressPct);
+      } else {
+        setProgress(0);
+      }
     }
-  }, [currentTrack, currentEpisode, setProgress]);
+  }, [currentTrack, currentEpisode, currentAudiobook, currentAudiobookChapter, setProgress]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -54,14 +72,14 @@ export default function AudioEngine() {
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || (!currentTrack && !currentEpisode)) return;
+    if (!audio || (!currentTrack && !currentEpisode && !currentAudiobookChapter)) return;
 
     if (isPlaying) {
       audio.play().catch(() => setIsPlaying(false));
       return;
     }
     audio.pause();
-  }, [isPlaying, currentTrack, currentEpisode, setIsPlaying]);
+  }, [isPlaying, currentTrack, currentEpisode, currentAudiobookChapter, setIsPlaying]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -78,9 +96,29 @@ export default function AudioEngine() {
       return;
     }
     setProgress(audio.currentTime / audio.duration);
+
+    if (
+      isAuthenticated &&
+      currentAudiobook &&
+      currentAudiobookChapter &&
+      audio.currentTime - (lastProgressSaveRef.current?.progressSeconds ?? 0) >= 15
+    ) {
+      const progressSeconds = Math.floor(audio.currentTime);
+      lastProgressSaveRef.current = { chapterId: currentAudiobookChapter.id, progressSeconds };
+      void audiobooksApi.updateProgress(currentAudiobook.id, {
+        chapterId: currentAudiobookChapter.id,
+        progressSeconds,
+        progressPct: audio.currentTime / audio.duration,
+      });
+    }
   };
 
   const handleEnded = () => {
+    if (currentAudiobookChapter) {
+      next();
+      return;
+    }
+
     // Episode ended — just stop; no queue for episodes
     if (currentEpisode) {
       setIsPlaying(false);
@@ -111,6 +149,27 @@ export default function AudioEngine() {
       preload="metadata"
       onTimeUpdate={handleTimeUpdate}
       onEnded={handleEnded}
+      onPause={() => {
+        const audio = audioRef.current;
+        if (
+          !audio ||
+          !isAuthenticated ||
+          !currentAudiobook ||
+          !currentAudiobookChapter ||
+          !Number.isFinite(audio.duration) ||
+          audio.duration <= 0
+        ) {
+          return;
+        }
+
+        const progressSeconds = Math.floor(audio.currentTime);
+        lastProgressSaveRef.current = { chapterId: currentAudiobookChapter.id, progressSeconds };
+        void audiobooksApi.updateProgress(currentAudiobook.id, {
+          chapterId: currentAudiobookChapter.id,
+          progressSeconds,
+          progressPct: audio.currentTime / audio.duration,
+        });
+      }}
     />
   );
 }

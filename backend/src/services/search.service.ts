@@ -1,15 +1,18 @@
 import { Song } from '../models/song.model';
 import { Playlist } from '../models/playlist.model';
+import { Audiobook } from '../models/audiobook.model';
 import { ServiceError } from '../types/error/service-error';
 
 export interface SearchResult {
   songs: unknown[];
   playlists: unknown[];
+  audiobooks: unknown[];
   pagination: {
     page: number;
     limit: number;
     totalSongs: number;
     totalPlaylists: number;
+    totalAudiobooks: number;
   };
 }
 
@@ -40,7 +43,18 @@ export const searchService = {
       name: { $regex: q, $options: 'i' },
     };
 
-    const [songs, totalSongs, playlists, totalPlaylists] = await Promise.all([
+    const audiobookFilter = q.includes(' ')
+      ? { $text: { $search: q } }
+      : {
+          $or: [
+            { title: { $regex: q, $options: 'i' } },
+            { authorName: { $regex: q, $options: 'i' } },
+            { genre: { $regex: q, $options: 'i' } },
+          ],
+        };
+
+    const [songs, totalSongs, playlists, totalPlaylists, audiobooks, totalAudiobooks] =
+      await Promise.all([
       Song.find(songFilter)
         .populate('uploadedBy', 'username')
         .skip(skip)
@@ -53,12 +67,15 @@ export const searchService = {
         .limit(limit)
         .sort({ updatedAt: -1 }),
       Playlist.countDocuments(playlistFilter),
+      Audiobook.find(audiobookFilter).skip(skip).limit(limit).sort({ createdAt: -1 }),
+      Audiobook.countDocuments(audiobookFilter),
     ]);
 
     return {
       songs,
       playlists,
-      pagination: { page, limit, totalSongs, totalPlaylists },
+      audiobooks,
+      pagination: { page, limit, totalSongs, totalPlaylists, totalAudiobooks },
     };
   },
 };

@@ -5,6 +5,7 @@ import { usePlayerStore } from '../../store/playerStore';
 import type { TrackRowProps } from '../../types/props/component-props.types';
 import SongCoverImage from './SongCoverImage';
 import { cardHover, cardTap } from '../../lib/motion';
+import { useToggleTrackLikeMutation } from '../../hooks/likes';
 
 export default function TrackRow({
   track,
@@ -12,8 +13,13 @@ export default function TrackRow({
   queue,
   showIndex = false,
   showPlayCount = false,
+  disableHoverEffects = false,
+  disableTapAnimation = false,
+  playOnRowClick = false,
+  alwaysShowPlayButton = false,
 }: TrackRowProps) {
   const { play, currentTrack, isPlaying, togglePlay } = usePlayerStore();
+  const toggleTrackLikeMutation = useToggleTrackLikeMutation();
   const isActive = currentTrack?.id === track.id;
 
   const handlePlay = () => {
@@ -26,11 +32,16 @@ export default function TrackRow({
 
   return (
     <motion.div
-      className={`flex items-center gap-3 p-2 rounded-xl group hover:bg-surface-alt transition-colors ${
+      className={`flex items-center gap-3 p-2 rounded-xl group transition-colors ${
+        !disableHoverEffects ? 'hover:bg-surface-alt' : ''
+      } ${
         isActive ? 'bg-surface-alt' : ''
+      } ${
+        playOnRowClick ? 'cursor-pointer' : ''
       }`}
-      whileHover={cardHover}
-      whileTap={cardTap}
+      whileHover={disableHoverEffects ? undefined : cardHover}
+      whileTap={disableTapAnimation ? undefined : cardTap}
+      onClick={playOnRowClick ? handlePlay : undefined}
     >
       {/* Index / album art */}
       <div className="relative flex-shrink-0 w-10 h-10">
@@ -40,8 +51,17 @@ export default function TrackRow({
           className="w-10 h-10 rounded-lg object-cover"
         />
         <button
-          onClick={handlePlay}
-          className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={(event) => {
+            event.stopPropagation();
+            handlePlay();
+          }}
+          className={`absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg transition-opacity ${
+            alwaysShowPlayButton
+              ? 'opacity-100'
+              : disableHoverEffects
+              ? 'opacity-0'
+              : 'opacity-0 group-hover:opacity-100'
+          }`}
         >
           {isActive && isPlaying ? (
             <span className="w-2.5 h-2.5 bg-brand rounded-sm" />
@@ -51,7 +71,9 @@ export default function TrackRow({
         </button>
         {showIndex && index !== undefined && (
           <span
-            className={`absolute inset-0 flex items-center justify-center text-xs font-bold group-hover:opacity-0 transition-opacity ${
+            className={`absolute inset-0 flex items-center justify-center text-xs font-bold transition-opacity ${
+              alwaysShowPlayButton ? 'opacity-0' : disableHoverEffects ? '' : 'group-hover:opacity-0'
+            } ${
               isActive ? 'text-brand' : 'text-muted'
             }`}
           >
@@ -76,11 +98,27 @@ export default function TrackRow({
       )}
 
       {/* Like + more */}
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button className="p-1.5 rounded-full hover:bg-white/10">
+      <div
+        className={`flex items-center gap-1 transition-opacity ${
+          disableHoverEffects ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+        }`}
+      >
+        <button
+          onClick={(event) => {
+            event.stopPropagation();
+            toggleTrackLikeMutation.mutate({
+              songId: track.id,
+              liked: track.liked,
+            });
+          }}
+          className="p-1.5 rounded-full hover:bg-white/10"
+        >
           <Heart size={14} className={track.liked ? 'text-brand fill-brand' : 'text-muted'} />
         </button>
-        <button className="p-1.5 rounded-full hover:bg-white/10">
+        <button
+          onClick={(event) => event.stopPropagation()}
+          className="p-1.5 rounded-full hover:bg-white/10"
+        >
           <MoreVertical size={14} className="text-muted" />
         </button>
       </div>

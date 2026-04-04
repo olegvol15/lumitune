@@ -6,7 +6,7 @@ import {
   streamSong,
   updateOwnSong,
 } from '../controllers/song.controller';
-import { protect } from '../middleware/auth.middleware';
+import { optionalProtect, protect } from '../middleware/auth.middleware';
 import { adminSongUpload } from '../middleware/upload.middleware';
 
 const router = express.Router();

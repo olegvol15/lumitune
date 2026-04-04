@@ -9,7 +9,8 @@ export function formatDuration(seconds: number): string {
 export function formatLongDuration(totalSeconds: number): string {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
-  return `${hours} год. ${minutes} хв.`;
+  const language = document.documentElement.lang === 'en' ? 'en' : 'uk';
+  return language === 'en' ? `${hours} hr. ${minutes} min.` : `${hours} год. ${minutes} хв.`;
 }
 
 /** Formats a play count with K/M/B abbreviations */
@@ -22,5 +23,5 @@ export function formatPlayCount(n: number): string {
 
 /** Formats a listener count with Ukrainian locale thousands separator */
 export function formatListeners(count: number): string {
-  return count.toLocaleString('uk-UA');
+  return count.toLocaleString(document.documentElement.lang === 'en' ? 'en-US' : 'uk-UA');
 }

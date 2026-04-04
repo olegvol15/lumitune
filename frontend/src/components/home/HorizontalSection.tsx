@@ -2,10 +2,11 @@ import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import MediaCard from '../ui/MediaCard';
-import type { Track } from '../../types';
+import type { Audiobook, Track } from '../../types';
 import { isAlbum } from '../../utils/typeGuards';
 import type { HorizontalSectionProps } from '../../types/props/component-props.types';
 import { staggerContainer, staggerItem } from '../../lib/motion';
+import { useI18n } from '../../lib/i18n';
 
 export default function HorizontalSection({
   title,
@@ -14,6 +15,7 @@ export default function HorizontalSection({
   onItemClick,
 }: HorizontalSectionProps) {
   const rowRef = useRef<HTMLDivElement>(null);
+  const { copy } = useI18n();
 
   const scroll = (dir: 'left' | 'right') => {
     if (!rowRef.current) return;
@@ -71,6 +73,20 @@ export default function HorizontalSection({
               </motion.div>
             );
           }
+          if ('chapterCount' in item) {
+            const audiobook = item as Audiobook;
+            return (
+              <motion.div key={audiobook.id} className="snap-start" variants={staggerItem}>
+                <MediaCard
+                  image={audiobook.coverUrl}
+                  title={audiobook.title}
+                  subtitle={audiobook.author}
+                  onClick={() => onItemClick?.(audiobook)}
+                />
+              </motion.div>
+            );
+          }
+
           const track = item as Track;
           return (
             <motion.div key={track.id} className="snap-start" variants={staggerItem}>
@@ -90,7 +106,7 @@ export default function HorizontalSection({
           variants={staggerItem}
         >
           <Plus size={22} />
-          <span className="text-xs font-medium">Все тут</span>
+          <span className="text-xs font-medium">{copy.home.allHere}</span>
         </motion.button>
       </motion.div>
     </section>

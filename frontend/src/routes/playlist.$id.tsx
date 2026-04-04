@@ -14,6 +14,7 @@ import {
   useAddSongMutation,
   useRemoveSongMutation,
 } from '../hooks/playlists';
+import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/playlist/$id')({
   beforeLoad: () => {
@@ -29,6 +30,7 @@ function PlaylistPage() {
   const navigate = useNavigate();
   const { play } = usePlayerStore();
   const { tracks } = useCatalogTracks();
+  const { copy } = useI18n();
 
   const { data: playlists = [] } = usePlaylistsQuery();
   const renameMutation = useRenamePlaylistMutation();
@@ -79,9 +81,9 @@ function PlaylistPage() {
   if (!playlist) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center px-4">
-        <p className="text-muted mb-4">Плейлист не знайдено</p>
+        <p className="text-muted mb-4">{copy.media.playlistNotFound}</p>
         <Button variant="secondary" shape="pill" onClick={() => navigate({ to: '/library' })}>
-          До бібліотеки
+          {copy.media.backToLibrary}
         </Button>
       </div>
     );
@@ -128,7 +130,7 @@ function PlaylistPage() {
           className="flex items-center gap-1.5 text-muted hover:text-white transition-colors text-sm mb-5"
         >
           <ChevronLeft size={16} />
-          Бібліотека
+          {copy.library.title}
         </button>
 
         {/* Header */}
@@ -147,7 +149,7 @@ function PlaylistPage() {
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-muted text-xs uppercase tracking-wider mb-1">Плейлист</p>
+            <p className="text-muted text-xs uppercase tracking-wider mb-1">{copy.common.playlist}</p>
 
             {editingTitle ? (
               <input
@@ -164,14 +166,16 @@ function PlaylistPage() {
                 <button
                   onClick={startEditing}
                   className="text-muted hover:text-white transition-colors opacity-0 group-hover/title:opacity-100 flex-shrink-0"
-                  title="Перейменувати"
+                  title={copy.media.renamePlaylist}
                 >
                   <Pencil size={16} />
                 </button>
               </div>
             )}
 
-            <p className="text-muted text-sm">Ви &bull; {playlist.trackIds.length} треків</p>
+            <p className="text-muted text-sm">
+              {copy.media.you} &bull; {playlist.trackIds.length} {copy.common.tracks}
+            </p>
           </div>
 
           {/* Delete */}
@@ -179,25 +183,25 @@ function PlaylistPage() {
             <button
               onClick={() => setConfirmDelete(true)}
               className="flex-shrink-0 p-2 rounded-full text-muted hover:text-red-400 hover:bg-white/5 transition-colors"
-              title="Видалити плейлист"
+              title={copy.media.deletePlaylist}
             >
               <Trash2 size={18} />
             </button>
           ) : (
             <div className="flex-shrink-0 flex items-center gap-2 bg-[#0a1929] border border-[#1a3050] rounded-xl px-3 py-2">
-              <span className="text-sm text-white/80">Видалити?</span>
+              <span className="text-sm text-white/80">{copy.media.deleteQuestion}</span>
               <button
                 onClick={handleDelete}
                 disabled={deleteMutation.isPending}
                 className="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
               >
-                Так
+                {copy.common.yes}
               </button>
               <button
                 onClick={() => setConfirmDelete(false)}
                 className="text-sm text-muted hover:text-white transition-colors"
               >
-                Ні
+                {copy.common.no}
               </button>
             </div>
           )}
@@ -212,7 +216,7 @@ function PlaylistPage() {
               className="px-6"
               onClick={() => play(playlistTracks[0], playlistTracks)}
             >
-              Відтворити
+              {copy.common.play}
             </Button>
           </div>
         )}
@@ -220,7 +224,7 @@ function PlaylistPage() {
         {/* Tracks in playlist */}
         {playlistTracks.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-white font-bold text-base mb-3">У плейлисті</h2>
+            <h2 className="text-white font-bold text-base mb-3">{copy.media.inPlaylist}</h2>
             <div className="space-y-1">
               {playlistTracks.map((track) => (
                 <div
@@ -247,7 +251,7 @@ function PlaylistPage() {
                     onClick={() => removeSongMutation.mutate({ playlistId: id, songId: track.id })}
                     disabled={removeSongMutation.isPending}
                     className="p-1.5 rounded-full hover:bg-white/10 text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 disabled:opacity-30"
-                    title="Видалити з плейлисту"
+                    title={copy.media.removeFromPlaylist}
                   >
                     <X size={14} />
                   </button>
@@ -265,7 +269,7 @@ function PlaylistPage() {
           />
           <input
             type="text"
-            placeholder="Пошук треків та виконавців..."
+            placeholder={copy.media.searchTracksArtists}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full bg-[#0a1929] border border-[#1a3050] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-muted/60 focus:outline-none focus:border-[#1CA2EA]/60 transition-colors"
@@ -283,12 +287,12 @@ function PlaylistPage() {
         {/* Recommendations */}
         <div>
           <div className="mb-4">
-            <h2 className="text-white font-bold text-lg">Рекомендації</h2>
-            <p className="text-muted text-sm">На основі ваших вподобань</p>
+            <h2 className="text-white font-bold text-lg">{copy.media.recommendations}</h2>
+            <p className="text-muted text-sm">{copy.media.recommendationsHint}</p>
           </div>
 
           {recommendations.length === 0 ? (
-            <p className="text-muted text-sm">Нічого не знайдено</p>
+            <p className="text-muted text-sm">{copy.common.noResults}</p>
           ) : (
             <>
               <div className="space-y-1">
@@ -321,7 +325,7 @@ function PlaylistPage() {
                       }
                       disabled={addSongMutation.isPending}
                       className="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors flex-shrink-0 disabled:opacity-30"
-                      title="Додати до плейлисту"
+                      title={copy.media.addToPlaylist}
                     >
                       <Plus size={14} />
                     </button>
@@ -336,7 +340,7 @@ function PlaylistPage() {
                     size="sm"
                     onClick={() => setRecsShown((n) => n + RECS_PAGE)}
                   >
-                    Показати ще
+                    {copy.common.showMore}
                   </Button>
                 </div>
               )}

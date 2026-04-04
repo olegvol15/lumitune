@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ProfileTrackEditorModalProps } from '../../types/profile/profile.types';
+import { useI18n } from '../../lib/i18n';
 import Button from '../ui/Button';
 import ProfileCreatorModal from './ProfileCreatorModal';
 import ProfileSelectField from './ProfileSelectField';
@@ -15,6 +16,7 @@ export default function ProfileTrackEditorModal({
   onClose,
   onSave,
 }: ProfileTrackEditorModalProps) {
+  const { copy } = useI18n();
   const [title, setTitle] = useState('');
   const [genre, setGenre] = useState('');
   const [mood, setMood] = useState('');
@@ -48,25 +50,25 @@ export default function ProfileTrackEditorModal({
   return (
     <ProfileCreatorModal
       open={open}
-      title={mode === 'create' ? 'Завантаження треку' : 'Редагування треку'}
+      title={mode === 'create' ? copy.profile.uploadTrackTitle : copy.profile.editTrackTitle}
       onClose={onClose}
     >
       <div className="space-y-4">
         <div>
           <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">
-            Назва треку
+            {copy.profile.trackTitle}
           </label>
           <input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            placeholder="Назва треку"
+            placeholder={copy.profile.trackTitle}
             className="h-8 w-full rounded-[7px] border border-[#5f84a0] bg-[#4a7187] px-3 text-[11px] text-[#ebf5fb] outline-none placeholder:text-[#b8cedd]/50"
           />
         </div>
 
         <ProfileUploadZone
-          label="Перетягніть аудіофайл або завантажте"
-          sublabel={audioFileName || 'Аудіо'}
+          label={copy.profile.dragAudio}
+          sublabel={audioFileName || copy.profile.audio}
           onSelect={(file) => {
             setAudioFile(file);
             setAudioFileName(file.name);
@@ -75,20 +77,24 @@ export default function ProfileTrackEditorModal({
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">Жанр</label>
+            <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">
+              {copy.common.genre}
+            </label>
             <ProfileSelectField
               value={genre}
               options={genres}
-              placeholder="Жанр"
+              placeholder={copy.common.genre}
               onChange={setGenre}
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">Настрій</label>
+            <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">
+              {copy.common.mood}
+            </label>
             <ProfileSelectField
               value={mood}
               options={moods}
-              placeholder="Настрій"
+              placeholder={copy.common.mood}
               onChange={setMood}
             />
           </div>
@@ -102,7 +108,7 @@ export default function ProfileTrackEditorModal({
             onClick={onClose}
             className="rounded-[7px] border-[#31566f] bg-[#163342] px-2 py-2 text-[10px] text-[#9fc8e0] hover:bg-[#1b3d4f]"
           >
-            Зберегти як чернетку
+            {copy.profile.saveAsDraft}
           </Button>
           <Button
             variant="primary"
@@ -111,7 +117,7 @@ export default function ProfileTrackEditorModal({
             onClick={() =>
               onSave({
                 id: initialTrack?.id,
-                title: title || 'Новий трек',
+                title: title || copy.profile.newTrack,
                 artistName: initialTrack?.artistName || 'OLEH',
                 albumCover: coverImage,
                 genre: genre || genres[0],
@@ -125,7 +131,7 @@ export default function ProfileTrackEditorModal({
             }
             className="rounded-[7px] bg-[#80c8eb] px-2 py-2 text-[10px] font-semibold text-[#123042] hover:bg-[#93d3f1]"
           >
-            {mode === 'create' ? 'Опублікувати' : 'Зберегти'}
+            {mode === 'create' ? copy.profile.publish : copy.common.save}
           </Button>
         </div>
       </div>

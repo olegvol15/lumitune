@@ -8,6 +8,7 @@ import MediaCard from '../components/ui/MediaCard';
 import SectionHeader from '../components/ui/SectionHeader';
 import Button from '../components/ui/Button';
 import { useCatalogTracks } from '../hooks/tracks';
+import { useI18n } from '../lib/i18n';
 
 export const Route = createFileRoute('/artist/$id')({
   component: ArtistPage,
@@ -19,6 +20,7 @@ function ArtistPage() {
   const router = useRouter();
   const [following, setFollowing] = useState(false);
   const { tracks } = useCatalogTracks();
+  const { copy } = useI18n();
 
   const staticArtist = getArtist(id);
   const derivedArtist = useMemo(() => {
@@ -51,7 +53,7 @@ function ArtistPage() {
   if (!artist) {
     return (
       <div className="flex items-center justify-center h-screen text-muted">
-        Виконавця не знайдено
+        {copy.media.artistNotFound}
       </div>
     );
   }
@@ -88,12 +90,14 @@ function ArtistPage() {
         <div className="absolute bottom-4 left-4 right-4">
           {artist.verified && (
             <div className="flex items-center gap-1 mb-1">
-              <span className="text-brand text-xs font-semibold">✓ Верифікований виконавець</span>
+              <span className="text-brand text-xs font-semibold">
+                ✓ {copy.media.verifiedArtist}
+              </span>
             </div>
           )}
           <h1 className="text-white text-3xl font-bold">{artist.name}</h1>
           <p className="text-white/70 text-sm mt-1">
-            {fmtListeners(artist.monthlyListeners)} прослухувань на місяць
+            {fmtListeners(artist.monthlyListeners)} {copy.media.monthlyListeners}
           </p>
         </div>
       </div>
@@ -107,7 +111,7 @@ function ArtistPage() {
             leftIcon={following ? <UserCheck size={16} /> : undefined}
             onClick={() => setFollowing(!following)}
           >
-            {following ? 'Підписаний' : 'Підписатись'}
+            {following ? copy.media.following : copy.media.follow}
           </Button>
           <button className="p-2.5 border border-white/20 rounded-full">
             <Share2 size={18} className="text-white" />
@@ -117,7 +121,7 @@ function ArtistPage() {
         {/* Popular tracks */}
         {artistTracks.length > 0 && (
           <>
-            <SectionHeader title="Популярні треки" />
+            <SectionHeader title={copy.media.popularTracks} />
             <div className="space-y-1 mb-6">
               {artistTracks.map((t, i) => (
                 <TrackRow
@@ -136,7 +140,7 @@ function ArtistPage() {
         {/* Albums */}
         {artistAlbums.length > 0 && (
           <>
-            <SectionHeader title="Альбоми" />
+            <SectionHeader title={copy.search.albums} />
             <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-none mb-6">
               {artistAlbums.map((al) => (
                 <MediaCard
@@ -154,7 +158,7 @@ function ArtistPage() {
         {/* Similar artists */}
         {similarArtists.length > 0 && (
           <>
-            <SectionHeader title="Схожі виконавці" />
+            <SectionHeader title={copy.media.similarArtists} />
             <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-none mb-6">
               {similarArtists.map((a) => (
                 <MediaCard
@@ -172,16 +176,16 @@ function ArtistPage() {
 
         {/* About */}
         <div className="bg-surface-alt rounded-2xl p-4">
-          <h2 className="text-white font-bold mb-2">Про виконавця</h2>
+          <h2 className="text-white font-bold mb-2">{copy.media.aboutArtist}</h2>
           <p className="text-muted text-sm leading-relaxed">{artist.bio}</p>
           <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/10">
             <div>
               <p className="text-white font-bold text-sm">{fmtListeners(artist.followers)}</p>
-              <p className="text-muted text-xs">Підписники</p>
+              <p className="text-muted text-xs">{copy.media.followers}</p>
             </div>
             <div>
               <p className="text-white font-bold text-sm">{artist.genre}</p>
-              <p className="text-muted text-xs">Жанр</p>
+              <p className="text-muted text-xs">{copy.common.genre}</p>
             </div>
           </div>
         </div>

@@ -4,7 +4,10 @@ import type { PlayerStore } from '../types/store/store.types';
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
   currentTrack: null,
   currentEpisode: null,
+  currentAudiobook: null,
+  currentAudiobookChapter: null,
   queue: [],
+  audiobookQueue: [],
   isPlaying: false,
   volume: 0.8,
   progress: 0,
@@ -16,7 +19,10 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     set({
       currentTrack: track,
       currentEpisode: null,
+      currentAudiobook: null,
+      currentAudiobookChapter: null,
       queue: queue ?? get().queue,
+      audiobookQueue: [],
       isPlaying: true,
       progress: 0,
     }),
@@ -25,9 +31,25 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     set({
       currentEpisode: episode,
       currentTrack: null,
+      currentAudiobook: null,
+      currentAudiobookChapter: null,
       queue: [],
+      audiobookQueue: [],
       isPlaying: true,
       progress: 0,
+      rightPanelOpen: true,
+    }),
+
+  playAudiobookChapter: (chapter, audiobook, chapters) =>
+    set({
+      currentAudiobook: audiobook,
+      currentAudiobookChapter: chapter,
+      currentTrack: null,
+      currentEpisode: null,
+      queue: [],
+      audiobookQueue: chapters ?? get().audiobookQueue,
+      isPlaying: true,
+      progress: audiobook.progress?.currentChapterId === chapter.id ? audiobook.progress.progressPct : 0,
       rightPanelOpen: true,
     }),
 
@@ -37,12 +59,22 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
   togglePlay: () =>
     set((s) => {
-      if (!s.currentTrack && !s.currentEpisode) return s;
+      if (!s.currentTrack && !s.currentEpisode && !s.currentAudiobookChapter) return s;
       return { isPlaying: !s.isPlaying };
     }),
 
   next: () => {
-    const { queue, currentTrack, shuffle, repeat } = get();
+    const { queue, currentTrack, shuffle, repeat, currentAudiobookChapter, audiobookQueue } = get();
+    if (currentAudiobookChapter && audiobookQueue.length > 0) {
+      const idx = audiobookQueue.findIndex((chapter) => chapter.id === currentAudiobookChapter.id);
+      const nextChapter = audiobookQueue[idx + 1];
+      if (!nextChapter) {
+        set({ isPlaying: false, progress: 1 });
+        return;
+      }
+      set({ currentAudiobookChapter: nextChapter, progress: 0, isPlaying: true });
+      return;
+    }
     if (!currentTrack || queue.length === 0) return;
     const idx = queue.findIndex((t) => t.id === currentTrack.id);
     let nextIdx: number;
@@ -57,7 +89,21 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   },
 
   prev: () => {
-    const { queue, currentTrack, progress } = get();
+    const { queue, currentTrack, progress, currentAudiobookChapter, audiobookQueue } = get();
+    if (currentAudiobookChapter) {
+      if (progress > 0.05) {
+        set({ progress: 0 });
+        return;
+      }
+      const idx = audiobookQueue.findIndex((chapter) => chapter.id === currentAudiobookChapter.id);
+      const prevChapter = idx <= 0 ? null : audiobookQueue[idx - 1];
+      if (!prevChapter) {
+        set({ progress: 0 });
+        return;
+      }
+      set({ currentAudiobookChapter: prevChapter, progress: 0, isPlaying: true });
+      return;
+    }
     if (!currentTrack) return;
     // If more than 3s in, restart; otherwise go to previous
     if (progress > 0.05) {

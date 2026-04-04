@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ProfileAlbumUploadModalProps } from '../../types/profile/profile.types';
+import { useI18n } from '../../lib/i18n';
 import { fileToDataUrl } from '../../utils/file.utils';
 import { formatDuration } from '../../utils/format';
 import Button from '../ui/Button';
@@ -15,6 +16,7 @@ export default function ProfileAlbumUploadModal({
   onClose,
   onSave,
 }: ProfileAlbumUploadModalProps) {
+  const { copy } = useI18n();
   const [title, setTitle] = useState('');
   const [coverImage, setCoverImage] = useState(fallbackCover);
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -31,23 +33,25 @@ export default function ProfileAlbumUploadModal({
   const selectedTracks = tracks.filter((track) => selectedTrackIds.includes(track.id));
 
   return (
-    <ProfileCreatorModal open={open} title="Завантаження альбому" onClose={onClose}>
+    <ProfileCreatorModal open={open} title={copy.profile.uploadAlbumTitle} onClose={onClose}>
       <div className="space-y-4">
         <div>
           <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">
-            Назва альбому
+            {copy.profile.albumTitle}
           </label>
           <input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            placeholder="Назва альбому"
+            placeholder={copy.profile.albumTitle}
             className="h-8 w-full rounded-[7px] border border-[#5f84a0] bg-[#4a7187] px-3 text-[11px] text-[#ebf5fb] outline-none placeholder:text-[#b8cedd]/50"
           />
         </div>
 
         <div>
           <div className="mb-1.5 flex items-center justify-between">
-            <label className="block text-[11px] font-semibold text-[#d8ecf8]">Додати треки</label>
+            <label className="block text-[11px] font-semibold text-[#d8ecf8]">
+              {copy.profile.addTracks}
+            </label>
             <span className="text-[12px] text-[#9ec7df]">+</span>
           </div>
           <div className="space-y-1.5">
@@ -74,7 +78,7 @@ export default function ProfileAlbumUploadModal({
             <ProfileSelectField
               value=""
               options={tracks.map((track) => track.title)}
-              placeholder="Додати трек"
+              placeholder={copy.profile.addTrack}
               onChange={(value) => {
                 const match = tracks.find((track) => track.title === value);
                 if (match && !selectedTrackIds.includes(match.id)) {
@@ -86,8 +90,8 @@ export default function ProfileAlbumUploadModal({
         </div>
 
         <ProfileUploadZone
-          label="Обкладинка"
-          sublabel="Зображення"
+          label={copy.profile.coverImage}
+          sublabel={copy.profile.image}
           compact
           onSelect={async (file) => {
             setCoverFile(file);
@@ -104,7 +108,7 @@ export default function ProfileAlbumUploadModal({
             onClick={onClose}
             className="rounded-[7px] border-[#31566f] bg-[#163342] px-2 py-2 text-[10px] text-[#9fc8e0] hover:bg-[#1b3d4f]"
           >
-            Зберегти як чернетку
+            {copy.profile.saveAsDraft}
           </Button>
           <Button
             variant="primary"
@@ -112,7 +116,7 @@ export default function ProfileAlbumUploadModal({
             shape="rect"
             onClick={() =>
               onSave({
-                title: title || 'Новий альбом',
+                title: title || copy.profile.newAlbum,
                 coverImage,
                 coverFile,
                 trackIds: selectedTrackIds,
@@ -120,7 +124,7 @@ export default function ProfileAlbumUploadModal({
             }
             className="rounded-[7px] bg-[#80c8eb] px-2 py-2 text-[10px] font-semibold text-[#123042] hover:bg-[#93d3f1]"
           >
-            Опублікувати
+            {copy.profile.publish}
           </Button>
         </div>
       </div>

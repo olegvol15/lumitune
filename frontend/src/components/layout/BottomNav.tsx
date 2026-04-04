@@ -1,17 +1,18 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Home, Heart, Library, Bell } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const tabs = [
-  { to: '/', icon: Home, label: 'Головна' },
-  { to: '/favorite', icon: Heart, label: 'Улюблені' },
-  { to: '/library', icon: Library, label: 'Бібліотека' },
-  { to: '/notifications', icon: Bell, label: 'Сповіщення' },
-] as const;
+import { useI18n } from '../../lib/i18n';
 
 export default function BottomNav() {
   const { location } = useRouterState();
   const pathname = location.pathname;
+  const { copy } = useI18n();
+  const tabs = [
+    { to: '/', icon: Home, label: copy.nav.home },
+    { to: '/favorite', icon: Heart, label: copy.nav.favorites },
+    { to: '/library', icon: Library, label: copy.nav.library },
+    { to: '/notifications', icon: Bell, label: copy.nav.notifications },
+  ] as const;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 safe-area-pb">

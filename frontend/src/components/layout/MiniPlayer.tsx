@@ -5,16 +5,36 @@ import { usePlayerStore } from '../../store/playerStore';
 import ProgressBar from '../player/ProgressBar';
 import SongCoverImage from '../ui/SongCoverImage';
 import { slideUp } from '../../lib/motion';
+import { useToggleTrackLikeMutation } from '../../hooks/likes';
 
 export default function MiniPlayer() {
-  const { currentTrack, currentEpisode, isPlaying, togglePlay, next, seek, progress, toggleLike } =
+  const {
+    currentTrack,
+    currentEpisode,
+    currentAudiobook,
+    currentAudiobookChapter,
+    isPlaying,
+    togglePlay,
+    next,
+    seek,
+    progress,
+  } =
     usePlayerStore();
+  const toggleTrackLikeMutation = useToggleTrackLikeMutation();
   const navigate = useNavigate();
 
   const activeMedia = currentTrack
     ? { cover: currentTrack.albumCover, label: currentTrack.albumTitle, title: currentTrack.title, subtitle: currentTrack.artistName, isEpisode: false }
     : currentEpisode
     ? { cover: currentEpisode.podcastCover, label: currentEpisode.podcastTitle, title: currentEpisode.title, subtitle: currentEpisode.podcastTitle, isEpisode: true }
+    : currentAudiobook && currentAudiobookChapter
+    ? {
+        cover: currentAudiobookChapter.audiobookCover,
+        label: currentAudiobook.title,
+        title: currentAudiobookChapter.title,
+        subtitle: `${currentAudiobook.author} · ${currentAudiobook.title}`,
+        isEpisode: true,
+      }
     : null;
 
   return (
@@ -48,7 +68,17 @@ export default function MiniPlayer() {
 
               <div className="flex items-center gap-1 flex-shrink-0">
                 {!activeMedia.isEpisode && (
-                  <button onClick={toggleLike} className="p-2 hover:bg-white/10 rounded-full">
+                  <button
+                    onClick={() => {
+                      if (currentTrack) {
+                        toggleTrackLikeMutation.mutate({
+                          songId: currentTrack.id,
+                          liked: currentTrack.liked,
+                        });
+                      }
+                    }}
+                    className="p-2 hover:bg-white/10 rounded-full"
+                  >
                     <Heart
                       size={18}
                       className={currentTrack?.liked ? 'text-brand fill-brand' : 'text-muted'}

@@ -6,6 +6,7 @@ import { useAuthStore } from '../../store/authStore';
 import Avatar from './Avatar';
 import Button from './Button';
 import { dropdownVariants } from '../../lib/motion';
+import { useI18n } from '../../lib/i18n';
 
 export default function AccountDropdown() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function AccountDropdown() {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const logoutMutation = useAuthLogoutMutation();
+  const { copy } = useI18n();
 
   useEffect(() => {
     if (!open) {
@@ -59,7 +61,7 @@ export default function AccountDropdown() {
         className="!flex h-10 w-10 !items-center !justify-center !rounded-full !bg-[#23395d] !p-0 hover:!bg-[#2a4670]"
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-label="Меню акаунта"
+        aria-label={copy.nav.accountMenu}
       >
         <Avatar
           alt={user?.displayName || user?.username || user?.email || 'User'}
@@ -84,7 +86,7 @@ export default function AccountDropdown() {
                 onClick={() => setOpen(false)}
                 className="block py-1.5 text-[15px] font-semibold tracking-[-0.02em] text-[#f5f7fb] transition hover:text-white"
               >
-                Профіль
+                {copy.nav.profile}
               </Link>
               <div className="h-px bg-[#707892]" />
               <Link
@@ -92,7 +94,7 @@ export default function AccountDropdown() {
                 onClick={() => setOpen(false)}
                 className="block py-1.5 text-[15px] font-semibold tracking-[-0.02em] text-[#f5f7fb] transition hover:text-white"
               >
-                Налаштування
+                {copy.nav.settings}
               </Link>
               <div className="h-px bg-[#707892]" />
               <Button
@@ -104,7 +106,7 @@ export default function AccountDropdown() {
                 disabled={logoutMutation.isPending}
                 className="!block !px-0 !py-1.5 text-[15px] font-semibold tracking-[-0.02em] !text-[#f5f7fb] transition hover:!text-white disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {logoutMutation.isPending ? 'Вихід...' : 'Вийти'}
+                {logoutMutation.isPending ? copy.nav.loggingOut : copy.nav.logout}
               </Button>
             </div>
           </motion.div>

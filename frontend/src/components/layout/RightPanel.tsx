@@ -2,23 +2,39 @@ import { MoreHorizontal, X, Play, Pause, PanelRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayerStore } from '../../store/playerStore';
 import { usePodcastQuery } from '../../hooks/podcasts';
-import type { Episode } from '../../types';
+import { useAudiobookQuery } from '../../hooks/audiobooks';
+import type { AudiobookChapter, Episode } from '../../types';
+import { useI18n } from '../../lib/i18n';
 
 export default function RightPanel() {
+  const { copy } = useI18n();
   const rightPanelOpen = usePlayerStore((s) => s.rightPanelOpen);
   const setRightPanelOpen = usePlayerStore((s) => s.setRightPanelOpen);
   const currentEpisode = usePlayerStore((s) => s.currentEpisode);
+  const currentAudiobook = usePlayerStore((s) => s.currentAudiobook);
+  const currentAudiobookChapter = usePlayerStore((s) => s.currentAudiobookChapter);
+  const audiobookQueue = usePlayerStore((s) => s.audiobookQueue);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const playEpisode = usePlayerStore((s) => s.playEpisode);
+  const playAudiobookChapter = usePlayerStore((s) => s.playAudiobookChapter);
   const togglePlay = usePlayerStore((s) => s.togglePlay);
 
   const { data: podcast } = usePodcastQuery(currentEpisode?.podcastId ?? '');
+  const { data: audiobookData } = useAudiobookQuery(currentAudiobook?.id ?? '');
 
   const handleEpisodeClick = (ep: Episode) => {
     if (currentEpisode?.id === ep.id) {
       togglePlay();
     } else {
       playEpisode(ep);
+    }
+  };
+
+  const handleAudiobookClick = (chapter: AudiobookChapter) => {
+    if (currentAudiobookChapter?.id === chapter.id) {
+      togglePlay();
+    } else if (currentAudiobook) {
+      playAudiobookChapter(chapter, currentAudiobook, audiobookData?.chapters ?? audiobookQueue);
     }
   };
 
@@ -42,7 +58,7 @@ export default function RightPanel() {
             <button
               onClick={() => setRightPanelOpen(true)}
               className="text-white/30 hover:text-white transition-colors p-1.5"
-              aria-label="Open panel"
+              aria-label={copy.rightPanel.openPanel}
             >
               <PanelRight size={18} />
             </button>
@@ -64,7 +80,10 @@ export default function RightPanel() {
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
               <span className="text-white text-sm font-semibold truncate pr-2">
-                {podcast?.title ?? currentEpisode?.podcastTitle ?? 'Подкаст'}
+                {currentAudiobook?.title ??
+                  podcast?.title ??
+                  currentEpisode?.podcastTitle ??
+                  copy.rightPanel.podcastFallback}
               </span>
               <div className="flex items-center gap-0.5 flex-shrink-0">
                 <button className="text-white/40 hover:text-white p-1.5 transition-colors">
@@ -79,29 +98,42 @@ export default function RightPanel() {
               </div>
             </div>
 
-            {currentEpisode ? (
+            {currentEpisode || currentAudiobookChapter ? (
               <>
-                {/* Podcast cover */}
+                {/* Cover */}
                 <img
-                  src={currentEpisode.podcastCover}
-                  alt={currentEpisode.podcastTitle}
+                  src={currentAudiobookChapter?.audiobookCover ?? currentEpisode?.podcastCover}
+                  alt={
+                    currentAudiobook?.title ??
+                    currentEpisode?.podcastTitle ??
+                    copy.rightPanel.currentAudio
+                  }
                   className="w-full aspect-square object-cover rounded-xl grayscale mb-3"
                 />
 
-                {/* Podcast title */}
+                {/* Title */}
                 <p className="text-white text-base font-bold mb-4">
-                  {podcast?.title ?? currentEpisode.podcastTitle}
+                  {currentAudiobook?.title ?? podcast?.title ?? currentEpisode?.podcastTitle}
                 </p>
 
-                {/* Episode list */}
+                {/* Chapter/episode list */}
                 <div className="flex flex-col gap-1">
-                  {(podcast?.episodes ?? [currentEpisode]).map((ep) => {
-                    const isActive = currentEpisode.id === ep.id;
+                  {(currentAudiobook
+                    ? audiobookData?.chapters ?? audiobookQueue
+                    : podcast?.episodes ?? (currentEpisode ? [currentEpisode] : [])
+                  ).map((ep) => {
+                    const isActive = currentAudiobookChapter
+                      ? currentAudiobookChapter.id === ep.id
+                      : currentEpisode?.id === ep.id;
                     const isThisPlaying = isActive && isPlaying;
                     return (
                       <button
                         key={ep.id}
-                        onClick={() => handleEpisodeClick(ep)}
+                        onClick={() =>
+                          currentAudiobookChapter
+                            ? handleAudiobookClick(ep as AudiobookChapter)
+                            : handleEpisodeClick(ep as Episode)
+                        }
                         className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg text-left transition-colors ${
                           isActive ? 'bg-white/10' : 'hover:bg-white/5'
                         }`}
@@ -113,7 +145,7 @@ export default function RightPanel() {
                             <Play size={13} className="text-brand" fill="currentColor" />
                           ) : (
                             <span className="text-white/30 text-xs tabular-nums">
-                              {ep.episodeNumber}
+                              {'chapterNumber' in ep ? ep.chapterNumber : ep.episodeNumber}
                             </span>
                           )}
                         </div>
@@ -129,7 +161,7 @@ export default function RightPanel() {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-48 text-center">
-                <p className="text-white/30 text-sm">Play a podcast episode to see it here</p>
+                <p className="text-white/30 text-sm">{copy.rightPanel.empty}</p>
               </div>
             )}
           </motion.div>
