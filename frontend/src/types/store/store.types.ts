@@ -5,6 +5,11 @@ export interface UserPlaylist {
   id: string;
   title: string;
   trackIds: string[];
+  description?: string;
+  coverUrl?: string;
+  isPublic: boolean;
+  kind: 'user' | 'curated';
+  canEdit: boolean;
 }
 
 export interface AuthStore {

@@ -5,11 +5,22 @@ import { useAuthStore } from '../store/authStore';
 import type { BackendPlaylist } from '../types/media/playlist-api.types';
 import type { UserPlaylist } from '../types/store/store.types';
 
+function coverUrl(path?: string) {
+  if (!path || path === 'default-playlist-cover.jpg') return undefined;
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) return path;
+  return `/${path}`;
+}
+
 function mapPlaylist(p: BackendPlaylist): UserPlaylist {
   return {
     id: p._id,
     title: p.name,
     trackIds: p.songs.map((s) => s._id),
+    description: p.description ?? '',
+    coverUrl: coverUrl(p.coverImage),
+    isPublic: p.isPublic,
+    kind: p.kind,
+    canEdit: p.kind === 'user',
   };
 }
 

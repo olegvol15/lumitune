@@ -24,10 +24,12 @@ export default function Sidebar() {
   const { data: playlists = [] } = usePlaylistsQuery();
   const createMutation = useCreatePlaylistMutation();
   const { copy } = useI18n();
+  const personalPlaylists = playlists.filter((playlist) => playlist.kind === 'user');
+  const curatedPlaylists = playlists.filter((playlist) => playlist.kind === 'curated');
 
   const handleCreatePlaylist = async () => {
     const playlist = await createMutation.mutateAsync(
-      `${copy.nav.createPlaylist} #${playlists.length + 1}`
+      `${copy.nav.createPlaylist} #${personalPlaylists.length + 1}`
     );
     navigate({ to: '/playlist/$id', params: { id: playlist.id } });
   };
@@ -105,7 +107,7 @@ export default function Sidebar() {
           <p className="text-muted text-xs px-3 py-2">{copy.nav.noPlaylistsYet}</p>
         ) : (
           <AnimatePresence>
-            {playlists.map((playlist) => (
+            {personalPlaylists.map((playlist) => (
               <motion.div
                 key={playlist.id}
                 variants={staggerItem}
@@ -120,12 +122,60 @@ export default function Sidebar() {
                     pathname === `/playlist/${playlist.id}` ? 'bg-[#0d2a4a]' : 'hover:bg-white/5'
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0">
-                    <Music2 size={16} className="text-[#1CA2EA]/70" />
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {playlist.coverUrl ? (
+                      <SongCoverImage
+                        src={playlist.coverUrl}
+                        alt={playlist.title}
+                        className="w-10 h-10 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <Music2 size={16} className="text-[#1CA2EA]/70" />
+                    )}
                   </div>
                   <div className="min-w-0">
                     <p className="text-white text-sm font-medium truncate">{playlist.title}</p>
                     <p className="text-white/40 text-xs">{playlist.trackIds.length} {copy.common.tracks}</p>
+                  </div>
+                </button>
+              </motion.div>
+            ))}
+            {curatedPlaylists.length > 0 && (
+              <motion.div variants={staggerItem} initial="initial" animate="animate" className="px-3 pt-4">
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-white/40">
+                  Curated
+                </span>
+              </motion.div>
+            )}
+            {curatedPlaylists.map((playlist) => (
+              <motion.div
+                key={playlist.id}
+                variants={staggerItem}
+                initial="initial"
+                animate="animate"
+                exit={{ opacity: 0, x: -12, transition: { duration: 0.15 } }}
+                layout
+              >
+                <button
+                  onClick={() => navigate({ to: '/playlist/$id', params: { id: playlist.id } })}
+                  className={`flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-left transition-colors ${
+                    pathname === `/playlist/${playlist.id}` ? 'bg-[#0d2a4a]' : 'hover:bg-white/5'
+                  }`}
+                >
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#30b7aa]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {playlist.coverUrl ? (
+                      <SongCoverImage
+                        src={playlist.coverUrl}
+                        alt={playlist.title}
+                        className="w-10 h-10 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <Music2 size={16} className="text-[#30b7aa]/80" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white text-sm font-medium truncate">{playlist.title}</p>
+                    <p className="text-white/40 text-xs">Curated · {playlist.trackIds.length} {copy.common.tracks}</p>
                   </div>
                 </button>
               </motion.div>

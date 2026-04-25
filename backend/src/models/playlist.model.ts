@@ -18,7 +18,7 @@ const playlistSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false,
   },
   songs: [
     {
@@ -30,6 +30,11 @@ const playlistSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  kind: {
+    type: String,
+    enum: ['user', 'curated'],
+    default: 'user',
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -39,6 +44,9 @@ const playlistSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+playlistSchema.index({ kind: 1, updatedAt: -1 });
+playlistSchema.index({ owner: 1, kind: 1, updatedAt: -1 });
 
 // Update the updatedAt timestamp on save
 playlistSchema.pre('save', async function () {

@@ -26,6 +26,7 @@ import adminUserRoutes from './routes/admin-user.routes';
 import adminDashboardRoutes from './routes/admin-dashboard.routes';
 import albumRoutes from './routes/album.routes';
 import adminAlbumRoutes from './routes/admin-album.routes';
+import adminPlaylistRoutes from './routes/admin-playlist.routes';
 
 import { errorHandler } from './middleware/error.middleware';
 
@@ -63,6 +64,7 @@ app.use('/api/admin/auth', adminAuthRoutes);
 app.use('/api/admin/songs', adminSongRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/playlists', playlistRoutes);
+app.use('/api/admin/playlists', adminPlaylistRoutes);
 app.use('/api/likes', likesRoutes);
 app.use('/api/recently-played', recentlyPlayedRoutes);
 app.use('/api/search', searchRoutes);

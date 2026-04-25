@@ -26,10 +26,12 @@ function LibraryPage() {
   const { data: savedAudiobooks = [] } = useSavedAudiobooksQuery();
   const { data: savedAlbums = [] } = useSavedAlbumsQuery();
   const createMutation = useCreatePlaylistMutation();
+  const personalPlaylists = playlists.filter((playlist) => playlist.kind === 'user');
+  const curatedPlaylists = playlists.filter((playlist) => playlist.kind === 'curated');
 
   const handleCreatePlaylist = async () => {
     const playlist = await createMutation.mutateAsync(
-      `${copy.nav.createPlaylist} #${playlists.length + 1}`
+      `${copy.nav.createPlaylist} #${personalPlaylists.length + 1}`
     );
     navigate({ to: '/playlist/$id', params: { id: playlist.id } });
   };
@@ -88,14 +90,18 @@ function LibraryPage() {
           </button>
 
           {/* User-created playlists */}
-          {playlists.map((p) => (
+          {personalPlaylists.map((p) => (
             <button
               key={p.id}
               onClick={() => navigate({ to: '/playlist/$id', params: { id: p.id } })}
               className="flex items-center gap-3 w-full text-left p-2 rounded-xl hover:bg-surface-alt transition-colors"
             >
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0">
-                <Music2 size={24} className="text-[#1CA2EA]/70" />
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {p.coverUrl ? (
+                  <img src={p.coverUrl} alt={p.title} className="w-full h-full object-cover" />
+                ) : (
+                  <Music2 size={24} className="text-[#1CA2EA]/70" />
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold truncate">{p.title}</p>
@@ -104,6 +110,33 @@ function LibraryPage() {
               </div>
             </button>
           ))}
+
+          {curatedPlaylists.length > 0 && (
+            <div className="pt-2">
+              <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+                Curated
+              </p>
+              {curatedPlaylists.map((playlist) => (
+                <button
+                  key={playlist.id}
+                  onClick={() => navigate({ to: '/playlist/$id', params: { id: playlist.id } })}
+                  className="flex items-center gap-3 w-full text-left p-2 rounded-xl hover:bg-surface-alt transition-colors"
+                >
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#30b7aa]/25 to-[#0a1929] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {playlist.coverUrl ? (
+                      <img src={playlist.coverUrl} alt={playlist.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <Music2 size={24} className="text-[#30b7aa]/80" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold truncate">{playlist.title}</p>
+                    <p className="text-muted text-sm">Curated · {playlist.trackIds.length} {copy.common.tracks}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
 
           {playlists.length === 0 && (
             <div className="py-6 text-center">

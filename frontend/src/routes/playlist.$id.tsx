@@ -46,22 +46,24 @@ function PlaylistPage() {
   const titleInputRef = useRef<HTMLInputElement>(null);
 
   const playlist = playlists.find((p) => p.id === id);
+  const canEditPlaylist = playlist?.canEdit ?? false;
 
   useEffect(() => {
-    if (editingTitle && titleInputRef.current) {
+    if (editingTitle && titleInputRef.current && canEditPlaylist) {
       titleInputRef.current.focus();
       titleInputRef.current.select();
     }
-  }, [editingTitle]);
+  }, [canEditPlaylist, editingTitle]);
 
   const startEditing = () => {
+    if (!canEditPlaylist) return;
     setTitleDraft(playlist?.title ?? '');
     setEditingTitle(true);
   };
 
   const commitRename = () => {
     const trimmed = titleDraft.trim();
-    if (trimmed && trimmed !== playlist?.title) {
+    if (canEditPlaylist && trimmed && trimmed !== playlist?.title) {
       renameMutation.mutate({ playlistId: id, name: trimmed });
     }
     setEditingTitle(false);
@@ -136,8 +138,14 @@ function PlaylistPage() {
         {/* Header */}
         <div className="flex items-start gap-5 mb-6">
           {/* Cover */}
-          <div className="w-32 h-32 flex-shrink-0 rounded-xl bg-gradient-to-br from-[#1CA2EA]/40 to-[#0a1929] flex items-center justify-center shadow-xl">
-            {playlistTracks.length > 0 ? (
+          <div className="w-32 h-32 flex-shrink-0 rounded-xl bg-gradient-to-br from-[#1CA2EA]/40 to-[#0a1929] flex items-center justify-center shadow-xl overflow-hidden">
+            {playlist.coverUrl ? (
+              <SongCoverImage
+                src={playlist.coverUrl}
+                alt={playlist.title}
+                className="w-full h-full object-cover rounded-xl"
+              />
+            ) : playlistTracks.length > 0 ? (
               <SongCoverImage
                 src={playlistTracks[0].albumCover}
                 alt={playlist.title}
@@ -174,12 +182,12 @@ function PlaylistPage() {
             )}
 
             <p className="text-muted text-sm">
-              {copy.media.you} &bull; {playlist.trackIds.length} {copy.common.tracks}
+              {canEditPlaylist ? copy.media.you : 'Curated'} &bull; {playlist.trackIds.length} {copy.common.tracks}
             </p>
           </div>
 
           {/* Delete */}
-          {!confirmDelete ? (
+          {canEditPlaylist && !confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
               className="flex-shrink-0 p-2 rounded-full text-muted hover:text-red-400 hover:bg-white/5 transition-colors"
@@ -187,7 +195,7 @@ function PlaylistPage() {
             >
               <Trash2 size={18} />
             </button>
-          ) : (
+          ) : canEditPlaylist ? (
             <div className="flex-shrink-0 flex items-center gap-2 bg-[#0a1929] border border-[#1a3050] rounded-xl px-3 py-2">
               <span className="text-sm text-white/80">{copy.media.deleteQuestion}</span>
               <button
@@ -204,7 +212,7 @@ function PlaylistPage() {
                 {copy.common.no}
               </button>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Play button */}
@@ -247,14 +255,16 @@ function PlaylistPage() {
                   <span className="text-muted text-xs flex-shrink-0 w-12 text-right">
                     {formatDuration(track.duration)}
                   </span>
-                  <button
-                    onClick={() => removeSongMutation.mutate({ playlistId: id, songId: track.id })}
-                    disabled={removeSongMutation.isPending}
-                    className="p-1.5 rounded-full hover:bg-white/10 text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 disabled:opacity-30"
-                    title={copy.media.removeFromPlaylist}
-                  >
-                    <X size={14} />
-                  </button>
+                  {canEditPlaylist && (
+                    <button
+                      onClick={() => removeSongMutation.mutate({ playlistId: id, songId: track.id })}
+                      disabled={removeSongMutation.isPending}
+                      className="p-1.5 rounded-full hover:bg-white/10 text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 disabled:opacity-30"
+                      title={copy.media.removeFromPlaylist}
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -262,7 +272,7 @@ function PlaylistPage() {
         )}
 
         {/* Search */}
-        <div className="relative mb-6">
+        {canEditPlaylist && <div className="relative mb-6">
           <Search
             size={16}
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
@@ -282,10 +292,10 @@ function PlaylistPage() {
               <X size={14} />
             </button>
           )}
-        </div>
+        </div>}
 
         {/* Recommendations */}
-        <div>
+        {canEditPlaylist && <div>
           <div className="mb-4">
             <h2 className="text-white font-bold text-lg">{copy.media.recommendations}</h2>
             <p className="text-muted text-sm">{copy.media.recommendationsHint}</p>
@@ -346,7 +356,7 @@ function PlaylistPage() {
               )}
             </>
           )}
-        </div>
+        </div>}
       </div>
     </div>
   );

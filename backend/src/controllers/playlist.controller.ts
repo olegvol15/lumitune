@@ -132,3 +132,110 @@ export const removeSongFromPlaylist = async (req: AuthRequest, res: Response) =>
       });
   }
 };
+
+export const getCuratedPlaylistsByAdmin = async (_req: AuthRequest, res: Response) => {
+  try {
+    const { playlists } = await playlistService.listCurated();
+    return res.status(200).json({ success: true, playlists });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error fetching playlists') });
+  }
+};
+
+export const getCuratedPlaylistByAdmin = async (req: AuthRequest, res: Response) => {
+  try {
+    const { playlist } = await playlistService.getCuratedById(String(req.params.id));
+    return res.status(200).json({ success: true, playlist });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error fetching playlist') });
+  }
+};
+
+export const createCuratedPlaylistByAdmin = async (req: AuthRequest, res: Response) => {
+  try {
+    const { playlist } = await playlistService.createCurated(req.body);
+    return res.status(201).json({ success: true, playlist });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error creating playlist') });
+  }
+};
+
+export const updateCuratedPlaylistByAdmin = async (req: AuthRequest, res: Response) => {
+  try {
+    const { playlist } = await playlistService.updateCurated(String(req.params.id), req.body);
+    return res.status(200).json({ success: true, playlist });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error updating playlist') });
+  }
+};
+
+export const deleteCuratedPlaylistByAdmin = async (req: AuthRequest, res: Response) => {
+  try {
+    await playlistService.removeCurated(String(req.params.id));
+    return res.status(200).json({ success: true, message: 'Playlist deleted successfully' });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error deleting playlist') });
+  }
+};
+
+export const addSongToCuratedPlaylistByAdmin = async (req: AuthRequest, res: Response) => {
+  try {
+    const { songId } = req.body as { songId?: string };
+    if (!songId) {
+      return res.status(400).json({ success: false, message: 'songId is required' });
+    }
+
+    const { playlist } = await playlistService.addSongToCurated(String(req.params.id), songId);
+    return res.status(200).json({ success: true, playlist });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error adding song to playlist') });
+  }
+};
+
+export const removeSongFromCuratedPlaylistByAdmin = async (req: AuthRequest, res: Response) => {
+  try {
+    const { playlist } = await playlistService.removeSongFromCurated(
+      String(req.params.id),
+      String(req.params.songId)
+    );
+    return res.status(200).json({ success: true, playlist });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+    return res.status(500).json({
+      success: false,
+      message: getErrorMessage(error, 'Error removing song from playlist'),
+    });
+  }
+};

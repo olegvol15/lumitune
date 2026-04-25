@@ -1,6 +1,6 @@
-export interface BackendPlaylistSong {
-  _id: string;
-}
+import type { BackendSong } from './song-api.types';
+
+export interface BackendPlaylistSong extends BackendSong {}
 
 export interface BackendPlaylist {
   _id: string;
@@ -8,6 +8,8 @@ export interface BackendPlaylist {
   description?: string;
   coverImage?: string;
   songs: BackendPlaylistSong[];
+  isPublic: boolean;
+  kind: 'user' | 'curated';
 }
 
 export interface PlaylistResponse {
