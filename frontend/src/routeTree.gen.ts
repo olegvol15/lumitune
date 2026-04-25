@@ -33,6 +33,7 @@ import { Route as AdminResetPasswordRouteImport } from './routes/admin/reset-pas
 import { Route as AdminPodcastsRouteImport } from './routes/admin/podcasts'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminForgotPasswordRouteImport } from './routes/admin/forgot-password'
+import { Route as AdminAuthorsRouteImport } from './routes/admin/authors'
 import { Route as AdminAudiobooksRouteImport } from './routes/admin/audiobooks'
 import { Route as AdminAlbumsRouteImport } from './routes/admin/albums'
 
@@ -156,6 +157,11 @@ const AdminForgotPasswordRoute = AdminForgotPasswordRouteImport.update({
   path: '/admin/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAuthorsRoute = AdminAuthorsRouteImport.update({
+  id: '/admin/authors',
+  path: '/admin/authors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminAudiobooksRoute = AdminAudiobooksRouteImport.update({
   id: '/admin/audiobooks',
   path: '/admin/audiobooks',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/admin/albums': typeof AdminAlbumsRoute
   '/admin/audiobooks': typeof AdminAudiobooksRoute
+  '/admin/authors': typeof AdminAuthorsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/admin/albums': typeof AdminAlbumsRoute
   '/admin/audiobooks': typeof AdminAudiobooksRoute
+  '/admin/authors': typeof AdminAuthorsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/admin/albums': typeof AdminAlbumsRoute
   '/admin/audiobooks': typeof AdminAudiobooksRoute
+  '/admin/authors': typeof AdminAuthorsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/admin/albums'
     | '/admin/audiobooks'
+    | '/admin/authors'
     | '/admin/forgot-password'
     | '/admin/login'
     | '/admin/podcasts'
@@ -293,6 +303,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/admin/albums'
     | '/admin/audiobooks'
+    | '/admin/authors'
     | '/admin/forgot-password'
     | '/admin/login'
     | '/admin/podcasts'
@@ -321,6 +332,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/admin/albums'
     | '/admin/audiobooks'
+    | '/admin/authors'
     | '/admin/forgot-password'
     | '/admin/login'
     | '/admin/podcasts'
@@ -350,6 +362,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   AdminAlbumsRoute: typeof AdminAlbumsRoute
   AdminAudiobooksRoute: typeof AdminAudiobooksRoute
+  AdminAuthorsRoute: typeof AdminAuthorsRoute
   AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPodcastsRoute: typeof AdminPodcastsRoute
@@ -538,6 +551,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/authors': {
+      id: '/admin/authors'
+      path: '/admin/authors'
+      fullPath: '/admin/authors'
+      preLoaderRoute: typeof AdminAuthorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/audiobooks': {
       id: '/admin/audiobooks'
       path: '/admin/audiobooks'
@@ -566,6 +586,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   AdminAlbumsRoute: AdminAlbumsRoute,
   AdminAudiobooksRoute: AdminAudiobooksRoute,
+  AdminAuthorsRoute: AdminAuthorsRoute,
   AdminForgotPasswordRoute: AdminForgotPasswordRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPodcastsRoute: AdminPodcastsRoute,

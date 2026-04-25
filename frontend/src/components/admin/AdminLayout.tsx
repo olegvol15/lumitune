@@ -12,7 +12,7 @@ const ELEMENTS = [
   { label: 'Tracks',      icon: Music2,     path: '/admin/tracks' },
   { label: 'Podcasts',    icon: Mic,        path: '/admin/podcasts' },
   { label: 'Audiobooks',  icon: BookOpen,   path: '/admin/audiobooks' },
-  { label: 'Authors',     icon: UserRound,  path: null },
+  { label: 'Authors',     icon: UserRound,  path: '/admin/authors' },
   { label: 'Playlists',   icon: ListMusic,  path: null },
   { label: 'Albums',      icon: Disc3,      path: '/admin/albums' },
   { label: 'Genres',      icon: Tag,        path: null },
