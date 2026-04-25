@@ -4,6 +4,7 @@ import {
   getAllSongs,
   getSongById,
   streamSong,
+  getOwnSongs,
   updateOwnSong,
 } from '../controllers/song.controller';
 import { protect } from '../middleware/auth.middleware';
