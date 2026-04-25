@@ -21,7 +21,7 @@ const ELEMENTS = [
 ] as const;
 
 const TOP_NAV = [
-  { label: 'Customers', icon: Users,          path: null },
+  { label: 'Users', icon: Users, path: '/admin/users' },
   { label: 'Dashboard', icon: LayoutDashboard, path: null },
 ] as const;
 
@@ -63,12 +63,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
         <nav className="flex flex-col gap-0.5 flex-1 px-2 overflow-y-auto">
           {/* Top nav */}
-          {TOP_NAV.map(({ label, icon: Icon }) => (
-            <span key={label} className={navItemClass(false, true)} title="Coming soon">
-              <Icon size={16} />
-              {label}
-            </span>
-          ))}
+          {TOP_NAV.map(({ label, icon: Icon, path }) =>
+            path ? (
+              <Link key={label} to={path} className={navItemClass(isActive(path))}>
+                <Icon size={16} />
+                {label}
+              </Link>
+            ) : (
+              <span key={label} className={navItemClass(false, true)} title="Coming soon">
+                <Icon size={16} />
+                {label}
+              </span>
+            )
+          )}
 
           {/* Elements accordion */}
           <div className="mt-1">

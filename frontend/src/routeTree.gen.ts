@@ -26,6 +26,7 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-pas
 import { Route as AudiobookIdRouteImport } from './routes/audiobook.$id'
 import { Route as ArtistIdRouteImport } from './routes/artist.$id'
 import { Route as AlbumIdRouteImport } from './routes/album.$id'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminTracksRouteImport } from './routes/admin/tracks'
 import { Route as AdminSignupRouteImport } from './routes/admin/signup'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin/reset-password'
@@ -120,6 +121,11 @@ const AlbumIdRoute = AlbumIdRouteImport.update({
   path: '/album/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminTracksRoute = AdminTracksRouteImport.update({
   id: '/admin/tracks',
   path: '/admin/tracks',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/signup': typeof AdminSignupRoute
   '/admin/tracks': typeof AdminTracksRoute
+  '/admin/users': typeof AdminUsersRoute
   '/album/$id': typeof AlbumIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/audiobook/$id': typeof AudiobookIdRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/signup': typeof AdminSignupRoute
   '/admin/tracks': typeof AdminTracksRoute
+  '/admin/users': typeof AdminUsersRoute
   '/album/$id': typeof AlbumIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/audiobook/$id': typeof AudiobookIdRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/signup': typeof AdminSignupRoute
   '/admin/tracks': typeof AdminTracksRoute
+  '/admin/users': typeof AdminUsersRoute
   '/album/$id': typeof AlbumIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/audiobook/$id': typeof AudiobookIdRoute
@@ -262,6 +271,7 @@ export interface FileRouteTypes {
     | '/admin/reset-password'
     | '/admin/signup'
     | '/admin/tracks'
+    | '/admin/users'
     | '/album/$id'
     | '/artist/$id'
     | '/audiobook/$id'
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/admin/reset-password'
     | '/admin/signup'
     | '/admin/tracks'
+    | '/admin/users'
     | '/album/$id'
     | '/artist/$id'
     | '/audiobook/$id'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/admin/reset-password'
     | '/admin/signup'
     | '/admin/tracks'
+    | '/admin/users'
     | '/album/$id'
     | '/artist/$id'
     | '/audiobook/$id'
@@ -344,6 +356,7 @@ export interface RootRouteChildren {
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   AdminSignupRoute: typeof AdminSignupRoute
   AdminTracksRoute: typeof AdminTracksRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AlbumIdRoute: typeof AlbumIdRoute
   ArtistIdRoute: typeof ArtistIdRoute
   AudiobookIdRoute: typeof AudiobookIdRoute
@@ -476,6 +489,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlbumIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/tracks': {
       id: '/admin/tracks'
       path: '/admin/tracks'
@@ -552,6 +572,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminResetPasswordRoute: AdminResetPasswordRoute,
   AdminSignupRoute: AdminSignupRoute,
   AdminTracksRoute: AdminTracksRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AlbumIdRoute: AlbumIdRoute,
   ArtistIdRoute: ArtistIdRoute,
   AudiobookIdRoute: AudiobookIdRoute,

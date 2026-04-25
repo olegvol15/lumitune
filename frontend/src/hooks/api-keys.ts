@@ -10,6 +10,11 @@ export const adminAuthKeys = {
   session: () => [...adminAuthKeys.all, 'session'] as const,
 };
 
+export const adminUsersKeys = {
+  all: ['adminUsers'] as const,
+  list: () => [...adminUsersKeys.all, 'list'] as const,
+};
+
 export const tracksKeys = {
   all: ['tracks'] as const,
   catalog: () => [...tracksKeys.all, 'catalog'] as const,
@@ -48,6 +53,7 @@ export const audiobookKeys = {
 export const QUERY_KEYS = {
   auth: authKeys,
   adminAuth: adminAuthKeys,
+  adminUsers: adminUsersKeys,
   tracks: tracksKeys,
   albums: albumKeys,
   playlists: playlistKeys,
