@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Fragment, useEffect, useState } from 'react';
-import { BookOpen, ChevronDown, ChevronUp, Pencil, PlayCircle, Plus, Trash2 } from 'lucide-react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { BookOpen, ChevronDown, ChevronUp, Pencil, PlayCircle, Plus, Search, Trash2 } from 'lucide-react';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 import {
   useAudiobooksQuery,
@@ -10,6 +10,7 @@ import {
 } from '../../hooks/audiobooks';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AdminCheckbox from '../../components/admin/AdminCheckbox';
+import AdminConfirmModal from '../../components/admin/AdminConfirmModal';
 import AudiobookModal from '../../components/admin/AudiobookModal';
 import AudiobookChapterModal from '../../components/admin/AudiobookChapterModal';
 import { formatLongDuration } from '../../utils/format';
@@ -132,36 +133,16 @@ function ChaptersPanel({ audiobook }: { audiobook: Audiobook }) {
         )}
 
         {confirmDeleteId && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-            onClick={(e) => e.target === e.currentTarget && setConfirmDeleteId(null)}
-          >
-            <div className="w-full max-w-sm bg-[#1e2638] rounded-2xl overflow-hidden shadow-2xl">
-              <div className="px-6 py-5">
-                <h2 className="text-white font-semibold text-base mb-2">Delete chapter?</h2>
-                <p className="text-[#7a8faa] text-sm">
-                  This will permanently delete the chapter and its audio file.
-                </p>
-              </div>
-              <div className="px-6 py-4 border-t border-[#2a3a52] flex justify-end gap-3">
-                <button
-                  onClick={() => setConfirmDeleteId(null)}
-                  className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#2a3a52] hover:bg-[#354a62] transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    deleteMutation.mutate(confirmDeleteId);
-                    setConfirmDeleteId(null);
-                  }}
-                  className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
+          <AdminConfirmModal
+            title="Delete chapter?"
+            description="This will permanently delete the chapter and its audio file."
+            confirmLabel="Delete"
+            onClose={() => setConfirmDeleteId(null)}
+            onConfirm={() => {
+              deleteMutation.mutate(confirmDeleteId);
+              setConfirmDeleteId(null);
+            }}
+          />
         )}
       </td>
     </tr>
@@ -182,14 +163,26 @@ function AdminAudiobooksPage() {
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
   const [audiobookModal, setAudiobookModal] = useState<{
     open: boolean;
     mode: 'new' | 'edit';
     audiobook?: Audiobook;
   }>({ open: false, mode: 'new' });
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState('');
 
-  const audiobookIds = audiobooks.map((audiobook) => audiobook.id);
+  const filteredAudiobooks = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return audiobooks;
+    return audiobooks.filter((audiobook) =>
+      [audiobook.title, audiobook.author, audiobook.genre, audiobook.description]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(normalizedQuery))
+    );
+  }, [audiobooks, query]);
+
+  const audiobookIds = filteredAudiobooks.map((audiobook) => audiobook.id);
   const allSelected = audiobookIds.length > 0 && audiobookIds.every((id) => selected.has(id));
 
   const toggleSelect = (id: string) => {
@@ -217,11 +210,7 @@ function AdminAudiobooksPage() {
         <div className="flex items-center gap-3">
           {selected.size > 0 && (
             <button
-              onClick={async () => {
-                await Promise.all(Array.from(selected).map((id) => deleteAudiobookMutation.mutateAsync(id)));
-                setSelected(new Set());
-                if (expandedId && selected.has(expandedId)) setExpandedId(null);
-              }}
+              onClick={() => setConfirmBulkDelete(true)}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
             >
               <Trash2 size={14} />
@@ -235,6 +224,19 @@ function AdminAudiobooksPage() {
             <Plus size={16} />
             New Audiobook
           </button>
+        </div>
+      </div>
+
+      <div className="mb-4 flex items-center gap-3">
+        <div className="relative flex-1 max-w-xs">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8faa]" />
+          <input
+            type="text"
+            placeholder="Search audiobooks…"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="w-full rounded-lg border border-[#2a3a52] bg-[#19233a] py-2 pl-8 pr-3 text-sm text-white placeholder:text-[#4a5a72] focus:outline-none focus:border-[#3dc9b0] transition-colors"
+          />
         </div>
       </div>
 
@@ -263,14 +265,14 @@ function AdminAudiobooksPage() {
                   <td colSpan={7} className="text-center py-10 text-[#7a8faa] text-sm">Loading audiobooks…</td>
                 </tr>
               )}
-              {!isLoading && audiobooks.length === 0 && (
+              {!isLoading && filteredAudiobooks.length === 0 && (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-[#7a8faa] text-sm">
-                    No audiobooks yet. Click "New Audiobook" to create one.
+                    {audiobooks.length === 0 ? 'No audiobooks yet. Click "New Audiobook" to create one.' : 'No audiobooks match your search.'}
                   </td>
                 </tr>
               )}
-              {audiobooks.map((audiobook) => (
+              {filteredAudiobooks.map((audiobook) => (
                 <Fragment key={audiobook.id}>
                   <tr
                     className={`border-t border-[#2a3a52] transition-colors ${
@@ -346,36 +348,31 @@ function AdminAudiobooksPage() {
       )}
 
       {confirmDeleteId && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-          onClick={(e) => e.target === e.currentTarget && setConfirmDeleteId(null)}
-        >
-          <div className="w-full max-w-sm bg-[#1e2638] rounded-2xl overflow-hidden shadow-2xl">
-            <div className="px-6 py-5">
-              <h2 className="text-white font-semibold text-base mb-2">Delete audiobook?</h2>
-              <p className="text-[#7a8faa] text-sm">
-                This will permanently delete the audiobook, all chapters, and uploaded files.
-              </p>
-            </div>
-            <div className="px-6 py-4 border-t border-[#2a3a52] flex justify-end gap-3">
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#2a3a52] hover:bg-[#354a62] transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  deleteAudiobookMutation.mutate(confirmDeleteId);
-                  setConfirmDeleteId(null);
-                }}
-                className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <AdminConfirmModal
+          title="Delete audiobook?"
+          description="This will permanently delete the audiobook, all chapters, and uploaded files."
+          confirmLabel="Delete"
+          onClose={() => setConfirmDeleteId(null)}
+          onConfirm={() => {
+            deleteAudiobookMutation.mutate(confirmDeleteId);
+            setConfirmDeleteId(null);
+          }}
+        />
+      )}
+
+      {confirmBulkDelete && (
+        <AdminConfirmModal
+          title="Delete selected audiobooks?"
+          description={`This will permanently delete ${selected.size} selected audiobook${selected.size === 1 ? '' : 's'}, all chapters, and uploaded files.`}
+          confirmLabel="Delete Selected"
+          onClose={() => setConfirmBulkDelete(false)}
+          onConfirm={() => {
+            void Promise.all(Array.from(selected).map((id) => deleteAudiobookMutation.mutateAsync(id)));
+            if (expandedId && selected.has(expandedId)) setExpandedId(null);
+            setSelected(new Set());
+            setConfirmBulkDelete(false);
+          }}
+        />
       )}
     </AdminLayout>
   );

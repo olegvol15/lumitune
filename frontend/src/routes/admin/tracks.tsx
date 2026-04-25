@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pencil, Trash2, Play, Plus, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import {
   useAdminTracksQuery,
@@ -10,6 +10,7 @@ import { useAdminAuthStore } from '../../store/adminAuthStore';
 import { useAdminTracksStore } from '../../store/adminTracksStore';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AdminCheckbox from '../../components/admin/AdminCheckbox';
+import AdminConfirmModal from '../../components/admin/AdminConfirmModal';
 import TrackModal from '../../components/admin/TrackModal';
 import SongCoverImage from '../../components/ui/SongCoverImage';
 import { formatDuration } from '../../utils/format';
@@ -62,6 +63,8 @@ function AdminTracksPage() {
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
   const pageIds = paginated.map((t) => t.id);
   const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
 
   const handleSelectAll = () => {
     if (allPageSelected) clearSelection();
@@ -106,16 +109,7 @@ function AdminTracksPage() {
         </div>
         {selected.size > 0 && (
           <button
-            onClick={async () => {
-              const tracksById = new Map(tracks.map((track) => [track.id, track]));
-              const songIds = Array.from(selected)
-                .map((id) => tracksById.get(id))
-                .filter((track): track is NonNullable<typeof track> => Boolean(track))
-                .map((track) => track.backendId || track.id);
-
-              await deleteSelectedTracksMutation.mutateAsync(songIds);
-              clearSelection();
-            }}
+            onClick={() => setConfirmBulkDelete(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
           >
             <Trash2 size={14} />
@@ -219,8 +213,8 @@ function AdminTracksPage() {
                       </button>
                       <button
                         title="Delete"
-                        onClick={async () => {
-                          await deleteTrackMutation.mutateAsync(track.backendId || track.id);
+                        onClick={() => {
+                          setConfirmDeleteId(track.id);
                           const nextSelected = new Set(selected);
                           nextSelected.delete(track.id);
                           if (selected.has(track.id)) {
@@ -282,6 +276,42 @@ function AdminTracksPage() {
 
       {/* Modal */}
       {modal.open && <TrackModal />}
+
+      {confirmDeleteId && (
+        <AdminConfirmModal
+          title="Delete track?"
+          description="This will permanently delete the track and remove it from the catalog."
+          confirmLabel="Delete"
+          onClose={() => setConfirmDeleteId(null)}
+          onConfirm={() => {
+            const target = tracks.find((track) => track.id === confirmDeleteId);
+            if (target) {
+              void deleteTrackMutation.mutateAsync(target.backendId || target.id);
+            }
+            setConfirmDeleteId(null);
+          }}
+        />
+      )}
+
+      {confirmBulkDelete && (
+        <AdminConfirmModal
+          title="Delete selected tracks?"
+          description={`This will permanently delete ${selected.size} selected track${selected.size === 1 ? '' : 's'} from the catalog.`}
+          confirmLabel="Delete Selected"
+          onClose={() => setConfirmBulkDelete(false)}
+          onConfirm={() => {
+            const tracksById = new Map(tracks.map((track) => [track.id, track]));
+            const songIds = Array.from(selected)
+              .map((id) => tracksById.get(id))
+              .filter((track): track is NonNullable<typeof track> => Boolean(track))
+              .map((track) => track.backendId || track.id);
+
+            void deleteSelectedTracksMutation.mutateAsync(songIds);
+            clearSelection();
+            setConfirmBulkDelete(false);
+          }}
+        />
+      )}
     </AdminLayout>
   );
 }

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Fragment, useEffect, useState } from 'react';
-import { Plus, Pencil, Trash2, ChevronDown, ChevronUp, Mic, PlayCircle } from 'lucide-react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Plus, Pencil, Trash2, ChevronDown, ChevronUp, Mic, PlayCircle, Search } from 'lucide-react';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 import {
   usePodcastsQuery,
@@ -10,6 +10,7 @@ import {
 import { usePodcastQuery } from '../../hooks/podcasts';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AdminCheckbox from '../../components/admin/AdminCheckbox';
+import AdminConfirmModal from '../../components/admin/AdminConfirmModal';
 import PodcastModal from '../../components/admin/PodcastModal';
 import EpisodeModal from '../../components/admin/EpisodeModal';
 import { formatLongDuration } from '../../utils/format';
@@ -134,36 +135,16 @@ function EpisodesPanel({ podcast }: { podcast: Podcast }) {
         )}
 
         {confirmDeleteId && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-            onClick={(e) => e.target === e.currentTarget && setConfirmDeleteId(null)}
-          >
-            <div className="w-full max-w-sm bg-[#1e2638] rounded-2xl overflow-hidden shadow-2xl">
-              <div className="px-6 py-5">
-                <h2 className="text-white font-semibold text-base mb-2">Delete episode?</h2>
-                <p className="text-[#7a8faa] text-sm">
-                  This will permanently delete the episode and its audio file.
-                </p>
-              </div>
-              <div className="px-6 py-4 border-t border-[#2a3a52] flex justify-end gap-3">
-                <button
-                  onClick={() => setConfirmDeleteId(null)}
-                  className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#2a3a52] hover:bg-[#354a62] transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    deleteMutation.mutate(confirmDeleteId);
-                    setConfirmDeleteId(null);
-                  }}
-                  className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
+          <AdminConfirmModal
+            title="Delete episode?"
+            description="This will permanently delete the episode and its audio file."
+            confirmLabel="Delete"
+            onClose={() => setConfirmDeleteId(null)}
+            onConfirm={() => {
+              deleteMutation.mutate(confirmDeleteId);
+              setConfirmDeleteId(null);
+            }}
+          />
         )}
       </td>
     </tr>
@@ -185,13 +166,25 @@ function AdminPodcastsPage() {
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
   const [podcastModal, setPodcastModal] = useState<{ open: boolean; mode: 'new' | 'edit'; podcast?: Podcast }>({
     open: false,
     mode: 'new',
   });
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState('');
 
-  const podcastIds = podcasts.map((podcast) => podcast.id);
+  const filteredPodcasts = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return podcasts;
+    return podcasts.filter((podcast) =>
+      [podcast.title, podcast.author, podcast.category ?? '', podcast.description]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(normalizedQuery))
+    );
+  }, [podcasts, query]);
+
+  const podcastIds = filteredPodcasts.map((podcast) => podcast.id);
   const allSelected = podcastIds.length > 0 && podcastIds.every((id) => selected.has(id));
 
   const toggleSelect = (id: string) => {
@@ -219,11 +212,7 @@ function AdminPodcastsPage() {
         <div className="flex items-center gap-3">
           {selected.size > 0 && (
             <button
-              onClick={async () => {
-                await Promise.all(Array.from(selected).map((id) => deletePodcastMutation.mutateAsync(id)));
-                setSelected(new Set());
-                if (expandedId && selected.has(expandedId)) setExpandedId(null);
-              }}
+              onClick={() => setConfirmBulkDelete(true)}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
             >
               <Trash2 size={14} />
@@ -237,6 +226,19 @@ function AdminPodcastsPage() {
             <Plus size={16} />
             New Podcast
           </button>
+        </div>
+      </div>
+
+      <div className="mb-4 flex items-center gap-3">
+        <div className="relative flex-1 max-w-xs">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8faa]" />
+          <input
+            type="text"
+            placeholder="Search podcasts…"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="w-full rounded-lg border border-[#2a3a52] bg-[#19233a] py-2 pl-8 pr-3 text-sm text-white placeholder:text-[#4a5a72] focus:outline-none focus:border-[#3dc9b0] transition-colors"
+          />
         </div>
       </div>
 
@@ -268,14 +270,14 @@ function AdminPodcastsPage() {
                   </td>
                 </tr>
               )}
-              {!isLoading && podcasts.length === 0 && (
+              {!isLoading && filteredPodcasts.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center py-10 text-[#7a8faa] text-sm">
-                    No podcasts yet. Click "New Podcast" to create one.
+                    {podcasts.length === 0 ? 'No podcasts yet. Click "New Podcast" to create one.' : 'No podcasts match your search.'}
                   </td>
                 </tr>
               )}
-              {podcasts.map((podcast) => (
+              {filteredPodcasts.map((podcast) => (
                 <Fragment key={podcast.id}>
                   <tr
                     className={`border-t border-[#2a3a52] transition-colors ${
@@ -367,38 +369,32 @@ function AdminPodcastsPage() {
       )}
 
       {confirmDeleteId && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-          onClick={(e) => e.target === e.currentTarget && setConfirmDeleteId(null)}
-        >
-          <div className="w-full max-w-sm bg-[#1e2638] rounded-2xl overflow-hidden shadow-2xl">
-            <div className="px-6 py-5">
-              <h2 className="text-white font-semibold text-base mb-2">Delete podcast?</h2>
-              <p className="text-[#7a8faa] text-sm">
-                This will permanently delete the podcast and all its episodes. This action cannot be
-                undone.
-              </p>
-            </div>
-            <div className="px-6 py-4 border-t border-[#2a3a52] flex justify-end gap-3">
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#2a3a52] hover:bg-[#354a62] transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  deletePodcastMutation.mutate(confirmDeleteId);
-                  setConfirmDeleteId(null);
-                  if (expandedId === confirmDeleteId) setExpandedId(null);
-                }}
-                className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <AdminConfirmModal
+          title="Delete podcast?"
+          description="This will permanently delete the podcast and all its episodes. This action cannot be undone."
+          confirmLabel="Delete"
+          onClose={() => setConfirmDeleteId(null)}
+          onConfirm={() => {
+            deletePodcastMutation.mutate(confirmDeleteId);
+            setConfirmDeleteId(null);
+            if (expandedId === confirmDeleteId) setExpandedId(null);
+          }}
+        />
+      )}
+
+      {confirmBulkDelete && (
+        <AdminConfirmModal
+          title="Delete selected podcasts?"
+          description={`This will permanently delete ${selected.size} selected podcast${selected.size === 1 ? '' : 's'} and all nested episodes.`}
+          confirmLabel="Delete Selected"
+          onClose={() => setConfirmBulkDelete(false)}
+          onConfirm={() => {
+            void Promise.all(Array.from(selected).map((id) => deletePodcastMutation.mutateAsync(id)));
+            if (expandedId && selected.has(expandedId)) setExpandedId(null);
+            setSelected(new Set());
+            setConfirmBulkDelete(false);
+          }}
+        />
       )}
     </AdminLayout>
   );

@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
-import { Disc3, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Disc3, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 import { useAlbumsQuery, useAdminDeleteAlbumMutation } from '../../hooks/albums';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AdminCheckbox from '../../components/admin/AdminCheckbox';
+import AdminConfirmModal from '../../components/admin/AdminConfirmModal';
 import AlbumModal from '../../components/admin/AlbumModal';
 import { formatLongDuration } from '../../utils/format';
 import type { Album } from '../../types';
@@ -36,9 +37,21 @@ function AdminAlbumsPage() {
     mode: 'new',
   });
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState('');
 
-  const albumIds = albums.map((album) => album.id);
+  const filteredAlbums = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return albums;
+    return albums.filter((album) =>
+      [album.title, album.artistName, album.genre, String(album.year ?? ''), album.description ?? '']
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(normalizedQuery))
+    );
+  }, [albums, query]);
+
+  const albumIds = filteredAlbums.map((album) => album.id);
   const allSelected = albumIds.length > 0 && albumIds.every((id) => selected.has(id));
 
   const toggleSelect = (id: string) => {
@@ -66,10 +79,7 @@ function AdminAlbumsPage() {
         <div className="flex items-center gap-3">
           {selected.size > 0 && (
             <button
-              onClick={async () => {
-                await Promise.all(Array.from(selected).map((id) => deleteMutation.mutateAsync(id)));
-                setSelected(new Set());
-              }}
+              onClick={() => setConfirmBulkDelete(true)}
               className="flex items-center gap-2 rounded-lg bg-[#f07282] px-4 py-2 text-sm font-semibold text-white hover:bg-[#d9606f] transition-colors"
             >
               <Trash2 size={14} />
@@ -83,6 +93,19 @@ function AdminAlbumsPage() {
             <Plus size={16} />
             New Album
           </button>
+        </div>
+      </div>
+
+      <div className="mb-4 flex items-center gap-3">
+        <div className="relative flex-1 max-w-xs">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8faa]" />
+          <input
+            type="text"
+            placeholder="Search albums…"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="w-full rounded-lg border border-[#2a3a52] bg-[#19233a] py-2 pl-8 pr-3 text-sm text-white placeholder:text-[#4a5a72] focus:outline-none focus:border-[#3dc9b0] transition-colors"
+          />
         </div>
       </div>
 
@@ -113,14 +136,14 @@ function AdminAlbumsPage() {
                   </td>
                 </tr>
               )}
-              {!isLoading && albums.length === 0 && (
+              {!isLoading && filteredAlbums.length === 0 && (
                 <tr>
                   <td colSpan={7} className="py-10 text-center text-sm text-[#7a8faa]">
-                    No albums yet. Click "New Album" to create one.
+                    {albums.length === 0 ? 'No albums yet. Click "New Album" to create one.' : 'No albums match your search.'}
                   </td>
                 </tr>
               )}
-              {albums.map((album) => (
+              {filteredAlbums.map((album) => (
                 <tr key={album.id} className={`border-t border-[#2a3a52] transition-colors ${selected.has(album.id) ? 'bg-[#253050]' : 'hover:bg-[#253050]/50'}`}>
                   <td className={tdCenterClass}>
                     <AdminCheckbox checked={selected.has(album.id)} onChange={() => toggleSelect(album.id)} />
@@ -180,36 +203,30 @@ function AdminAlbumsPage() {
       )}
 
       {confirmDeleteId && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-          onClick={(event) => event.target === event.currentTarget && setConfirmDeleteId(null)}
-        >
-          <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-[#1e2638] shadow-2xl">
-            <div className="px-6 py-5">
-              <h2 className="mb-2 text-base font-semibold text-white">Delete album?</h2>
-              <p className="text-sm text-[#7a8faa]">
-                This will permanently delete the album and remove track associations.
-              </p>
-            </div>
-            <div className="flex justify-end gap-3 border-t border-[#2a3a52] px-6 py-4">
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                className="rounded-lg bg-[#2a3a52] px-5 py-2 text-sm font-semibold text-white hover:bg-[#354a62] transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  deleteMutation.mutate(confirmDeleteId);
-                  setConfirmDeleteId(null);
-                }}
-                className="rounded-lg bg-[#f07282] px-5 py-2 text-sm font-semibold text-white hover:bg-[#d9606f] transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <AdminConfirmModal
+          title="Delete album?"
+          description="This will permanently delete the album and remove track associations."
+          confirmLabel="Delete"
+          onClose={() => setConfirmDeleteId(null)}
+          onConfirm={() => {
+            deleteMutation.mutate(confirmDeleteId);
+            setConfirmDeleteId(null);
+          }}
+        />
+      )}
+
+      {confirmBulkDelete && (
+        <AdminConfirmModal
+          title="Delete selected albums?"
+          description={`This will permanently delete ${selected.size} selected album${selected.size === 1 ? '' : 's'}.`}
+          confirmLabel="Delete Selected"
+          onClose={() => setConfirmBulkDelete(false)}
+          onConfirm={() => {
+            void Promise.all(Array.from(selected).map((id) => deleteMutation.mutateAsync(id)));
+            setSelected(new Set());
+            setConfirmBulkDelete(false);
+          }}
+        />
       )}
     </AdminLayout>
   );
