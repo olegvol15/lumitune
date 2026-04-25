@@ -23,6 +23,7 @@ import adminPodcastRoutes from './routes/admin-podcast.routes';
 import audiobookRoutes from './routes/audiobook.routes';
 import adminAudiobookRoutes from './routes/admin-audiobook.routes';
 import adminUserRoutes from './routes/admin-user.routes';
+import adminDashboardRoutes from './routes/admin-dashboard.routes';
 
 import { errorHandler } from './middleware/error.middleware';
 
@@ -68,6 +69,7 @@ app.use('/api/admin/podcasts', adminPodcastRoutes);
 app.use('/api/audiobooks', audiobookRoutes);
 app.use('/api/admin/audiobooks', adminAudiobookRoutes);
 app.use('/api/admin/users', adminUserRoutes);
+app.use('/api/admin/dashboard', adminDashboardRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {

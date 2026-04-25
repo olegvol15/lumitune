@@ -4,6 +4,9 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 export default defineConfig({
   plugins: [tanstackRouter() as PluginOption, react()],
+  optimizeDeps: {
+    include: ['recharts'],
+  },
   server: {
     proxy: {
       '/api': {

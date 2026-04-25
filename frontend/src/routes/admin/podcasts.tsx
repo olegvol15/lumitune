@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2, ChevronDown, ChevronUp, Mic, PlayCircle } from 'lucide-react';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 import {
@@ -9,6 +9,7 @@ import {
 } from '../../hooks/podcasts';
 import { usePodcastQuery } from '../../hooks/podcasts';
 import AdminLayout from '../../components/admin/AdminLayout';
+import AdminCheckbox from '../../components/admin/AdminCheckbox';
 import PodcastModal from '../../components/admin/PodcastModal';
 import EpisodeModal from '../../components/admin/EpisodeModal';
 import { formatLongDuration } from '../../utils/format';
@@ -18,8 +19,12 @@ export const Route = createFileRoute('/admin/podcasts')({ component: AdminPodcas
 
 const thClass =
   'px-3 py-3 text-left text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
+const thCenterClass =
+  'px-3 py-3 text-center text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
 const tdClass = 'px-3 py-3 text-sm text-white whitespace-nowrap';
 const tdMuted = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap';
+const tdCenterClass = 'px-3 py-3 text-sm text-white whitespace-nowrap text-center';
+const tdMutedCenter = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap text-center';
 
 // ── Episodes sub-panel ──────────────────────────────────────────────────────
 function EpisodesPanel({ podcast }: { podcast: Podcast }) {
@@ -184,6 +189,23 @@ function AdminPodcastsPage() {
     open: false,
     mode: 'new',
   });
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const podcastIds = podcasts.map((podcast) => podcast.id);
+  const allSelected = podcastIds.length > 0 && podcastIds.every((id) => selected.has(id));
+
+  const toggleSelect = (id: string) => {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelected(allSelected ? new Set() : new Set(podcastIds));
+  };
 
   if (!isBootstrapped || !isAuthenticated) return null;
 
@@ -194,13 +216,28 @@ function AdminPodcastsPage() {
           <Mic size={18} className="text-[#3dc9b0]" />
           <h1 className="text-white font-semibold text-xl">Podcasts</h1>
         </div>
-        <button
-          onClick={() => setPodcastModal({ open: true, mode: 'new' })}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] transition-colors"
-        >
-          <Plus size={16} />
-          New Podcast
-        </button>
+        <div className="flex items-center gap-3">
+          {selected.size > 0 && (
+            <button
+              onClick={async () => {
+                await Promise.all(Array.from(selected).map((id) => deletePodcastMutation.mutateAsync(id)));
+                setSelected(new Set());
+                if (expandedId && selected.has(expandedId)) setExpandedId(null);
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
+            >
+              <Trash2 size={14} />
+              Delete Selected ({selected.size})
+            </button>
+          )}
+          <button
+            onClick={() => setPodcastModal({ open: true, mode: 'new' })}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] transition-colors"
+          >
+            <Plus size={16} />
+            New Podcast
+          </button>
+        </div>
       </div>
 
       <div className="bg-[#1e2638] rounded-xl border border-[#2a3a52] overflow-hidden">
@@ -213,36 +250,41 @@ function AdminPodcastsPage() {
           <table className="w-full min-w-[700px]">
             <thead className="border-b border-[#2a3a52]">
               <tr>
+                <th className={thCenterClass} style={{ width: 40 }}>
+                  <AdminCheckbox checked={allSelected} onChange={handleSelectAll} />
+                </th>
                 <th className={thClass}>Podcast</th>
                 <th className={thClass}>Author</th>
-                <th className={thClass}>Category</th>
-                <th className={thClass}>Episodes</th>
-                <th className={thClass} style={{ width: 120 }}></th>
+                <th className={thCenterClass}>Category</th>
+                <th className={thCenterClass}>Episodes</th>
+                <th className={thCenterClass} style={{ width: 120 }}></th>
               </tr>
             </thead>
             <tbody>
               {isLoading && (
                 <tr>
-                  <td colSpan={5} className="text-center py-10 text-[#7a8faa] text-sm">
+                  <td colSpan={6} className="text-center py-10 text-[#7a8faa] text-sm">
                     Loading podcasts…
                   </td>
                 </tr>
               )}
               {!isLoading && podcasts.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="text-center py-10 text-[#7a8faa] text-sm">
+                  <td colSpan={6} className="text-center py-10 text-[#7a8faa] text-sm">
                     No podcasts yet. Click "New Podcast" to create one.
                   </td>
                 </tr>
               )}
               {podcasts.map((podcast) => (
-                <>
+                <Fragment key={podcast.id}>
                   <tr
-                    key={podcast.id}
                     className={`border-t border-[#2a3a52] transition-colors ${
-                      expandedId === podcast.id ? 'bg-[#253050]' : 'hover:bg-[#253050]/50'
+                      selected.has(podcast.id) || expandedId === podcast.id ? 'bg-[#253050]' : 'hover:bg-[#253050]/50'
                     }`}
                   >
+                    <td className={tdCenterClass}>
+                      <AdminCheckbox checked={selected.has(podcast.id)} onChange={() => toggleSelect(podcast.id)} />
+                    </td>
                     <td className={tdClass}>
                       <div className="flex items-center gap-3">
                         <img
@@ -258,7 +300,7 @@ function AdminPodcastsPage() {
                       </div>
                     </td>
                     <td className={tdMuted}>{podcast.author}</td>
-                    <td className={tdMuted}>
+                    <td className={tdMutedCenter}>
                       {podcast.category ? (
                         <span className="px-2 py-0.5 rounded text-xs bg-[#2a3a52] text-[#7a8faa]">
                           {podcast.category}
@@ -267,10 +309,10 @@ function AdminPodcastsPage() {
                         '—'
                       )}
                     </td>
-                    <td className={tdMuted}>
+                    <td className={tdMutedCenter}>
                       <button
                         onClick={() => setExpandedId(expandedId === podcast.id ? null : podcast.id)}
-                        className="flex items-center gap-1.5 text-[#3dc9b0] hover:text-[#35b09a] transition-colors text-xs font-medium"
+                        className="mx-auto flex items-center gap-1.5 text-[#3dc9b0] hover:text-[#35b09a] transition-colors text-xs font-medium"
                       >
                         <PlayCircle size={14} />
                         Episodes
@@ -281,8 +323,8 @@ function AdminPodcastsPage() {
                         )}
                       </button>
                     </td>
-                    <td className={tdClass}>
-                      <div className="flex items-center gap-1">
+                    <td className={tdCenterClass}>
+                      <div className="flex items-center justify-center gap-1">
                         <button
                           title="Edit"
                           onClick={() => setPodcastModal({ open: true, mode: 'edit', podcast })}
@@ -292,7 +334,14 @@ function AdminPodcastsPage() {
                         </button>
                         <button
                           title="Delete"
-                          onClick={() => setConfirmDeleteId(podcast.id)}
+                          onClick={() => {
+                            setConfirmDeleteId(podcast.id);
+                            setSelected((current) => {
+                              const next = new Set(current);
+                              next.delete(podcast.id);
+                              return next;
+                            });
+                          }}
                           className="p-1.5 rounded-lg text-[#7a8faa] hover:text-[#f07282] hover:bg-[#2a3a52] transition-colors"
                         >
                           <Trash2 size={14} />
@@ -302,7 +351,7 @@ function AdminPodcastsPage() {
                   </tr>
 
                   {expandedId === podcast.id && <EpisodesPanel podcast={podcast} />}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>

@@ -9,6 +9,7 @@ import {
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 import { useAdminTracksStore } from '../../store/adminTracksStore';
 import AdminLayout from '../../components/admin/AdminLayout';
+import AdminCheckbox from '../../components/admin/AdminCheckbox';
 import TrackModal from '../../components/admin/TrackModal';
 import SongCoverImage from '../../components/ui/SongCoverImage';
 import { formatDuration } from '../../utils/format';
@@ -71,8 +72,11 @@ function AdminTracksPage() {
 
   const thClass =
     'px-3 py-3 text-left text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
+  const thCenterClass =
+    'px-3 py-3 text-center text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
   const tdClass = 'px-3 py-3 text-sm text-white whitespace-nowrap';
-  const tdMuted = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap';
+  const tdCenterClass = 'px-3 py-3 text-sm text-white whitespace-nowrap text-center';
+  const tdMutedCenter = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap text-center';
 
   return (
     <AdminLayout>
@@ -129,25 +133,23 @@ function AdminTracksPage() {
           <table className="w-full min-w-[900px]">
             <thead className="border-b border-[#2a3a52]">
               <tr>
-                <th className={thClass} style={{ width: 40 }}>
-                  <input
-                    type="checkbox"
+                <th className={thCenterClass} style={{ width: 40 }}>
+                  <AdminCheckbox
                     checked={allPageSelected}
                     onChange={handleSelectAll}
-                    className="accent-[#3dc9b0] cursor-pointer"
                   />
                 </th>
                 <th className={thClass}>Name</th>
-                <th className={thClass}>ArtistId</th>
-                <th className={thClass}>GenreId</th>
-                <th className={thClass}>TagsId</th>
-                <th className={thClass}>AlbumId</th>
-                <th className={thClass}>SeqNum</th>
-                <th className={thClass}>PlaysNum</th>
-                <th className={thClass}>Adult</th>
-                <th className={thClass}>ID</th>
-                <th className={thClass}>Time</th>
-                <th className={thClass} style={{ width: 100 }}></th>
+                <th className={thCenterClass}>ArtistId</th>
+                <th className={thCenterClass}>GenreId</th>
+                <th className={thCenterClass}>TagsId</th>
+                <th className={thCenterClass}>AlbumId</th>
+                <th className={thCenterClass}>SeqNum</th>
+                <th className={thCenterClass}>PlaysNum</th>
+                <th className={thCenterClass}>Adult</th>
+                <th className={thCenterClass}>ID</th>
+                <th className={thCenterClass}>Time</th>
+                <th className={thCenterClass} style={{ width: 100 }}></th>
               </tr>
             </thead>
             <tbody>
@@ -165,12 +167,10 @@ function AdminTracksPage() {
                     selected.has(track.id) ? 'bg-[#253050]' : 'hover:bg-[#253050]/50'
                   }`}
                 >
-                  <td className={tdClass}>
-                    <input
-                      type="checkbox"
+                  <td className={tdCenterClass}>
+                    <AdminCheckbox
                       checked={selected.has(track.id)}
                       onChange={() => toggleSelect(track.id)}
-                      className="accent-[#3dc9b0] cursor-pointer"
                     />
                   </td>
                   <td className={tdClass}>
@@ -183,15 +183,15 @@ function AdminTracksPage() {
                       <span className="truncate max-w-[140px]">{track.title}</span>
                     </div>
                   </td>
-                  <td className={tdMuted}>{track.artistId || '—'}</td>
-                  <td className={tdMuted}>{track.genreId || '—'}</td>
-                  <td className={tdMuted}>{track.tagsId || '—'}</td>
-                  <td className={tdMuted}>{track.albumId || '—'}</td>
-                  <td className={tdMuted}>{track.seqNum}</td>
-                  <td className={tdMuted}>{track.playCount.toLocaleString()}</td>
-                  <td className={tdMuted}>
+                  <td className={tdMutedCenter}>{track.artistId || '—'}</td>
+                  <td className={tdMutedCenter}>{track.genreId || '—'}</td>
+                  <td className={tdMutedCenter}>{track.tagsId || '—'}</td>
+                  <td className={tdMutedCenter}>{track.albumId || '—'}</td>
+                  <td className={tdMutedCenter}>{track.seqNum}</td>
+                  <td className={tdMutedCenter}>{track.playCount.toLocaleString()}</td>
+                  <td className={tdMutedCenter}>
                     <span
-                      className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      className={`inline-flex min-w-[54px] items-center justify-center px-2 py-0.5 rounded text-xs font-medium ${
                         track.adult
                           ? 'bg-[#f07282]/20 text-[#f07282]'
                           : 'bg-[#2a3a52] text-[#7a8faa]'
@@ -200,10 +200,10 @@ function AdminTracksPage() {
                       {track.adult ? 'Yes' : 'No'}
                     </span>
                   </td>
-                  <td className={`${tdMuted} font-mono text-xs`}>{track.id}</td>
-                  <td className={tdMuted}>{formatDuration(track.duration)}</td>
-                  <td className={tdClass}>
-                    <div className="flex items-center gap-1">
+                  <td className={`${tdMutedCenter} font-mono text-xs`}>{track.id}</td>
+                  <td className={tdMutedCenter}>{formatDuration(track.duration)}</td>
+                  <td className={tdCenterClass}>
+                    <div className="flex items-center justify-center gap-1">
                       <button
                         title="Play"
                         className="p-1.5 rounded-lg text-[#7a8faa] hover:text-[#3dc9b0] hover:bg-[#2a3a52] transition-colors"

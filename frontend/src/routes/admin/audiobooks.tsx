@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { BookOpen, ChevronDown, ChevronUp, Pencil, PlayCircle, Plus, Trash2 } from 'lucide-react';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 import {
@@ -9,6 +9,7 @@ import {
   useAudiobookQuery,
 } from '../../hooks/audiobooks';
 import AdminLayout from '../../components/admin/AdminLayout';
+import AdminCheckbox from '../../components/admin/AdminCheckbox';
 import AudiobookModal from '../../components/admin/AudiobookModal';
 import AudiobookChapterModal from '../../components/admin/AudiobookChapterModal';
 import { formatLongDuration } from '../../utils/format';
@@ -18,8 +19,12 @@ export const Route = createFileRoute('/admin/audiobooks')({ component: AdminAudi
 
 const thClass =
   'px-3 py-3 text-left text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
+const thCenterClass =
+  'px-3 py-3 text-center text-xs font-semibold text-[#7a8faa] uppercase tracking-wide whitespace-nowrap';
 const tdClass = 'px-3 py-3 text-sm text-white whitespace-nowrap';
 const tdMuted = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap';
+const tdCenterClass = 'px-3 py-3 text-sm text-white whitespace-nowrap text-center';
+const tdMutedCenter = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap text-center';
 
 function ChaptersPanel({ audiobook }: { audiobook: Audiobook }) {
   const { data, isLoading } = useAudiobookQuery(audiobook.id);
@@ -182,6 +187,23 @@ function AdminAudiobooksPage() {
     mode: 'new' | 'edit';
     audiobook?: Audiobook;
   }>({ open: false, mode: 'new' });
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const audiobookIds = audiobooks.map((audiobook) => audiobook.id);
+  const allSelected = audiobookIds.length > 0 && audiobookIds.every((id) => selected.has(id));
+
+  const toggleSelect = (id: string) => {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelected(allSelected ? new Set() : new Set(audiobookIds));
+  };
 
   if (!isBootstrapped || !isAuthenticated) return null;
 
@@ -192,13 +214,28 @@ function AdminAudiobooksPage() {
           <BookOpen size={18} className="text-[#3dc9b0]" />
           <h1 className="text-white font-semibold text-xl">Audiobooks</h1>
         </div>
-        <button
-          onClick={() => setAudiobookModal({ open: true, mode: 'new' })}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] transition-colors"
-        >
-          <Plus size={16} />
-          New Audiobook
-        </button>
+        <div className="flex items-center gap-3">
+          {selected.size > 0 && (
+            <button
+              onClick={async () => {
+                await Promise.all(Array.from(selected).map((id) => deleteAudiobookMutation.mutateAsync(id)));
+                setSelected(new Set());
+                if (expandedId && selected.has(expandedId)) setExpandedId(null);
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#f07282] hover:bg-[#d9606f] transition-colors"
+            >
+              <Trash2 size={14} />
+              Delete Selected ({selected.size})
+            </button>
+          )}
+          <button
+            onClick={() => setAudiobookModal({ open: true, mode: 'new' })}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] transition-colors"
+          >
+            <Plus size={16} />
+            New Audiobook
+          </button>
+        </div>
       </div>
 
       <div className="bg-[#1e2638] rounded-xl border border-[#2a3a52] overflow-hidden">
@@ -209,35 +246,40 @@ function AdminAudiobooksPage() {
           <table className="w-full min-w-[760px]">
             <thead className="border-b border-[#2a3a52]">
               <tr>
+                <th className={thCenterClass} style={{ width: 40 }}>
+                  <AdminCheckbox checked={allSelected} onChange={handleSelectAll} />
+                </th>
                 <th className={thClass}>Audiobook</th>
                 <th className={thClass}>Author</th>
-                <th className={thClass}>Genre</th>
-                <th className={thClass}>Duration</th>
-                <th className={thClass}>Chapters</th>
-                <th className={thClass} style={{ width: 120 }}></th>
+                <th className={thCenterClass}>Genre</th>
+                <th className={thCenterClass}>Duration</th>
+                <th className={thCenterClass}>Chapters</th>
+                <th className={thCenterClass} style={{ width: 120 }}></th>
               </tr>
             </thead>
             <tbody>
               {isLoading && (
                 <tr>
-                  <td colSpan={6} className="text-center py-10 text-[#7a8faa] text-sm">Loading audiobooks…</td>
+                  <td colSpan={7} className="text-center py-10 text-[#7a8faa] text-sm">Loading audiobooks…</td>
                 </tr>
               )}
               {!isLoading && audiobooks.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="text-center py-10 text-[#7a8faa] text-sm">
+                  <td colSpan={7} className="text-center py-10 text-[#7a8faa] text-sm">
                     No audiobooks yet. Click "New Audiobook" to create one.
                   </td>
                 </tr>
               )}
               {audiobooks.map((audiobook) => (
-                <>
+                <Fragment key={audiobook.id}>
                   <tr
-                    key={audiobook.id}
                     className={`border-t border-[#2a3a52] transition-colors ${
-                      expandedId === audiobook.id ? 'bg-[#253050]' : 'hover:bg-[#253050]/50'
+                      selected.has(audiobook.id) || expandedId === audiobook.id ? 'bg-[#253050]' : 'hover:bg-[#253050]/50'
                     }`}
                   >
+                    <td className={tdCenterClass}>
+                      <AdminCheckbox checked={selected.has(audiobook.id)} onChange={() => toggleSelect(audiobook.id)} />
+                    </td>
                     <td className={tdClass}>
                       <div className="flex items-center gap-3">
                         <img
@@ -249,20 +291,20 @@ function AdminAudiobooksPage() {
                       </div>
                     </td>
                     <td className={tdMuted}>{audiobook.author}</td>
-                    <td className={tdMuted}>{audiobook.genre || '—'}</td>
-                    <td className={tdMuted}>{formatLongDuration(audiobook.duration)}</td>
-                    <td className={tdMuted}>
+                    <td className={tdMutedCenter}>{audiobook.genre || '—'}</td>
+                    <td className={tdMutedCenter}>{formatLongDuration(audiobook.duration)}</td>
+                    <td className={tdMutedCenter}>
                       <button
                         onClick={() => setExpandedId(expandedId === audiobook.id ? null : audiobook.id)}
-                        className="flex items-center gap-1.5 text-[#3dc9b0] hover:text-[#35b09a] transition-colors text-xs font-medium"
+                        className="mx-auto flex items-center gap-1.5 text-[#3dc9b0] hover:text-[#35b09a] transition-colors text-xs font-medium"
                       >
                         <PlayCircle size={14} />
                         Chapters
                         {expandedId === audiobook.id ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                       </button>
                     </td>
-                    <td className={tdClass}>
-                      <div className="flex items-center gap-1">
+                    <td className={tdCenterClass}>
+                      <div className="flex items-center justify-center gap-1">
                         <button
                           title="Edit"
                           onClick={() => setAudiobookModal({ open: true, mode: 'edit', audiobook })}
@@ -272,7 +314,14 @@ function AdminAudiobooksPage() {
                         </button>
                         <button
                           title="Delete"
-                          onClick={() => setConfirmDeleteId(audiobook.id)}
+                          onClick={() => {
+                            setConfirmDeleteId(audiobook.id);
+                            setSelected((current) => {
+                              const next = new Set(current);
+                              next.delete(audiobook.id);
+                              return next;
+                            });
+                          }}
                           className="p-1.5 rounded-lg text-[#7a8faa] hover:text-[#f07282] hover:bg-[#2a3a52] transition-colors"
                         >
                           <Trash2 size={14} />
@@ -281,7 +330,7 @@ function AdminAudiobooksPage() {
                     </td>
                   </tr>
                   {expandedId === audiobook.id && <ChaptersPanel audiobook={audiobook} />}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>
