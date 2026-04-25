@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect, useMemo, useState } from 'react';
-import { Disc3, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { ChevronDown, ChevronUp, Disc3, Music2, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
-import { useAlbumsQuery, useAdminDeleteAlbumMutation } from '../../hooks/albums';
+import { useAlbumQuery, useAlbumsQuery, useAdminDeleteAlbumMutation } from '../../hooks/albums';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AdminCheckbox from '../../components/admin/AdminCheckbox';
 import AdminConfirmModal from '../../components/admin/AdminConfirmModal';
@@ -21,6 +21,80 @@ const tdMuted = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap';
 const tdCenterClass = 'px-3 py-3 text-sm text-white whitespace-nowrap text-center';
 const tdMutedCenter = 'px-3 py-3 text-sm text-[#7a8faa] whitespace-nowrap text-center';
 
+function TracksPanel({
+  album,
+  onManageTracks,
+}: {
+  album: Album;
+  onManageTracks: (album: Album) => void;
+}) {
+  const { data, isLoading, error } = useAlbumQuery(album.id);
+  const tracks = data?.tracks ?? [];
+
+  return (
+    <tr>
+      <td colSpan={7} className="px-0 pb-0">
+        <div className="mx-3 mb-3 overflow-hidden rounded-xl border border-[#2a3a52] bg-[#151d2e]">
+          <div className="flex items-center justify-between border-b border-[#2a3a52] px-4 py-2.5">
+            <span className="text-[#7a8faa] text-xs font-semibold uppercase tracking-wide">
+              Tracks — {album.title}
+            </span>
+            <button
+              onClick={() => onManageTracks(album)}
+              className="flex items-center gap-1.5 rounded-lg bg-[#3dc9b0] px-3 py-1.5 text-xs font-semibold text-[#1a2030] transition-colors hover:bg-[#35b09a]"
+            >
+              <Plus size={13} />
+              Manage Tracks
+            </button>
+          </div>
+
+          {isLoading ? (
+            <div className="px-4 py-4 text-xs text-[#7a8faa]">Loading…</div>
+          ) : error instanceof Error ? (
+            <div className="px-4 py-4 text-xs text-red-300">{error.message}</div>
+          ) : tracks.length === 0 ? (
+            <div className="px-4 py-4 text-xs text-[#7a8faa]">
+              No related tracks yet. Click "Manage Tracks" to attach tracks to this album.
+            </div>
+          ) : (
+            <table className="w-full">
+              <thead className="border-b border-[#2a3a52]">
+                <tr>
+                  <th className={thClass}>#</th>
+                  <th className={thClass}>Track</th>
+                  <th className={thClass}>Artist</th>
+                  <th className={thClass}>Duration</th>
+                  <th className={thClass}>Plays</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tracks.map((track, index) => (
+                  <tr key={track.id} className="border-t border-[#2a3a52] hover:bg-[#1e2840]/50">
+                    <td className={tdMuted}>{index + 1}</td>
+                    <td className={tdClass}>
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={track.albumCover}
+                          alt={track.title}
+                          className="h-7 w-7 shrink-0 rounded object-cover"
+                        />
+                        <span className="max-w-[240px] truncate">{track.title}</span>
+                      </div>
+                    </td>
+                    <td className={tdMuted}>{track.artistName}</td>
+                    <td className={tdMuted}>{formatLongDuration(track.duration)}</td>
+                    <td className={tdMuted}>{track.playCount.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 function AdminAlbumsPage() {
   const navigate = useNavigate();
   const isAuthenticated = useAdminAuthStore((s) => s.isAuthenticated);
@@ -32,6 +106,7 @@ function AdminAlbumsPage() {
 
   const { data: albums = [], isLoading, error } = useAlbumsQuery();
   const deleteMutation = useAdminDeleteAlbumMutation();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [albumModal, setAlbumModal] = useState<{ open: boolean; mode: 'new' | 'edit'; album?: Album }>({
     open: false,
     mode: 'new',
@@ -144,50 +219,68 @@ function AdminAlbumsPage() {
                 </tr>
               )}
               {filteredAlbums.map((album) => (
-                <tr key={album.id} className={`border-t border-[#2a3a52] transition-colors ${selected.has(album.id) ? 'bg-[#253050]' : 'hover:bg-[#253050]/50'}`}>
-                  <td className={tdCenterClass}>
-                    <AdminCheckbox checked={selected.has(album.id)} onChange={() => toggleSelect(album.id)} />
-                  </td>
-                  <td className={tdClass}>
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={album.coverUrl}
-                        alt={album.title}
-                        className="h-9 w-9 rounded-lg object-contain bg-black/10 shrink-0"
-                      />
-                      <span className="max-w-[180px] truncate font-medium">{album.title}</span>
-                    </div>
-                  </td>
-                  <td className={tdMuted}>{album.artistName}</td>
-                  <td className={tdMutedCenter}>{album.genre || '—'}</td>
-                  <td className={tdMutedCenter}>{formatLongDuration(album.duration ?? 0)}</td>
-                  <td className={tdMutedCenter}>{album.trackCount ?? album.trackIds.length}</td>
-                  <td className={tdCenterClass}>
-                    <div className="flex items-center justify-center gap-1">
+                <Fragment key={album.id}>
+                  <tr className={`border-t border-[#2a3a52] transition-colors ${selected.has(album.id) || expandedId === album.id ? 'bg-[#253050]' : 'hover:bg-[#253050]/50'}`}>
+                    <td className={tdCenterClass}>
+                      <AdminCheckbox checked={selected.has(album.id)} onChange={() => toggleSelect(album.id)} />
+                    </td>
+                    <td className={tdClass}>
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={album.coverUrl}
+                          alt={album.title}
+                          className="h-9 w-9 rounded-lg object-contain bg-black/10 shrink-0"
+                        />
+                        <span className="max-w-[180px] truncate font-medium">{album.title}</span>
+                      </div>
+                    </td>
+                    <td className={tdMuted}>{album.artistName}</td>
+                    <td className={tdMutedCenter}>{album.genre || '—'}</td>
+                    <td className={tdMutedCenter}>{formatLongDuration(album.duration ?? 0)}</td>
+                    <td className={tdMutedCenter}>
                       <button
-                        title="Edit"
-                        onClick={() => setAlbumModal({ open: true, mode: 'edit', album })}
-                        className="rounded-lg p-1.5 text-[#7a8faa] hover:bg-[#2a3a52] hover:text-white transition-colors"
+                        onClick={() => setExpandedId(expandedId === album.id ? null : album.id)}
+                        className="mx-auto flex items-center gap-1.5 text-xs font-medium text-[#3dc9b0] transition-colors hover:text-[#35b09a]"
                       >
-                        <Pencil size={14} />
+                        <Music2 size={14} />
+                        Tracks
+                        {expandedId === album.id ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                       </button>
-                      <button
-                        title="Delete"
-                        onClick={() => {
-                          setConfirmDeleteId(album.id);
-                          setSelected((current) => {
-                            const next = new Set(current);
-                            next.delete(album.id);
-                            return next;
-                          });
-                        }}
-                        className="rounded-lg p-1.5 text-[#7a8faa] hover:bg-[#2a3a52] hover:text-[#f07282] transition-colors"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                    <td className={tdCenterClass}>
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          title="Edit"
+                          onClick={() => setAlbumModal({ open: true, mode: 'edit', album })}
+                          className="rounded-lg p-1.5 text-[#7a8faa] hover:bg-[#2a3a52] hover:text-white transition-colors"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          title="Delete"
+                          onClick={() => {
+                            setConfirmDeleteId(album.id);
+                            setSelected((current) => {
+                              const next = new Set(current);
+                              next.delete(album.id);
+                              return next;
+                            });
+                          }}
+                          className="rounded-lg p-1.5 text-[#7a8faa] hover:bg-[#2a3a52] hover:text-[#f07282] transition-colors"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  {expandedId === album.id && (
+                    <TracksPanel
+                      album={album}
+                      onManageTracks={(targetAlbum) => setAlbumModal({ open: true, mode: 'edit', album: targetAlbum })}
+                    />
+                  )}
+                </Fragment>
               ))}
             </tbody>
           </table>
@@ -210,6 +303,7 @@ function AdminAlbumsPage() {
           onClose={() => setConfirmDeleteId(null)}
           onConfirm={() => {
             deleteMutation.mutate(confirmDeleteId);
+            if (expandedId === confirmDeleteId) setExpandedId(null);
             setConfirmDeleteId(null);
           }}
         />
@@ -223,6 +317,7 @@ function AdminAlbumsPage() {
           onClose={() => setConfirmBulkDelete(false)}
           onConfirm={() => {
             void Promise.all(Array.from(selected).map((id) => deleteMutation.mutateAsync(id)));
+            if (expandedId && selected.has(expandedId)) setExpandedId(null);
             setSelected(new Set());
             setConfirmBulkDelete(false);
           }}

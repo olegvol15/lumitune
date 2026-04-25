@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { X, Upload } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Music2, Image as ImageIcon, X, Upload } from 'lucide-react';
 import { useAdminTracksStore } from '../../store/adminTracksStore';
 import { useSaveAdminTrackMutation } from '../../hooks/tracks';
 import type { AdminTrack } from '../../types/admin/admin-tracks.types';
@@ -36,19 +36,41 @@ export default function TrackModal() {
   const [form, setForm] = useState<AdminTrack | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState('/vite.svg');
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const saveTrackMutation = useSaveAdminTrackMutation();
   const albumsQuery = useAlbumsQuery();
+  const availableAlbums = albumsQuery.data ?? [];
 
   useEffect(() => {
     if (track) {
       setForm({ ...track });
       setAudioFile(null);
       setCoverFile(null);
+      setCoverPreviewUrl(track.albumCover || '/vite.svg');
       setError(null);
     }
   }, [track]);
+  const selectedAlbum = availableAlbums.find((album) => album.id === (form?.albumId ?? ''));
+  const titleError = !form?.title.trim() ? 'Track title is required' : null;
+  const audioError = mode === 'new' && !audioFile ? 'Audio file is required for new tracks' : null;
+
+  useEffect(() => {
+    if (!coverFile) {
+      setCoverPreviewUrl(form?.albumCover || selectedAlbum?.coverUrl || '/vite.svg');
+      return undefined;
+    }
+    const objectUrl = URL.createObjectURL(coverFile);
+    setCoverPreviewUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [coverFile, form?.albumCover, selectedAlbum?.coverUrl]);
+
+  const audioSummary = useMemo(() => {
+    if (audioFile) return audioFile.name;
+    if (mode === 'edit' && form?.sourceFilePath) return form.sourceFilePath.split('/').pop() || 'Current audio file';
+    return 'No audio file selected';
+  }, [audioFile, form?.sourceFilePath, mode]);
 
   if (!open || !form) return null;
 
@@ -56,7 +78,7 @@ export default function TrackModal() {
     setForm((prev) => (prev ? { ...prev, [field]: value } : prev));
 
   const handleAlbumChange = (albumId: string) => {
-    const album = (albumsQuery.data ?? []).find((a) => a.id === albumId);
+    const album = availableAlbums.find((a) => a.id === albumId);
     setForm((prev) =>
       prev
         ? {
@@ -64,13 +86,22 @@ export default function TrackModal() {
             albumId,
             albumTitle: album?.title ?? '',
             albumCover: album?.coverUrl ?? '',
+            artistName: album?.artistName ?? prev.artistName,
+            artistId: album?.artistName ?? prev.artistId,
           }
         : prev
     );
   };
 
   const handleSave = async () => {
-    if (!form.title.trim()) return;
+    if (!form.title.trim()) {
+      setError('Track title is required');
+      return;
+    }
+    if (mode === 'new' && !audioFile) {
+      setError('Audio file is required for new tracks');
+      return;
+    }
     setIsSaving(true);
     setError(null);
     try {
@@ -94,18 +125,29 @@ export default function TrackModal() {
   const labelClass = 'block text-[#7a8faa] text-xs font-medium mb-1';
   const inputClass =
     'w-full bg-[#19233a] border border-[#2a3a52] rounded-md px-3 py-2 text-sm text-white placeholder:text-[#4a5a72] focus:outline-none focus:border-[#3dc9b0] transition-colors';
+  const sectionTitleClass = 'text-[11px] font-semibold uppercase tracking-[0.16em] text-[#5f7391]';
+  const panelClass = 'rounded-xl border border-[#2a3a52] bg-[#151d2e] p-4';
+  const uploadCardClass =
+    'group flex min-h-[132px] flex-col rounded-xl border border-dashed border-[#2a3a52] bg-[#19233a] p-4 text-left transition-colors hover:border-[#3dc9b0]';
+  const saveDisabled = isSaving || Boolean(titleError) || Boolean(audioError);
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
       onClick={(e) => e.target === e.currentTarget && closeModal()}
     >
-      <div className="w-full max-w-lg bg-[#1e2638] rounded-2xl overflow-hidden shadow-2xl">
-        {/* Modal header */}
+      <div className="w-full max-w-3xl rounded-2xl bg-[#1e2638] shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#2a3a52]">
-          <h2 className="text-white font-semibold text-base">
-            {mode === 'new' ? 'New Track' : 'Edit Track'}
-          </h2>
+          <div>
+            <h2 className="text-white font-semibold text-base">
+              {mode === 'new' ? 'New Track' : 'Edit Track'}
+            </h2>
+            <p className="mt-1 text-sm text-[#7a8faa]">
+              {mode === 'new'
+                ? 'Upload audio, add metadata, and optionally attach the track to an album.'
+                : 'Update track details, files, and album placement.'}
+            </p>
+          </div>
           <button
             onClick={closeModal}
             className="text-[#7a8faa] hover:text-white transition-colors"
@@ -114,169 +156,249 @@ export default function TrackModal() {
           </button>
         </div>
 
-        {/* Form */}
-        <div className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
-          {/* Name Track */}
-          <div>
-            <label className={labelClass}>Name Track</label>
-            <input
-              type="text"
-              placeholder="Track title"
-              value={form.title}
-              onChange={(e) => set('title', e.target.value)}
-              className={inputClass}
-            />
-          </div>
+        <div className="max-h-[78vh] overflow-y-auto px-6 py-5">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
+            <div className="space-y-5">
+              <section className={panelClass}>
+                <p className={sectionTitleClass}>Details</p>
+                <div className="mt-4 space-y-4">
+                  <div>
+                    <label className={labelClass}>Title *</label>
+                    <input
+                      type="text"
+                      placeholder="Track title"
+                      value={form.title}
+                      onChange={(e) => set('title', e.target.value)}
+                      className={inputClass}
+                    />
+                    {titleError && <p className="mt-1 text-xs text-red-400">{titleError}</p>}
+                  </div>
 
-          {/* ID + ArtistId */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelClass}>ID</label>
-              <input
-                type="text"
-                value={form.id}
-                onChange={(e) => set('id', e.target.value)}
-                disabled={mode === 'edit'}
-                className={`${inputClass} ${mode === 'edit' ? 'opacity-50 cursor-not-allowed' : ''}`}
-              />
-            </div>
-            <div>
-              <label className={labelClass}>ArtistId</label>
-              <input
-                type="text"
-                placeholder="e.g. a1"
-                value={form.artistId}
-                onChange={(e) => set('artistId', e.target.value)}
-                className={inputClass}
-              />
-            </div>
-          </div>
+                  <div>
+                    <label className={labelClass}>Artist</label>
+                    <input
+                      type="text"
+                      placeholder="Artist name"
+                      value={form.artistName || form.artistId}
+                      onChange={(e) => {
+                        set('artistName', e.target.value);
+                        set('artistId', e.target.value);
+                      }}
+                      className={inputClass}
+                    />
+                  </div>
 
-          {/* AlbumId + SeqNumber */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelClass}>AlbumId</label>
-              <select
-                value={form.albumId}
-                onChange={(e) => handleAlbumChange(e.target.value)}
-                className={inputClass}
-              >
-                <option value="">— select album —</option>
-                {(albumsQuery.data ?? []).map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.artistName} — {a.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className={labelClass}>SeqNumber</label>
-              <input
-                type="number"
-                min={1}
-                value={form.seqNum}
-                onChange={(e) => set('seqNum', Number(e.target.value))}
-                className={inputClass}
-              />
-            </div>
-          </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className={labelClass}>Album</label>
+                      <select
+                        value={form.albumId}
+                        onChange={(e) => handleAlbumChange(e.target.value)}
+                        className={inputClass}
+                      >
+                        <option value="">No album</option>
+                        {availableAlbums.map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.artistName} - {a.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className={labelClass}>Track Number</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={form.seqNum}
+                        onChange={(e) => set('seqNum', Number(e.target.value) || 1)}
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
 
-          {/* GenreId + TagsId */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelClass}>GenreId</label>
-              <select
-                value={form.genreId}
-                onChange={(e) => set('genreId', e.target.value)}
-                className={inputClass}
-              >
-                <option value="">— select genre —</option>
-                {GENRES.map((g) => (
-                  <option key={g} value={g.toLowerCase().replace(/\s+/g, '-')}>
-                    {g}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className={labelClass}>TagsId</label>
-              <select
-                value={form.tagsId}
-                onChange={(e) => set('tagsId', e.target.value)}
-                className={inputClass}
-              >
-                <option value="">— select tag —</option>
-                {TAGS.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className={labelClass}>Genre</label>
+                      <select
+                        value={form.genreId}
+                        onChange={(e) => set('genreId', e.target.value)}
+                        className={inputClass}
+                      >
+                        <option value="">Select genre</option>
+                        {GENRES.map((g) => (
+                          <option key={g} value={g.toLowerCase().replace(/\s+/g, '-')}>
+                            {g}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className={labelClass}>Tag</label>
+                      <select
+                        value={form.tagsId}
+                        onChange={(e) => set('tagsId', e.target.value)}
+                        className={inputClass}
+                      >
+                        <option value="">Select tag</option>
+                        {TAGS.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
 
-          {/* Import Track + Import Picture */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelClass}>Import Track {mode === 'new' ? '*' : ''}</label>
-              <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
-                <Upload size={14} />
-                <span>{audioFile ? audioFile.name : 'Choose file'}</span>
-                <input
-                  type="file"
-                  accept="audio/*"
-                  className="hidden"
-                  onChange={(e) => setAudioFile(e.target.files?.[0] ?? null)}
-                />
-              </label>
-            </div>
-            <div>
-              <label className={labelClass}>Import Picture</label>
-              <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
-                <Upload size={14} />
-                <span>{coverFile ? coverFile.name : 'Choose file'}</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
-                />
-              </label>
-            </div>
-          </div>
+                  <div>
+                    <label className={labelClass}>Notes</label>
+                    <textarea
+                      rows={4}
+                      placeholder="Additional info..."
+                      value={form.info}
+                      onChange={(e) => set('info', e.target.value)}
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+                </div>
+              </section>
 
-          {/* Adult toggle */}
-          <div className="flex items-center gap-3">
-            <label className={`${labelClass} mb-0`}>Adult content</label>
-            <button
-              type="button"
-              onClick={() => set('adult', !form.adult)}
-              className={`w-10 h-5 rounded-full transition-colors relative ${
-                form.adult ? 'bg-[#3dc9b0]' : 'bg-[#2a3a52]'
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
-                  form.adult ? 'left-5' : 'left-0.5'
-                }`}
-              />
-            </button>
-          </div>
+              <section className={panelClass}>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className={sectionTitleClass}>Metadata</p>
+                    <p className="mt-1 text-xs text-[#7a8faa]">Reference fields used by the admin table and upload logic.</p>
+                  </div>
+                  <span className="rounded-full bg-[#253050] px-3 py-1 text-xs font-medium text-[#8ea4c2]">
+                    {mode === 'new' ? 'Draft' : 'Saved'}
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className={labelClass}>Track ID</label>
+                    <input
+                      type="text"
+                      value={form.id}
+                      onChange={(e) => set('id', e.target.value)}
+                      disabled
+                      className={`${inputClass} cursor-not-allowed opacity-60`}
+                    />
+                  </div>
+                  <div className="rounded-md border border-[#2a3a52] bg-[#19233a] px-3 py-2">
+                    <span className="block text-[11px] uppercase tracking-wide text-[#5f7391]">Plays</span>
+                    <span className="mt-1 block text-sm font-medium text-white">{form.playCount.toLocaleString()}</span>
+                  </div>
+                </div>
+              </section>
+            </div>
 
-          {/* Info */}
-          <div>
-            <label className={labelClass}>Info</label>
-            <textarea
-              rows={3}
-              placeholder="Additional info..."
-              value={form.info}
-              onChange={(e) => set('info', e.target.value)}
-              className={`${inputClass} resize-none`}
-            />
+            <div className="space-y-5">
+              <section className={panelClass}>
+                <p className={sectionTitleClass}>Assets</p>
+                <div className="mt-4 space-y-3">
+                  <label className={uploadCardClass}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 text-white">
+                          <Music2 size={16} className="text-[#3dc9b0]" />
+                          <span className="text-sm font-medium">Audio file {mode === 'new' ? '*' : ''}</span>
+                        </div>
+                        <p className="mt-1 text-sm text-[#7a8faa] break-all">{audioSummary}</p>
+                      </div>
+                      <Upload size={16} className="shrink-0 text-[#7a8faa] group-hover:text-[#3dc9b0]" />
+                    </div>
+                    <span className="mt-4 inline-flex w-fit rounded-full border border-[#2a3a52] px-2.5 py-1 text-xs text-[#8ea4c2]">
+                      Choose audio
+                    </span>
+                    <input
+                      type="file"
+                      accept="audio/*"
+                      className="hidden"
+                      onChange={(e) => setAudioFile(e.target.files?.[0] ?? null)}
+                    />
+                  </label>
+                  {audioError && <p className="text-xs text-red-400">{audioError}</p>}
+
+                  <label className={uploadCardClass}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 text-white">
+                          <ImageIcon size={16} className="text-[#3dc9b0]" />
+                          <span className="text-sm font-medium">Cover image</span>
+                        </div>
+                        <p className="mt-1 text-sm text-[#7a8faa] break-all">
+                          {coverFile ? coverFile.name : 'Optional cover artwork for the track or single.'}
+                        </p>
+                      </div>
+                      <Upload size={16} className="shrink-0 text-[#7a8faa] group-hover:text-[#3dc9b0]" />
+                    </div>
+                    <span className="mt-4 inline-flex w-fit rounded-full border border-[#2a3a52] px-2.5 py-1 text-xs text-[#8ea4c2]">
+                      Choose image
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
+                    />
+                  </label>
+                </div>
+              </section>
+
+              <section className={panelClass}>
+                <p className={sectionTitleClass}>Preview</p>
+                <div className="mt-4 flex items-center gap-4">
+                  <div className="h-24 w-24 overflow-hidden rounded-xl bg-[#19233a] shadow-inner">
+                    <img src={coverPreviewUrl} alt={form.title || 'Track cover'} className="h-full w-full object-cover" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-lg font-semibold text-white">{form.title || 'Untitled track'}</p>
+                    <p className="mt-1 truncate text-sm text-[#7a8faa]">
+                      {(form.artistName || form.artistId) || 'Unknown artist'}
+                      {selectedAlbum ? ` · ${selectedAlbum.title}` : ''}
+                    </p>
+                    <div className="mt-3 flex items-center gap-3">
+                      <span
+                        className={`inline-flex min-w-[58px] items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                          form.adult ? 'bg-[#f07282]/20 text-[#f7a1ad]' : 'bg-[#253050] text-[#8ea4c2]'
+                        }`}
+                      >
+                        {form.adult ? 'Explicit' : 'Clean'}
+                      </span>
+                      {form.genreId && (
+                        <span className="inline-flex items-center rounded-full bg-[#253050] px-2.5 py-1 text-xs text-[#8ea4c2]">
+                          {form.genreId}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className={panelClass}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className={sectionTitleClass}>Content Flags</p>
+                    <p className="mt-1 text-xs text-[#7a8faa]">Control how this track is labeled in the admin.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => set('adult', !form.adult)}
+                    className={`relative h-6 w-11 rounded-full transition-colors ${
+                      form.adult ? 'bg-[#3dc9b0]' : 'bg-[#2a3a52]'
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${
+                        form.adult ? 'left-5' : 'left-0.5'
+                      }`}
+                    />
+                  </button>
+                </div>
+              </section>
+            </div>
           </div>
         </div>
 
-        {/* Footer buttons */}
         <div className="px-6 py-4 border-t border-[#2a3a52] flex justify-end gap-3">
           {error && <p className="mr-auto text-xs text-red-400 self-center">{error}</p>}
           {mode === 'edit' && (
@@ -289,8 +411,8 @@ export default function TrackModal() {
           )}
           <button
             onClick={handleSave}
-            disabled={isSaving}
-            className="px-5 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] transition-colors"
+            disabled={saveDisabled}
+            className="px-5 py-2 rounded-lg text-sm font-semibold text-[#1a2030] bg-[#3dc9b0] hover:bg-[#35b09a] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSaving ? 'Saving…' : 'Save'}
           </button>
