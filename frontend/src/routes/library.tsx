@@ -1,7 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Plus, Music2 } from 'lucide-react';
-import { artists } from '../data/artists';
 import Button from '../components/ui/Button';
 import { useAuthStore } from '../store/authStore';
 import type { LibraryTab } from '../types/routes/route.types';
@@ -10,6 +9,7 @@ import { useSavedAudiobooksQuery } from '../hooks/audiobooks';
 import { useSavedAlbumsQuery } from '../hooks/albums';
 import { formatLongDuration } from '../utils/format';
 import { useI18n } from '../lib/i18n';
+import { useArtistsQuery } from '../hooks/artists';
 
 export const Route = createFileRoute('/library')({
   beforeLoad: () => {
@@ -25,6 +25,7 @@ function LibraryPage() {
   const { data: playlists = [] } = usePlaylistsQuery();
   const { data: savedAudiobooks = [] } = useSavedAudiobooksQuery();
   const { data: savedAlbums = [] } = useSavedAlbumsQuery();
+  const { data: artists = [] } = useArtistsQuery();
   const createMutation = useCreatePlaylistMutation();
   const personalPlaylists = playlists.filter((playlist) => playlist.kind === 'user');
   const curatedPlaylists = playlists.filter((playlist) => playlist.kind === 'curated');
@@ -189,6 +190,11 @@ function LibraryPage() {
               </div>
             </button>
           ))}
+          {artists.length === 0 && (
+            <div className="py-6 text-center">
+              <p className="text-muted text-sm">{copy.common.noResults}</p>
+            </div>
+          )}
         </div>
       )}
 

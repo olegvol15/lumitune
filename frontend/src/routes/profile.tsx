@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import ProfileAlbumCard from '../components/profile/ProfileAlbumCard';
 import ProfileAlbumUploadModal from '../components/profile/ProfileAlbumUploadModal';
 import ProfileEditModal from '../components/profile/ProfileEditModal';
-import ProfileFollowingCard from '../components/profile/ProfileFollowingCard';
 import ProfileHeroActions from '../components/profile/ProfileHeroActions';
 import ProfileSectionArrows from '../components/profile/ProfileSectionArrows';
 import ProfileSectionTitle from '../components/profile/ProfileSectionTitle';
@@ -17,18 +16,15 @@ import { useThemeStore } from '../store/themeStore';
 import { useCreatorTracksQuery, useUpdateCreatorTrackMutation, useUploadCreatorTrackMutation } from '../hooks/tracks';
 import type { CreatorTrack, TrackModalState } from '../types/profile/profile.types';
 import Button from '../components/ui/Button';
-import { artists } from '../data/artists';
 import { useAuthStore } from '../store/authStore';
 import { usePlayerStore } from '../store/playerStore';
-import { mapBackendSongToCreatorTrack, PROFILE_GENRES, PROFILE_MOODS } from '../utils/profile.utils';
+import { mapBackendSongToCreatorTrack } from '../utils/profile.utils';
 import { useI18n } from '../lib/i18n';
-import { useCreateAlbumMutation, useMyAlbumsQuery } from '../hooks/albums';
+import { useAlbumsQuery, useCreateAlbumMutation, useMyAlbumsQuery } from '../hooks/albums';
 import { useMoodsQuery } from '../hooks/moods';
 
-const FALLBACK_AVATAR =
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=320&q=80';
-const FALLBACK_COVER =
-  'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1600&q=80';
+const FALLBACK_AVATAR = '/vite.svg';
+const FALLBACK_COVER = '/vite.svg';
 
 export const Route = createFileRoute('/profile')({
   beforeLoad: () => {
@@ -41,7 +37,7 @@ export const Route = createFileRoute('/profile')({
 
 function ProfilePage() {
   const navigate = useNavigate();
-  const { copy, language } = useI18n();
+  const { copy } = useI18n();
   const user = useAuthStore((state) => state.user);
   const { theme } = useThemeStore();
   const isLight = theme === 'ice';
@@ -51,12 +47,13 @@ function ProfilePage() {
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
   const creatorTracksQuery = useCreatorTracksQuery();
   const myAlbumsQuery = useMyAlbumsQuery();
+  const albumsQuery = useAlbumsQuery();
   const moodsQuery = useMoodsQuery();
   const uploadCreatorTrackMutation = useUploadCreatorTrackMutation();
   const updateCreatorTrackMutation = useUpdateCreatorTrackMutation();
   const createAlbumMutation = useCreateAlbumMutation();
 
-  const displayName = user?.displayName || user?.username || 'Oleh';
+  const displayName = user?.displayName || user?.username || user?.email || '';
   const bio =
     user?.bio ||
     copy.profile.defaultBio;
@@ -66,8 +63,14 @@ function ProfilePage() {
       : FALLBACK_AVATAR;
   const cover = user?.coverImage || FALLBACK_COVER;
 
-  const creatorTracks = creatorTracksQuery.data ?? [];
-  const profileMoods = moodsQuery.data && moodsQuery.data.length > 0 ? moodsQuery.data : PROFILE_MOODS;
+  const creatorTracks = useMemo(() => creatorTracksQuery.data ?? [], [creatorTracksQuery.data]);
+  const profileMoods = moodsQuery.data ?? [];
+  const profileGenres = Array.from(
+    new Set([
+      ...creatorTracks.map((track) => track.genre).filter(Boolean),
+      ...(albumsQuery.data ?? []).map((album) => album.genre).filter(Boolean),
+    ])
+  );
   const creatorAlbums = (myAlbumsQuery.data ?? []).map((album) => ({
     id: album.id,
     backendId: album.id,
@@ -79,7 +82,6 @@ function ProfilePage() {
   }));
 
   const topTracks = useMemo(() => creatorTracks.slice(0, 3), [creatorTracks]);
-  const followingArtists = useMemo(() => artists.slice(0, 4), []);
   const editingTrack = creatorTracks.find((track) => track.id === trackModal.trackId);
 
   const playTrack = (track: CreatorTrack) => {
@@ -270,17 +272,8 @@ function ProfilePage() {
 
             <section>
               <ProfileSectionTitle title={copy.profile.followingArtists} right={<ProfileSectionArrows />} />
-
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-                {followingArtists.map((artist) => (
-                  <ProfileFollowingCard
-                    key={artist.id}
-                    name={artist.name}
-                    image={artist.image}
-                    listeners={artist.monthlyListeners.toLocaleString(language === 'en' ? 'en-US' : 'uk-UA')}
-                    onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
-                  />
-                ))}
+              <div className="rounded-2xl border border-[#27465d] px-4 py-8 text-center text-sm text-[#9fb8c9]">
+                {copy.common.noResults}
               </div>
             </section>
           </section>
@@ -298,7 +291,8 @@ function ProfilePage() {
         mode={trackModal.open ? trackModal.mode : 'create'}
         initialTrack={trackModal.open && trackModal.mode === 'edit' ? editingTrack : undefined}
         fallbackCover={FALLBACK_COVER}
-        genres={PROFILE_GENRES}
+        artistName={displayName}
+        genres={profileGenres}
         moods={profileMoods}
         onClose={() => setTrackModal({ open: false })}
         onSave={async (track) => {

@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { artists } from '../data/artists';
 import HeroBanner from '../components/home/HeroBanner';
 import MoodSection from '../components/home/MoodSection';
 import HorizontalSection from '../components/home/HorizontalSection';
@@ -13,12 +12,14 @@ import { useCatalogTracks } from '../hooks/tracks';
 import { usePlayerStore } from '../store/playerStore';
 import { useI18n } from '../lib/i18n';
 import { useAlbumsQuery } from '../hooks/albums';
+import { useArtistsQuery } from '../hooks/artists';
 
 export const Route = createFileRoute('/')({ component: HomePage });
 
 function HomePage() {
   const { tracks } = useCatalogTracks();
   const { data: albums = [] } = useAlbumsQuery();
+  const { data: artists = [] } = useArtistsQuery();
   const { copy } = useI18n();
   const FILTER_TABS: HomeFilterTab[] = [copy.home.all, copy.home.tracks, copy.home.other] as HomeFilterTab[];
   const [activeTab, setActiveTab] = useState<HomeFilterTab>(FILTER_TABS[0]);
@@ -41,7 +42,7 @@ function HomePage() {
     }
   };
 
-  const handleArtistClick = (item: (typeof artists)[0]) => {
+  const handleArtistClick = (item: (typeof artists)[number]) => {
     navigate({ to: '/artist/$id', params: { id: item.id } });
   };
 
@@ -64,7 +65,7 @@ function HomePage() {
         ))}
       </div>
 
-      <HeroBanner />
+      <HeroBanner albums={albums} tracks={tracks} />
 
       <MoodSection />
 
@@ -82,12 +83,14 @@ function HomePage() {
         onItemClick={handleMediaClick}
       />
 
-      <ArtistSection
-        title={copy.home.favoriteArtists}
-        accentWord={copy.home.favoriteArtistsAccent}
-        artists={artists}
-        onArtistClick={handleArtistClick}
-      />
+      {artists.length > 0 && (
+        <ArtistSection
+          title={copy.home.favoriteArtists}
+          accentWord={copy.home.favoriteArtistsAccent}
+          artists={artists}
+          onArtistClick={handleArtistClick}
+        />
+      )}
 
       <PodcastSection />
 

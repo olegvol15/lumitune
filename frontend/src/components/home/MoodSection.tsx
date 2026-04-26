@@ -2,17 +2,20 @@ import { useState } from 'react';
 import { Sun, Droplets, Heart, Zap, Music2, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useI18n } from '../../lib/i18n';
+import { useMoodsQuery } from '../../hooks/moods';
 
 export default function MoodSection() {
   const [active, setActive] = useState<string | null>(null);
   const { copy } = useI18n();
-  const moods = [
-    { id: 'happy', icon: Sun, label: copy.home.moods.happy },
-    { id: 'melancholy', icon: Droplets, label: copy.home.moods.melancholy },
-    { id: 'romance', icon: Heart, label: copy.home.moods.romance },
-    { id: 'drive', icon: Zap, label: copy.home.moods.drive },
-    { id: 'party', icon: Music2, label: copy.home.moods.party },
-  ];
+  const { data: moodNames = [] } = useMoodsQuery();
+  const icons = [Sun, Droplets, Heart, Zap, Music2];
+  const moods = moodNames.slice(0, 5).map((label, index) => ({
+    id: label,
+    icon: icons[index % icons.length],
+    label,
+  }));
+
+  if (moods.length === 0) return null;
 
   return (
     <section className="mb-10">

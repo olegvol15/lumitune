@@ -3,10 +3,6 @@ import type { BackendAlbum } from '../types/media/album-api.types';
 import type { BackendSong } from '../types/media/song-api.types';
 import type { CreatorAlbum, CreatorTrack } from '../types/profile/profile.types';
 
-export const RELEASE_DATES = ['12.11.2012', '24.06.2023', '10.10.2005'];
-export const PROFILE_GENRES = ['Поп', 'R&B', 'K-Pop', 'Rock', 'Alternative'];
-export const PROFILE_MOODS = ['Спокійний', 'Натхненний', 'Енергійний', 'Мрійливий'];
-
 const toCoverUrl = (coverImage?: string): string => {
   if (!coverImage || coverImage === 'default-album-cover.jpg') {
     return '/vite.svg';

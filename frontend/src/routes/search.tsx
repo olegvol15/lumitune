@@ -7,6 +7,7 @@ import { useCatalogTracks } from '../hooks/tracks';
 import { useAudiobooksQuery } from '../hooks/audiobooks';
 import { useAlbumsQuery } from '../hooks/albums';
 import { useI18n } from '../lib/i18n';
+import { useArtistsQuery } from '../hooks/artists';
 
 export const Route = createFileRoute('/search')({ component: SearchPage });
 
@@ -14,54 +15,31 @@ function SearchPage() {
   const { tracks } = useCatalogTracks();
   const { data: audiobooks = [] } = useAudiobooksQuery();
   const { data: albums = [] } = useAlbumsQuery();
-  const { query, setQuery, results, hasResults } = useSearch(tracks, audiobooks, albums);
+  const { data: artists = [] } = useArtistsQuery();
+  const { query, setQuery, results, hasResults } = useSearch(tracks, audiobooks, albums, artists);
   const navigate = useNavigate();
   const { copy } = useI18n();
-  const genres = [
-    { id: 'pop', label: copy.search.genres.pop, color: 'from-pink-500 to-rose-600', emoji: '🎵' },
-    {
-      id: 'rock',
-      label: copy.search.genres.rock,
-      color: 'from-orange-500 to-red-600',
-      emoji: '🎸',
-    },
-    {
-      id: 'hiphop',
-      label: copy.search.genres.hiphop,
-      color: 'from-yellow-500 to-orange-500',
-      emoji: '🎤',
-    },
-    {
-      id: 'electronic',
-      label: copy.search.genres.electronic,
-      color: 'from-cyan-500 to-blue-600',
-      emoji: '🎛️',
-    },
-    {
-      id: 'kpop',
-      label: copy.search.genres.kpop,
-      color: 'from-purple-500 to-pink-600',
-      emoji: '✨',
-    },
-    {
-      id: 'jazz',
-      label: copy.search.genres.jazz,
-      color: 'from-amber-600 to-yellow-500',
-      emoji: '🎷',
-    },
-    {
-      id: 'classical',
-      label: copy.search.genres.classical,
-      color: 'from-emerald-500 to-teal-600',
-      emoji: '🎹',
-    },
-    {
-      id: 'rnb',
-      label: copy.search.genres.rnb,
-      color: 'from-indigo-500 to-purple-600',
-      emoji: '🎙️',
-    },
+  const genreColors = [
+    'from-pink-500 to-rose-600',
+    'from-orange-500 to-red-600',
+    'from-yellow-500 to-orange-500',
+    'from-cyan-500 to-blue-600',
+    'from-purple-500 to-pink-600',
+    'from-amber-600 to-yellow-500',
+    'from-emerald-500 to-teal-600',
+    'from-indigo-500 to-purple-600',
   ];
+  const genres = Array.from(
+    new Set([
+      ...albums.map((album) => album.genre).filter(Boolean),
+      ...audiobooks.map((book) => book.genre).filter(Boolean),
+      ...artists.map((artist) => artist.genre).filter(Boolean),
+    ])
+  ).map((label, index) => ({
+    id: label.toLowerCase().replace(/\s+/g, '-'),
+    label,
+    color: genreColors[index % genreColors.length],
+  }));
 
   return (
     <div className="px-4 pt-4">
@@ -170,11 +148,16 @@ function SearchPage() {
                 key={g.id}
                 className={`bg-gradient-to-br ${g.color} rounded-2xl h-24 flex items-end p-3 overflow-hidden relative`}
               >
-                <span className="absolute top-2 right-3 text-3xl">{g.emoji}</span>
                 <span className="text-white font-bold text-base">{g.label}</span>
               </button>
             ))}
           </div>
+          {genres.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <Search size={48} className="text-muted mb-4" />
+              <p className="text-white font-semibold mb-1">{copy.common.noResults}</p>
+            </div>
+          )}
         </>
       )}
     </div>

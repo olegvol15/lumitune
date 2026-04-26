@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import type { ProfileTrackEditorModalProps } from '../../types/profile/profile.types';
+import { useState } from 'react';
+import type { CreatorTrack, ProfileTrackEditorModalProps } from '../../types/profile/profile.types';
 import { useI18n } from '../../lib/i18n';
 import Button from '../ui/Button';
 import ProfileCreatorModal from './ProfileCreatorModal';
@@ -11,41 +11,13 @@ export default function ProfileTrackEditorModal({
   mode,
   initialTrack,
   fallbackCover,
+  artistName,
   genres,
   moods,
   onClose,
   onSave,
 }: ProfileTrackEditorModalProps) {
   const { copy } = useI18n();
-  const [title, setTitle] = useState('');
-  const [genre, setGenre] = useState('');
-  const [mood, setMood] = useState('');
-  const [coverImage, setCoverImage] = useState(fallbackCover);
-  const [audioFileName, setAudioFileName] = useState('');
-  const [audioFile, setAudioFile] = useState<File | null>(null);
-  const [coverFile, setCoverFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    if (initialTrack) {
-      setTitle(initialTrack.title);
-      setGenre(initialTrack.genre);
-      setMood(initialTrack.mood);
-      setCoverImage(initialTrack.albumCover);
-      setAudioFileName(initialTrack.audioFileName || initialTrack.title);
-      setAudioFile(null);
-      setCoverFile(null);
-      return;
-    }
-
-    setTitle('');
-    setGenre('');
-    setMood('');
-    setCoverImage(fallbackCover);
-    setAudioFileName('');
-    setAudioFile(null);
-    setCoverFile(null);
-  }, [fallbackCover, initialTrack, open]);
 
   return (
     <ProfileCreatorModal
@@ -53,6 +25,52 @@ export default function ProfileTrackEditorModal({
       title={mode === 'create' ? copy.profile.uploadTrackTitle : copy.profile.editTrackTitle}
       onClose={onClose}
     >
+      {open && (
+        <ProfileTrackEditorFields
+          key={`${mode}-${initialTrack?.id ?? 'new'}`}
+          mode={mode}
+          initialTrack={initialTrack}
+          fallbackCover={fallbackCover}
+          artistName={artistName}
+          genres={genres}
+          moods={moods}
+          onClose={onClose}
+          onSave={onSave}
+        />
+      )}
+    </ProfileCreatorModal>
+  );
+}
+
+function ProfileTrackEditorFields({
+  mode,
+  initialTrack,
+  fallbackCover,
+  artistName,
+  genres,
+  moods,
+  onClose,
+  onSave,
+}: {
+  mode: ProfileTrackEditorModalProps['mode'];
+  initialTrack?: CreatorTrack;
+  fallbackCover: string;
+  artistName: string;
+  genres: string[];
+  moods: string[];
+  onClose: () => void;
+  onSave: ProfileTrackEditorModalProps['onSave'];
+}) {
+  const { copy } = useI18n();
+  const [title, setTitle] = useState(initialTrack?.title ?? '');
+  const [genre, setGenre] = useState(initialTrack?.genre ?? '');
+  const [mood, setMood] = useState(initialTrack?.mood ?? '');
+  const [coverImage] = useState(initialTrack?.albumCover ?? fallbackCover);
+  const [audioFileName, setAudioFileName] = useState(initialTrack?.audioFileName || initialTrack?.title || '');
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [coverFile] = useState<File | null>(null);
+
+  return (
       <div className="space-y-4">
         <div>
           <label className="mb-1.5 block text-[11px] font-semibold text-[#d8ecf8]">
@@ -118,15 +136,15 @@ export default function ProfileTrackEditorModal({
               onSave({
                 id: initialTrack?.id,
                 title: title || copy.profile.newTrack,
-                artistName: initialTrack?.artistName || 'OLEH',
+                artistName: initialTrack?.artistName || artistName,
                 albumCover: coverImage,
-                genre: genre || genres[0],
-                mood: mood || moods[0],
+                genre: genre || '',
+                mood: mood || '',
                 audioFile,
                 audioFileName,
                 coverFile,
-                releaseDate: initialTrack?.releaseDate || '12.11.2012',
-                likes: initialTrack?.likes || 235,
+                releaseDate: initialTrack?.releaseDate || new Date().toLocaleDateString(),
+                likes: initialTrack?.likes || 0,
               })
             }
             className="rounded-[7px] bg-[#80c8eb] px-2 py-2 text-[10px] font-semibold text-[#123042] hover:bg-[#93d3f1]"
@@ -135,6 +153,5 @@ export default function ProfileTrackEditorModal({
           </Button>
         </div>
       </div>
-    </ProfileCreatorModal>
   );
 }

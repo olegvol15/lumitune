@@ -115,6 +115,7 @@ export type ProfileTrackEditorModalProps = {
   mode: TrackModalMode;
   initialTrack?: CreatorTrack;
   fallbackCover: string;
+  artistName: string;
   genres: string[];
   moods: string[];
   onClose: () => void;
