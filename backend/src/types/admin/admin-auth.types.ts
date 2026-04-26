@@ -40,6 +40,11 @@ export interface AdminResetPasswordBody {
   newPassword?: string;
 }
 
+export interface AdminUpdatePasswordBody {
+  currentPassword?: string;
+  newPassword?: string;
+}
+
 export interface AdminAuthRequest extends Request {
   admin?: IAdmin;
 }

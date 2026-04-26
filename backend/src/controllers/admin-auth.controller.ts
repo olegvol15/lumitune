@@ -4,6 +4,7 @@ import {
   AdminCredentialsBody,
   AdminForgotPasswordBody,
   AdminResetPasswordBody,
+  AdminUpdatePasswordBody,
   AdminVerifyResetCodeBody,
 } from '../types/admin/admin-auth.types';
 import { adminAuthService } from '../services/admin-auth.service';
@@ -165,6 +166,34 @@ export const adminLogoutAll = async (req: AdminAuthRequest, res: Response) => {
     return res.status(500).json({
       success: false,
       message: getErrorMessage(error, 'Error logging out from all devices'),
+    });
+  }
+};
+
+export const adminUpdatePassword = async (req: AdminAuthRequest, res: Response) => {
+  try {
+    if (!req.admin?._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized to access this route',
+      });
+    }
+
+    const { currentPassword, newPassword } = req.body as AdminUpdatePasswordBody;
+    await adminAuthService.updatePassword(String(req.admin._id), currentPassword, newPassword);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Password updated successfully',
+    });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(error.status).json({ success: false, message: error.message });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: getErrorMessage(error, 'Error updating password'),
     });
   }
 };

@@ -10,6 +10,7 @@ import {
   adminVerifyResetCode,
   adminResetPassword,
   adminMe,
+  adminUpdatePassword,
 } from '../controllers/admin-auth.controller';
 import { protectAdmin } from '../middleware/admin-auth.middleware';
 import { validate } from '../middleware/validate.middleware';
@@ -29,6 +30,7 @@ router.post('/refresh', adminRefresh);
 router.post('/logout', adminLogout);
 router.post('/logout-all', protectAdmin, h(adminLogoutAll));
 router.get('/me', protectAdmin, h(adminMe));
+router.put('/password', protectAdmin, h(adminUpdatePassword));
 router.post('/forgot-password', validate(adminForgotPasswordSchema), adminForgotPassword);
 router.post('/verify-reset-code', validate(adminVerifyResetCodeSchema), adminVerifyResetCode);
 router.post('/reset-password', validate(adminResetPasswordSchema), adminResetPassword);

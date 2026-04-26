@@ -35,7 +35,7 @@ const TOP_NAV = [
 ] as const;
 
 const BOTTOM_NAV = [
-  { label: 'Settings', icon: Settings, path: null },
+  { label: 'Settings', icon: Settings, path: '/admin/settings' },
 ] as const satisfies readonly AdminNavItem[];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -175,11 +175,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
           {/* Bottom nav */}
           <div className="mt-1 flex flex-col gap-0.5">
-            {BOTTOM_NAV.map(({ label, icon: Icon }) => (
-              <span key={label} className={navItemClass(false, true)} title="Coming soon">
+            {BOTTOM_NAV.map(({ label, icon: Icon, path }) => (
+              <Link key={label} to={path} className={navItemClass(isActive(path))}>
                 <Icon size={16} />
                 {label}
-              </span>
+              </Link>
             ))}
           </div>
         </nav>

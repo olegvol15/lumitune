@@ -31,6 +31,18 @@ export function useAdminLogoutMutation() {
   });
 }
 
+export function useAdminUpdatePasswordMutation() {
+  return useMutation({
+    mutationFn: ({
+      currentPassword,
+      newPassword,
+    }: {
+      currentPassword: string;
+      newPassword: string;
+    }) => adminAuthApi.updatePassword(currentPassword, newPassword),
+  });
+}
+
 export function useAdminForgotPasswordMutation() {
   return useMutation({
     mutationFn: (email: string) => adminAuthApi.forgotPassword(email),

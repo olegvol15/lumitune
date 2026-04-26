@@ -86,6 +86,29 @@ export const adminAuthService = {
     await revokeAllAdminRefreshTokens(adminId);
   },
 
+  async updatePassword(adminId: string, currentPassword?: string, newPassword?: string): Promise<void> {
+    if (!currentPassword || !newPassword) {
+      throw new ServiceError(400, 'Current password and new password are required');
+    }
+
+    if (newPassword.length < 8) {
+      throw new ServiceError(400, 'New password must be at least 8 characters');
+    }
+
+    const admin = await Admin.findById(adminId).select('+password');
+    if (!admin) {
+      throw new ServiceError(404, 'Admin not found');
+    }
+
+    const isPasswordMatch = await admin.comparePassword(currentPassword);
+    if (!isPasswordMatch) {
+      throw new ServiceError(401, 'Current password is incorrect');
+    }
+
+    admin.password = newPassword;
+    await admin.save();
+  },
+
   async forgotPassword(email?: string): Promise<AdminForgotPasswordResult> {
     if (!email) {
       throw new ServiceError(400, 'Email is required');

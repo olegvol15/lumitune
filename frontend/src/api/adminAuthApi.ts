@@ -1,4 +1,5 @@
 import publicApiClient from '../lib/publicApiClient';
+import apiClient from '../lib/apiClient';
 import type {
   AdminAuthResponse,
   AdminLoginResponse,
@@ -19,6 +20,12 @@ const adminAuthApi = {
   logout: () => publicApiClient.post<BasicAdminResponse>('/admin/auth/logout'),
 
   me: () => publicApiClient.get<AdminAuthResponse>('/admin/auth/me'),
+
+  updatePassword: (currentPassword: string, newPassword: string) =>
+    apiClient.put<BasicAdminResponse>('/admin/auth/password', {
+      currentPassword,
+      newPassword,
+    }),
 
   forgotPassword: (email: string) =>
     publicApiClient.post<AdminResetCodeResponse>('/admin/auth/forgot-password', { email }),
