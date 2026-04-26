@@ -5,6 +5,7 @@ import { useSaveAdminTrackMutation } from '../../hooks/tracks';
 import type { AdminTrack } from '../../types/admin/admin-tracks.types';
 import { useAlbumsQuery } from '../../hooks/albums';
 import { useAdminGenresQuery } from '../../hooks/admin-genres';
+import { useAdminMoodsQuery } from '../../hooks/admin-moods';
 
 const TAGS = [
   'top-100',
@@ -31,11 +32,17 @@ export default function TrackModal() {
   const saveTrackMutation = useSaveAdminTrackMutation();
   const albumsQuery = useAlbumsQuery();
   const genresQuery = useAdminGenresQuery();
+  const moodsQuery = useAdminMoodsQuery();
   const availableAlbums = albumsQuery.data ?? [];
   const currentGenre = form?.genreId || form?.genre || '';
+  const currentMood = form?.moodId || form?.mood || '';
   const genreOptions = [
     ...(genresQuery.data?.map((genre) => genre.name) ?? []),
     ...(currentGenre && !genresQuery.data?.some((genre) => genre.name === currentGenre) ? [currentGenre] : []),
+  ];
+  const moodOptions = [
+    ...(moodsQuery.data?.map((mood) => mood.name) ?? []),
+    ...(currentMood && !moodsQuery.data?.some((mood) => mood.name === currentMood) ? [currentMood] : []),
   ];
 
   useEffect(() => {
@@ -231,6 +238,27 @@ export default function TrackModal() {
                       </select>
                     </div>
                     <div>
+                      <label className={labelClass}>Mood</label>
+                      <select
+                        value={currentMood}
+                        onChange={(e) => {
+                          set('moodId', e.target.value);
+                          set('mood', e.target.value);
+                        }}
+                        className={inputClass}
+                      >
+                        <option value="">Select mood</option>
+                        {moodOptions.map((mood) => (
+                          <option key={mood} value={mood}>
+                            {mood}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
                       <label className={labelClass}>Tag</label>
                       <select
                         value={form.tagsId}
@@ -365,6 +393,11 @@ export default function TrackModal() {
                       {form.genreId && (
                         <span className="inline-flex items-center rounded-full bg-[#253050] px-2.5 py-1 text-xs text-[#8ea4c2]">
                           {form.genreId}
+                        </span>
+                      )}
+                      {currentMood && (
+                        <span className="inline-flex items-center rounded-full bg-[#253050] px-2.5 py-1 text-xs text-[#8ea4c2]">
+                          {currentMood}
                         </span>
                       )}
                     </div>

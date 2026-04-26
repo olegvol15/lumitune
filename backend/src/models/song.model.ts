@@ -25,6 +25,10 @@ const songSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  mood: {
+    type: String,
+    trim: true,
+  },
   duration: {
     type: Number,
     required: true,
@@ -55,6 +59,7 @@ const songSchema = new mongoose.Schema({
 // Create indexes for better query performance
 songSchema.index({ title: 'text', artist: 'text', album: 'text' });
 songSchema.index({ genre: 1 });
+songSchema.index({ mood: 1 });
 songSchema.index({ plays: -1 });
 songSchema.index({ albumId: 1 });
 

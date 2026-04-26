@@ -28,6 +28,8 @@ import albumRoutes from './routes/album.routes';
 import adminAlbumRoutes from './routes/admin-album.routes';
 import adminPlaylistRoutes from './routes/admin-playlist.routes';
 import adminGenreRoutes from './routes/admin-genre.routes';
+import moodRoutes from './routes/mood.routes';
+import adminMoodRoutes from './routes/admin-mood.routes';
 
 import { errorHandler } from './middleware/error.middleware';
 
@@ -78,6 +80,8 @@ app.use('/api/admin/audiobooks', adminAudiobookRoutes);
 app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/dashboard', adminDashboardRoutes);
 app.use('/api/admin/genres', adminGenreRoutes);
+app.use('/api/moods', moodRoutes);
+app.use('/api/admin/moods', adminMoodRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {

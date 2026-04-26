@@ -1,9 +1,9 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState, type ReactNode } from 'react';
 import {
   Users, Music2, LayoutDashboard, Puzzle, Settings, LogOut, Mic,
   BookOpen, UserRound, ListMusic, Disc3, Shapes, Tag, Smile, ChevronUp,
-  ChevronDown,
 } from 'lucide-react';
 import { useAdminLogoutMutation } from '../../hooks/admin-auth';
 import LogoIcon from '../ui/LogoIcon';
@@ -17,7 +17,7 @@ const ELEMENTS = [
   { label: 'Albums',      icon: Disc3,      path: '/admin/albums' },
   { label: 'Genres',      icon: Shapes,     path: '/admin/genres' },
   { label: 'Tags',        icon: Tag,        path: null },
-  { label: 'Moods',       icon: Smile,      path: null },
+  { label: 'Moods',       icon: Smile,      path: '/admin/moods' },
 ] as const;
 
 const TOP_NAV = [
@@ -89,34 +89,50 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               }`}
             >
               <span className="font-medium">Elements</span>
-              {elementsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              <motion.span
+                animate={{ rotate: elementsOpen ? 0 : 180 }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+                className="flex"
+              >
+                <ChevronUp size={14} />
+              </motion.span>
             </button>
 
-            {elementsOpen && (
-              <div className="mt-0.5 flex flex-col gap-0.5">
-                {ELEMENTS.map(({ label, icon: Icon, path }) => {
-                  if (path) {
-                    const active = isActive(path);
-                    return (
-                      <Link
-                        key={label}
-                        to={path}
-                        className={navItemClass(active)}
-                      >
-                        <Icon size={15} />
-                        {label}
-                      </Link>
-                    );
-                  }
-                  return (
-                    <span key={label} className={navItemClass(false, true)} title="Coming soon">
-                      <Icon size={15} />
-                      {label}
-                    </span>
-                  );
-                })}
-              </div>
-            )}
+            <AnimatePresence initial={false}>
+              {elementsOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-0.5 flex flex-col gap-0.5">
+                    {ELEMENTS.map(({ label, icon: Icon, path }) => {
+                      if (path) {
+                        const active = isActive(path);
+                        return (
+                          <Link
+                            key={label}
+                            to={path}
+                            className={navItemClass(active)}
+                          >
+                            <Icon size={15} />
+                            {label}
+                          </Link>
+                        );
+                      }
+                      return (
+                        <span key={label} className={navItemClass(false, true)} title="Coming soon">
+                          <Icon size={15} />
+                          {label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Bottom nav */}

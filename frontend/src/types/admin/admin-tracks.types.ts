@@ -10,6 +10,7 @@ export interface AdminTrack {
   playCount: number;
   liked: boolean;
   genreId: string;
+  moodId: string;
   tagsId: string;
   seqNum: number;
   adult: boolean;
@@ -17,6 +18,7 @@ export interface AdminTrack {
   backendId?: string;
   coverImage?: string;
   genre?: string;
+  mood?: string;
   artist?: string;
   album?: string;
   plays?: number;

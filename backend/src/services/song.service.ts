@@ -92,6 +92,7 @@ export const songService = {
         album: album?.title || body.album,
         ...(nextAlbumId ? { albumId: nextAlbumId } : {}),
         genre: body.genre,
+        mood: body.mood,
         coverImage: coverImage || body.coverImage,
         duration: Math.round(duration),
         filePath: file.path,
@@ -114,11 +115,13 @@ export const songService = {
     const limit = toPositiveInt(input.limit, 20);
     const search = typeof input.search === 'string' ? input.search : undefined;
     const genre = typeof input.genre === 'string' ? input.genre : undefined;
+    const mood = typeof input.mood === 'string' ? input.mood : undefined;
     const uploadedBy = typeof input.uploadedBy === 'string' ? input.uploadedBy : undefined;
 
     const query: Record<string, unknown> = {};
     if (search) query.$text = { $search: search };
     if (genre) query.genre = genre;
+    if (mood) query.mood = mood;
     if (uploadedBy) {
       ensureObjectId(uploadedBy, 'uploadedBy');
       query.uploadedBy = uploadedBy;
@@ -160,6 +163,7 @@ export const songService = {
       updateData.albumId = input.albumId.trim();
     }
     if (typeof input.genre === 'string') updateData.genre = input.genre.trim();
+    if (typeof input.mood === 'string') updateData.mood = input.mood.trim();
     if (typeof input.coverImage === 'string') updateData.coverImage = input.coverImage.trim();
 
     if (updateData.title !== undefined && updateData.title.length === 0) {
@@ -201,6 +205,7 @@ export const songService = {
     if (updateData.title !== undefined) existingSong.title = updateData.title;
     if (updateData.artist !== undefined) existingSong.artist = updateData.artist;
     if (updateData.genre !== undefined) existingSong.genre = updateData.genre;
+    if (updateData.mood !== undefined) existingSong.mood = updateData.mood;
     if (updateData.coverImage !== undefined) existingSong.coverImage = updateData.coverImage;
     if (updateData.filePath !== undefined) existingSong.filePath = updateData.filePath;
     if (updateData.duration !== undefined) existingSong.duration = updateData.duration;

@@ -40,7 +40,7 @@ export function mapBackendSongToCreatorTrack(song: BackendSong): CreatorTrack {
     albumCover: toCoverUrl(albumRecord?.coverImage || song.coverImage),
     duration: song.duration || 0,
     genre: song.genre || '',
-    mood: '',
+    mood: song.mood || '',
     audioFileName: song.filePath.split('/').pop(),
     releaseDate: song.createdAt ? new Date(song.createdAt).toLocaleDateString('uk-UA') : new Date().toLocaleDateString('uk-UA'),
     likes: song.plays || 0,

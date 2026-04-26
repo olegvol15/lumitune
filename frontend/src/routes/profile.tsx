@@ -23,6 +23,7 @@ import { usePlayerStore } from '../store/playerStore';
 import { mapBackendSongToCreatorTrack, PROFILE_GENRES, PROFILE_MOODS } from '../utils/profile.utils';
 import { useI18n } from '../lib/i18n';
 import { useCreateAlbumMutation, useMyAlbumsQuery } from '../hooks/albums';
+import { useMoodsQuery } from '../hooks/moods';
 
 const FALLBACK_AVATAR =
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=320&q=80';
@@ -50,6 +51,7 @@ function ProfilePage() {
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
   const creatorTracksQuery = useCreatorTracksQuery();
   const myAlbumsQuery = useMyAlbumsQuery();
+  const moodsQuery = useMoodsQuery();
   const uploadCreatorTrackMutation = useUploadCreatorTrackMutation();
   const updateCreatorTrackMutation = useUpdateCreatorTrackMutation();
   const createAlbumMutation = useCreateAlbumMutation();
@@ -65,6 +67,7 @@ function ProfilePage() {
   const cover = user?.coverImage || FALLBACK_COVER;
 
   const creatorTracks = creatorTracksQuery.data ?? [];
+  const profileMoods = moodsQuery.data && moodsQuery.data.length > 0 ? moodsQuery.data : PROFILE_MOODS;
   const creatorAlbums = (myAlbumsQuery.data ?? []).map((album) => ({
     id: album.id,
     backendId: album.id,
@@ -296,13 +299,14 @@ function ProfilePage() {
         initialTrack={trackModal.open && trackModal.mode === 'edit' ? editingTrack : undefined}
         fallbackCover={FALLBACK_COVER}
         genres={PROFILE_GENRES}
-        moods={PROFILE_MOODS}
+        moods={profileMoods}
         onClose={() => setTrackModal({ open: false })}
         onSave={async (track) => {
           const formData = new FormData();
           formData.append('title', track.title);
           formData.append('artist', track.artistName || displayName);
           formData.append('genre', track.genre);
+          formData.append('mood', track.mood);
           if (track.coverFile) {
             formData.append('cover', track.coverFile);
           }

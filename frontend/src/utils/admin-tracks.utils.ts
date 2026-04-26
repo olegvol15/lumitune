@@ -7,6 +7,7 @@ const seedAdminTracks = (): AdminTrack[] => {
   return seedTracks.map((t, i) => ({
     ...t,
     genreId: 'pop',
+    moodId: '',
     tagsId: 'top-100',
     seqNum: i + 1,
     adult: false,

@@ -18,6 +18,7 @@ function buildTrackFormData(track: AdminTrack, coverFile?: File | null) {
     formData.append('albumId', track.albumId);
   }
   formData.append('genre', track.genreId || track.genre || '');
+  formData.append('mood', track.moodId || track.mood || '');
   if (coverFile) {
     formData.append('cover', coverFile);
   }

@@ -32,6 +32,7 @@ import { Route as AdminSignupRouteImport } from './routes/admin/signup'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin/reset-password'
 import { Route as AdminPodcastsRouteImport } from './routes/admin/podcasts'
 import { Route as AdminPlaylistsRouteImport } from './routes/admin/playlists'
+import { Route as AdminMoodsRouteImport } from './routes/admin/moods'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminGenresRouteImport } from './routes/admin/genres'
 import { Route as AdminForgotPasswordRouteImport } from './routes/admin/forgot-password'
@@ -154,6 +155,11 @@ const AdminPlaylistsRoute = AdminPlaylistsRouteImport.update({
   path: '/admin/playlists',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminMoodsRoute = AdminMoodsRouteImport.update({
+  id: '/admin/moods',
+  path: '/admin/moods',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/genres': typeof AdminGenresRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/moods': typeof AdminMoodsRoute
   '/admin/playlists': typeof AdminPlaylistsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
@@ -231,6 +238,7 @@ export interface FileRoutesByTo {
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/genres': typeof AdminGenresRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/moods': typeof AdminMoodsRoute
   '/admin/playlists': typeof AdminPlaylistsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/genres': typeof AdminGenresRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/moods': typeof AdminMoodsRoute
   '/admin/playlists': typeof AdminPlaylistsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/admin/forgot-password'
     | '/admin/genres'
     | '/admin/login'
+    | '/admin/moods'
     | '/admin/playlists'
     | '/admin/podcasts'
     | '/admin/reset-password'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/admin/forgot-password'
     | '/admin/genres'
     | '/admin/login'
+    | '/admin/moods'
     | '/admin/playlists'
     | '/admin/podcasts'
     | '/admin/reset-password'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/admin/forgot-password'
     | '/admin/genres'
     | '/admin/login'
+    | '/admin/moods'
     | '/admin/playlists'
     | '/admin/podcasts'
     | '/admin/reset-password'
@@ -390,6 +402,7 @@ export interface RootRouteChildren {
   AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
   AdminGenresRoute: typeof AdminGenresRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminMoodsRoute: typeof AdminMoodsRoute
   AdminPlaylistsRoute: typeof AdminPlaylistsRoute
   AdminPodcastsRoute: typeof AdminPodcastsRoute
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
@@ -570,6 +583,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlaylistsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/moods': {
+      id: '/admin/moods'
+      path: '/admin/moods'
+      fullPath: '/admin/moods'
+      preLoaderRoute: typeof AdminMoodsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -630,6 +650,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminForgotPasswordRoute: AdminForgotPasswordRoute,
   AdminGenresRoute: AdminGenresRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminMoodsRoute: AdminMoodsRoute,
   AdminPlaylistsRoute: AdminPlaylistsRoute,
   AdminPodcastsRoute: AdminPodcastsRoute,
   AdminResetPasswordRoute: AdminResetPasswordRoute,

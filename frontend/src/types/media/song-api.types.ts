@@ -12,6 +12,7 @@ export interface BackendSong {
   album?: string;
   albumId?: string | BackendSongAlbum;
   genre?: string;
+  mood?: string;
   duration: number;
   filePath: string;
   coverImage?: string;

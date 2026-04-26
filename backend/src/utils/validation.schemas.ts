@@ -83,6 +83,7 @@ export const songUploadBodySchema = z.object({
   artist: z.string().min(1).max(200).optional(),
   album: z.string().max(200).optional(),
   genre: z.string().max(100).optional(),
+  mood: z.string().max(100).optional(),
 });
 
 export const songUpdateSchema = z.object({
@@ -90,6 +91,7 @@ export const songUpdateSchema = z.object({
   artist: z.string().min(1, 'Artist cannot be empty').max(200).optional(),
   album: z.string().max(200).optional(),
   genre: z.string().max(100).optional(),
+  mood: z.string().max(100).optional(),
 });
 
 export const songQuerySchema = z.object({
@@ -97,6 +99,7 @@ export const songQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(100).optional(),
   search: z.string().max(200).optional(),
   genre: z.string().max(100).optional(),
+  mood: z.string().max(100).optional(),
 });
 
 export const audiobookCreateSchema = z.object({

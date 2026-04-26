@@ -6,6 +6,7 @@ export interface ISong extends mongoose.Document {
   album?: string;
   albumId?: mongoose.Types.ObjectId;
   genre?: string;
+  mood?: string;
   duration: number;
   filePath: string;
   coverImage?: string;
