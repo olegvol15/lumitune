@@ -1,12 +1,22 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
-  Users, Music2, LayoutDashboard, Puzzle, Settings, LogOut, Mic,
-  BookOpen, UserRound, ListMusic, Disc3, Shapes, Tag, Smile, ChevronUp,
+  Users, Music2, LayoutDashboard, Settings, LogOut, Mic,
+  BookOpen, UserRound, ListMusic, Disc3, Shapes, Smile, ChevronUp,
+  type LucideIcon,
 } from 'lucide-react';
 import { useAdminLogoutMutation } from '../../hooks/admin-auth';
+import { useAdminAuthStore } from '../../store/adminAuthStore';
+import { dropdownVariants } from '../../lib/motion';
+import AdminConfirmModal from './AdminConfirmModal';
 import LogoIcon from '../ui/LogoIcon';
+
+type AdminNavItem = {
+  label: string;
+  icon: LucideIcon;
+  path: string | null;
+};
 
 const ELEMENTS = [
   { label: 'Tracks',      icon: Music2,     path: '/admin/tracks' },
@@ -16,9 +26,8 @@ const ELEMENTS = [
   { label: 'Playlists',   icon: ListMusic,  path: '/admin/playlists' },
   { label: 'Albums',      icon: Disc3,      path: '/admin/albums' },
   { label: 'Genres',      icon: Shapes,     path: '/admin/genres' },
-  { label: 'Tags',        icon: Tag,        path: null },
   { label: 'Moods',       icon: Smile,      path: '/admin/moods' },
-] as const;
+] as const satisfies readonly AdminNavItem[];
 
 const TOP_NAV = [
   { label: 'Users', icon: Users, path: '/admin/users' },
@@ -26,15 +35,42 @@ const TOP_NAV = [
 ] as const;
 
 const BOTTOM_NAV = [
-  { label: 'Plugins',  icon: Puzzle,   path: null },
   { label: 'Settings', icon: Settings, path: null },
-] as const;
+] as const satisfies readonly AdminNavItem[];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const { location } = useRouterState();
   const navigate = useNavigate();
   const logoutMutation = useAdminLogoutMutation();
+  const admin = useAdminAuthStore((state) => state.admin);
   const [elementsOpen, setElementsOpen] = useState(true);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!accountOpen) return undefined;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!accountRef.current?.contains(event.target as Node)) {
+        setAccountOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setAccountOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [accountOpen]);
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
@@ -109,6 +145,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 >
                   <div className="mt-0.5 flex flex-col gap-0.5">
                     {ELEMENTS.map(({ label, icon: Icon, path }) => {
+                      const ItemIcon = Icon as LucideIcon;
+
                       if (path) {
                         const active = isActive(path);
                         return (
@@ -117,14 +155,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                             to={path}
                             className={navItemClass(active)}
                           >
-                            <Icon size={15} />
+                            <ItemIcon size={15} />
                             {label}
                           </Link>
                         );
                       }
                       return (
                         <span key={label} className={navItemClass(false, true)} title="Coming soon">
-                          <Icon size={15} />
+                          <ItemIcon size={15} />
                           {label}
                         </span>
                       );
@@ -148,7 +186,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
         <div className="px-2 pt-2 border-t border-[#2a3a52]">
           <button
-            onClick={() => void handleLogout()}
+            onClick={() => setLogoutConfirmOpen(true)}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#7a8faa] hover:bg-[#253050] hover:text-white transition-colors"
           >
             <LogOut size={16} />
@@ -164,14 +202,55 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-3 flex-1">
             <span className="font-semibold text-white text-sm">Admin Dashboard</span>
           </div>
-          <div className="w-8 h-8 rounded-full bg-[#3dc9b0] flex items-center justify-center text-[#1a2030] font-bold text-sm select-none">
-            A
+          <div ref={accountRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setAccountOpen((value) => !value)}
+              className="w-8 h-8 rounded-full bg-[#3dc9b0] flex items-center justify-center text-[#1a2030] font-bold text-sm select-none transition-colors hover:bg-[#35b09a]"
+              aria-label="Admin account menu"
+              aria-haspopup="menu"
+              aria-expanded={accountOpen}
+            >
+              A
+            </button>
+
+            <AnimatePresence>
+              {accountOpen && (
+                <motion.div
+                  className="absolute right-0 top-[calc(100%+10px)] z-[70] w-64"
+                  variants={dropdownVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  <div className="ml-auto mr-[9px] h-0 w-0 border-x-[7px] border-b-[11px] border-x-transparent border-b-[#253050]" />
+                  <div className="rounded-xl border border-[#2a3a52] bg-[#253050] px-4 py-3 shadow-[0_16px_32px_rgba(0,0,0,0.34)]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7a8faa]">Signed in as</p>
+                    <p className="mt-1 truncate text-sm font-semibold text-white">{admin?.email ?? 'Unknown admin'}</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </header>
 
         {/* Content */}
         <main className="flex-1 overflow-auto p-6">{children}</main>
       </div>
+
+      {logoutConfirmOpen && (
+        <AdminConfirmModal
+          title="Log out from admin?"
+          description="You will need to sign in again to access the admin dashboard."
+          confirmLabel="Log out"
+          onClose={() => setLogoutConfirmOpen(false)}
+          onConfirm={() => {
+            setLogoutConfirmOpen(false);
+            void handleLogout();
+          }}
+          tone="default"
+        />
+      )}
     </div>
   );
 }
