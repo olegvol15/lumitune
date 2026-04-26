@@ -33,6 +33,7 @@ import { Route as AdminResetPasswordRouteImport } from './routes/admin/reset-pas
 import { Route as AdminPodcastsRouteImport } from './routes/admin/podcasts'
 import { Route as AdminPlaylistsRouteImport } from './routes/admin/playlists'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminGenresRouteImport } from './routes/admin/genres'
 import { Route as AdminForgotPasswordRouteImport } from './routes/admin/forgot-password'
 import { Route as AdminAuthorsRouteImport } from './routes/admin/authors'
 import { Route as AdminAudiobooksRouteImport } from './routes/admin/audiobooks'
@@ -158,6 +159,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminGenresRoute = AdminGenresRouteImport.update({
+  id: '/admin/genres',
+  path: '/admin/genres',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminForgotPasswordRoute = AdminForgotPasswordRouteImport.update({
   id: '/admin/forgot-password',
   path: '/admin/forgot-password',
@@ -192,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/admin/audiobooks': typeof AdminAudiobooksRoute
   '/admin/authors': typeof AdminAuthorsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
+  '/admin/genres': typeof AdminGenresRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/playlists': typeof AdminPlaylistsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByTo {
   '/admin/audiobooks': typeof AdminAudiobooksRoute
   '/admin/authors': typeof AdminAuthorsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
+  '/admin/genres': typeof AdminGenresRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/playlists': typeof AdminPlaylistsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/admin/audiobooks': typeof AdminAudiobooksRoute
   '/admin/authors': typeof AdminAuthorsRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
+  '/admin/genres': typeof AdminGenresRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/playlists': typeof AdminPlaylistsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/admin/audiobooks'
     | '/admin/authors'
     | '/admin/forgot-password'
+    | '/admin/genres'
     | '/admin/login'
     | '/admin/playlists'
     | '/admin/podcasts'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/admin/audiobooks'
     | '/admin/authors'
     | '/admin/forgot-password'
+    | '/admin/genres'
     | '/admin/login'
     | '/admin/playlists'
     | '/admin/podcasts'
@@ -345,6 +356,7 @@ export interface FileRouteTypes {
     | '/admin/audiobooks'
     | '/admin/authors'
     | '/admin/forgot-password'
+    | '/admin/genres'
     | '/admin/login'
     | '/admin/playlists'
     | '/admin/podcasts'
@@ -376,6 +388,7 @@ export interface RootRouteChildren {
   AdminAudiobooksRoute: typeof AdminAudiobooksRoute
   AdminAuthorsRoute: typeof AdminAuthorsRoute
   AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
+  AdminGenresRoute: typeof AdminGenresRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPlaylistsRoute: typeof AdminPlaylistsRoute
   AdminPodcastsRoute: typeof AdminPodcastsRoute
@@ -564,6 +577,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/genres': {
+      id: '/admin/genres'
+      path: '/admin/genres'
+      fullPath: '/admin/genres'
+      preLoaderRoute: typeof AdminGenresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/forgot-password': {
       id: '/admin/forgot-password'
       path: '/admin/forgot-password'
@@ -608,6 +628,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAudiobooksRoute: AdminAudiobooksRoute,
   AdminAuthorsRoute: AdminAuthorsRoute,
   AdminForgotPasswordRoute: AdminForgotPasswordRoute,
+  AdminGenresRoute: AdminGenresRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPlaylistsRoute: AdminPlaylistsRoute,
   AdminPodcastsRoute: AdminPodcastsRoute,

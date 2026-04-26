@@ -3,6 +3,7 @@ import { ArrowDown, ArrowUp, Check, Plus, Search, X } from 'lucide-react';
 import type { Album } from '../../types';
 import { useAdminTracksQuery } from '../../hooks/tracks';
 import { useAlbumQuery, useAdminCreateAlbumMutation, useAdminUpdateAlbumMutation } from '../../hooks/albums';
+import { useAdminGenresQuery } from '../../hooks/admin-genres';
 
 interface Props {
   mode: 'new' | 'edit';
@@ -17,6 +18,7 @@ const inputClass =
 export default function AlbumModal({ mode, album, onClose }: Props) {
   const tracksQuery = useAdminTracksQuery();
   const albumDetailQuery = useAlbumQuery(album?.id ?? '');
+  const genresQuery = useAdminGenresQuery();
   const createMutation = useAdminCreateAlbumMutation();
   const updateMutation = useAdminUpdateAlbumMutation();
   const isSaving = createMutation.isPending || updateMutation.isPending;
@@ -65,6 +67,10 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
   const lockedArtist = selectedTracks[0]?.artistName?.trim() ?? '';
   const normalizedTrackQuery = trackQuery.trim().toLowerCase();
   const currentAlbumId = album?.id ?? '';
+  const genreOptions = [
+    ...(genresQuery.data?.map((item) => item.name) ?? []),
+    ...(genre && !genresQuery.data?.some((item) => item.name === genre) ? [genre] : []),
+  ];
 
   useEffect(() => {
     if (!lockedArtist) return;
@@ -232,7 +238,14 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>Genre</label>
-                <input value={genre} onChange={(e) => setGenre(e.target.value)} className={inputClass} />
+                <select value={genre} onChange={(e) => setGenre(e.target.value)} className={inputClass}>
+                  <option value="">Select genre</option>
+                  {genreOptions.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className={labelClass}>Release Date</label>

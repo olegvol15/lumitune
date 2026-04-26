@@ -24,6 +24,10 @@ const chartSeries = [
   { key: 'audiobooks', label: 'Audiobooks', color: '#f07282' },
 ] as const;
 
+type ChartSeriesKey = (typeof chartSeries)[number]['key'];
+type ContentChartPoint = { month: string } & Record<ChartSeriesKey, number>;
+type ContentChartDisplayPoint = ContentChartPoint & Record<`${ChartSeriesKey}Display`, number>;
+
 function formatCompactNumber(value: number) {
   return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(value);
 }
@@ -52,9 +56,28 @@ function DashboardSkeleton() {
 function ContentChart({
   data,
 }: {
-  data: Array<{ month: string; tracks: number; albums: number; podcasts: number; audiobooks: number }>;
+  data: ContentChartPoint[];
 }) {
   const maxValue = Math.max(0, ...data.flatMap((point) => [point.tracks, point.albums, point.podcasts, point.audiobooks]));
+  const overlapOffset = Math.max(maxValue * 0.06, 0.12);
+  const chartData: ContentChartDisplayPoint[] = data.map((point) => {
+    const displayPoint = { ...point } as ContentChartDisplayPoint;
+    const valueGroups = new Map<number, ChartSeriesKey[]>();
+
+    chartSeries.forEach(({ key }) => {
+      const value = point[key];
+      valueGroups.set(value, [...(valueGroups.get(value) ?? []), key]);
+    });
+
+    valueGroups.forEach((keys, value) => {
+      keys.forEach((key, index) => {
+        const offset = value > 0 && keys.length > 1 ? (index - (keys.length - 1) / 2) * overlapOffset : 0;
+        displayPoint[`${key}Display`] = Math.max(0, value + offset);
+      });
+    });
+
+    return displayPoint;
+  });
 
   return (
     <div className="rounded-2xl border border-[#2a3a52] bg-[#1e2638] p-5">
@@ -73,7 +96,7 @@ function ContentChart({
         ) : null}
 
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 12, right: 20, left: 0, bottom: 4 }}>
+          <LineChart data={chartData} margin={{ top: 12, right: 20, left: 0, bottom: 4 }}>
             <defs>
               {chartSeries.map((series) => (
                 <linearGradient key={series.key} id={`stroke-${series.key}`} x1="0" y1="0" x2="1" y2="0">
@@ -95,6 +118,7 @@ function ContentChart({
               tickLine={false}
               width={36}
               allowDecimals={false}
+              domain={[0, Math.ceil(maxValue + overlapOffset)]}
               tick={{ fill: '#7084a2', fontSize: 11 }}
             />
             <Tooltip
@@ -114,6 +138,13 @@ function ContentChart({
                 marginBottom: 6,
               }}
               itemStyle={{ color: '#b9c8da', fontSize: 12, padding: 0 }}
+              formatter={(_value, name, item) => {
+                const series = chartSeries.find((entry) => entry.label === name);
+
+                if (!series) return [_value, name];
+
+                return [item.payload[series.key], name];
+              }}
             />
             <Legend
               verticalAlign="top"
@@ -127,10 +158,11 @@ function ContentChart({
               <Line
                 key={series.key}
                 type="monotone"
-                dataKey={series.key}
+                dataKey={`${series.key}Display`}
                 name={series.label}
                 stroke={`url(#stroke-${series.key})`}
                 strokeWidth={3}
+                strokeLinecap="round"
                 dot={{ r: 3.5, strokeWidth: 2, fill: series.color, stroke: '#151d2e' }}
                 activeDot={{ r: 5, fill: series.color, stroke: '#dbe7f3', strokeWidth: 2 }}
               />

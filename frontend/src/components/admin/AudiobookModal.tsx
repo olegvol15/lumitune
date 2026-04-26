@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Upload } from 'lucide-react';
 import { useCreateAudiobookMutation, useUpdateAudiobookMutation } from '../../hooks/audiobooks';
+import { useAdminGenresQuery } from '../../hooks/admin-genres';
 import { useI18n } from '../../lib/i18n';
 import type { Audiobook } from '../../types';
 
@@ -26,6 +27,11 @@ export default function AudiobookModal({ mode, audiobook, onClose }: Props) {
 
   const createMutation = useCreateAudiobookMutation();
   const updateMutation = useUpdateAudiobookMutation();
+  const genresQuery = useAdminGenresQuery();
+  const genreOptions = [
+    ...(genresQuery.data?.map((item) => item.name) ?? []),
+    ...(genre && !genresQuery.data?.some((item) => item.name === genre) ? [genre] : []),
+  ];
 
   const handleSave = async () => {
     if (!title.trim() || !authorName.trim() || !description.trim()) {
@@ -91,7 +97,7 @@ export default function AudiobookModal({ mode, audiobook, onClose }: Props) {
             <label className={labelClass}>{copy.admin.genre}</label>
             <select value={genre} onChange={(e) => setGenre(e.target.value)} className={inputClass}>
               <option value="">{copy.admin.selectGenre}</option>
-              {copy.admin.audiobookGenres.map((item) => (
+              {genreOptions.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>

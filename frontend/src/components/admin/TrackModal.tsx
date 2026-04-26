@@ -4,19 +4,8 @@ import { useAdminTracksStore } from '../../store/adminTracksStore';
 import { useSaveAdminTrackMutation } from '../../hooks/tracks';
 import type { AdminTrack } from '../../types/admin/admin-tracks.types';
 import { useAlbumsQuery } from '../../hooks/albums';
+import { useAdminGenresQuery } from '../../hooks/admin-genres';
 
-const GENRES = [
-  'Pop',
-  'Rock',
-  'Hip-Hop',
-  'R&B',
-  'K-Pop',
-  'Electronic',
-  'Jazz',
-  'Classical',
-  'Country',
-  'Latin',
-];
 const TAGS = [
   'top-100',
   'trending',
@@ -41,7 +30,13 @@ export default function TrackModal() {
   const [error, setError] = useState<string | null>(null);
   const saveTrackMutation = useSaveAdminTrackMutation();
   const albumsQuery = useAlbumsQuery();
+  const genresQuery = useAdminGenresQuery();
   const availableAlbums = albumsQuery.data ?? [];
+  const currentGenre = form?.genreId || form?.genre || '';
+  const genreOptions = [
+    ...(genresQuery.data?.map((genre) => genre.name) ?? []),
+    ...(currentGenre && !genresQuery.data?.some((genre) => genre.name === currentGenre) ? [currentGenre] : []),
+  ];
 
   useEffect(() => {
     if (track) {
@@ -220,13 +215,16 @@ export default function TrackModal() {
                     <div>
                       <label className={labelClass}>Genre</label>
                       <select
-                        value={form.genreId}
-                        onChange={(e) => set('genreId', e.target.value)}
+                        value={currentGenre}
+                        onChange={(e) => {
+                          set('genreId', e.target.value);
+                          set('genre', e.target.value);
+                        }}
                         className={inputClass}
                       >
                         <option value="">Select genre</option>
-                        {GENRES.map((g) => (
-                          <option key={g} value={g.toLowerCase().replace(/\s+/g, '-')}>
+                        {genreOptions.map((g) => (
+                          <option key={g} value={g}>
                             {g}
                           </option>
                         ))}

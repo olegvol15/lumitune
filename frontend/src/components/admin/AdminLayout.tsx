@@ -2,7 +2,7 @@ import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useState, type ReactNode } from 'react';
 import {
   Users, Music2, LayoutDashboard, Puzzle, Settings, LogOut, Mic,
-  BookOpen, UserRound, ListMusic, Disc3, Tag, Smile, ChevronUp,
+  BookOpen, UserRound, ListMusic, Disc3, Shapes, Tag, Smile, ChevronUp,
   ChevronDown,
 } from 'lucide-react';
 import { useAdminLogoutMutation } from '../../hooks/admin-auth';
@@ -15,7 +15,7 @@ const ELEMENTS = [
   { label: 'Authors',     icon: UserRound,  path: '/admin/authors' },
   { label: 'Playlists',   icon: ListMusic,  path: '/admin/playlists' },
   { label: 'Albums',      icon: Disc3,      path: '/admin/albums' },
-  { label: 'Genres',      icon: Tag,        path: null },
+  { label: 'Genres',      icon: Shapes,     path: '/admin/genres' },
   { label: 'Tags',        icon: Tag,        path: null },
   { label: 'Moods',       icon: Smile,      path: null },
 ] as const;

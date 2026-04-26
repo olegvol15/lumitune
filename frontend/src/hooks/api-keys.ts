@@ -20,6 +20,11 @@ export const adminDashboardKeys = {
   summary: () => [...adminDashboardKeys.all, 'summary'] as const,
 };
 
+export const adminGenresKeys = {
+  all: ['adminGenres'] as const,
+  list: () => [...adminGenresKeys.all, 'list'] as const,
+};
+
 export const tracksKeys = {
   all: ['tracks'] as const,
   catalog: () => [...tracksKeys.all, 'catalog'] as const,
@@ -59,6 +64,7 @@ export const QUERY_KEYS = {
   auth: authKeys,
   adminAuth: adminAuthKeys,
   adminDashboard: adminDashboardKeys,
+  adminGenres: adminGenresKeys,
   adminUsers: adminUsersKeys,
   tracks: tracksKeys,
   albums: albumKeys,
