@@ -78,20 +78,37 @@ function ArtistPage() {
   return (
     <div className="pb-4">
       {/* Hero */}
-      <div className="relative">
-        <img src={artist.image} alt={artist.name} className="w-full h-72 object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-surface" />
+      <div className="relative h-72 overflow-hidden bg-[#07111f]">
+        <img
+          src={artist.image}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-55 blur-2xl"
+        />
+        <div className="absolute inset-0 bg-black/30" />
+        <img
+          src={artist.image}
+          alt={artist.name}
+          className="relative h-full w-full object-contain"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-surface" />
 
         {/* Back button */}
         <button
+          type="button"
+          aria-label={copy.common.back}
           onClick={() => router.history.back()}
-          className="absolute top-4 left-4 p-2.5 bg-black/40 backdrop-blur-sm rounded-full"
+          className="absolute left-4 top-4 rounded-full bg-[rgba(20,20,28,0.68)] p-2.5 shadow-lg backdrop-blur-md"
         >
-          <ChevronLeft size={20} className="text-white" />
+          <ChevronLeft size={20} className="!text-white" />
         </button>
 
-        <button className="absolute top-4 right-4 p-2.5 bg-black/40 backdrop-blur-sm rounded-full">
-          <MoreHorizontal size={20} className="text-white" />
+        <button
+          type="button"
+          aria-label="More options"
+          className="absolute right-4 top-4 rounded-full bg-[rgba(20,20,28,0.68)] p-2.5 shadow-lg backdrop-blur-md"
+        >
+          <MoreHorizontal size={20} className="!text-white" />
         </button>
 
         {/* Artist info */}
@@ -103,8 +120,8 @@ function ArtistPage() {
               </span>
             </div>
           )}
-          <h1 className="text-white text-3xl font-bold">{artist.name}</h1>
-          <p className="text-white/70 text-sm mt-1">
+          <h1 className="text-3xl font-bold !text-white">{artist.name}</h1>
+          <p className="mt-1 text-sm !text-white/70">
             {fmtListeners(artist.monthlyListeners)} {copy.media.monthlyListeners}
           </p>
         </div>

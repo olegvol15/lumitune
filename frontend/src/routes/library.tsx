@@ -20,6 +20,9 @@ export const Route = createFileRoute('/library')({
 
 function LibraryPage() {
   const [tab, setTab] = useState<LibraryTab>('playlists');
+  const [confirmCreateOpen, setConfirmCreateOpen] = useState(false);
+  const [playlistName, setPlaylistName] = useState('');
+  const [createError, setCreateError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { copy } = useI18n();
   const { data: playlists = [] } = usePlaylistsQuery();
@@ -30,11 +33,34 @@ function LibraryPage() {
   const personalPlaylists = playlists.filter((playlist) => playlist.kind === 'user');
   const curatedPlaylists = playlists.filter((playlist) => playlist.kind === 'curated');
 
-  const handleCreatePlaylist = async () => {
-    const playlist = await createMutation.mutateAsync(
-      `${copy.nav.createPlaylist} #${personalPlaylists.length + 1}`
-    );
-    navigate({ to: '/playlist/$id', params: { id: playlist.id } });
+  const nextPlaylistName = `${copy.nav.createPlaylist} #${personalPlaylists.length + 1}`;
+
+  const openCreateConfirmation = () => {
+    setCreateError(null);
+    setPlaylistName(nextPlaylistName);
+    setConfirmCreateOpen(true);
+  };
+
+  const handleConfirmCreatePlaylist = async () => {
+    const trimmedName = playlistName.trim();
+    if (!trimmedName) {
+      setCreateError(copy.library.playlistNameRequired);
+      return;
+    }
+
+    try {
+      setCreateError(null);
+      const playlist = await createMutation.mutateAsync(trimmedName);
+      setConfirmCreateOpen(false);
+      navigate({ to: '/playlist/$id', params: { id: playlist.id } });
+    } catch (error) {
+      const errorWithMessage = error as { response?: { data?: { message?: string } }; message?: string };
+      setCreateError(
+        errorWithMessage.response?.data?.message ??
+          errorWithMessage.message ??
+          copy.library.createPlaylistError
+      );
+    }
   };
 
   return (
@@ -43,7 +69,7 @@ function LibraryPage() {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-white text-2xl font-bold">{copy.library.title}</h1>
         <button
-          onClick={() => void handleCreatePlaylist()}
+          onClick={openCreateConfirmation}
           className="p-2 bg-surface-alt rounded-full hover:bg-white/10 transition-colors"
           title={copy.nav.createPlaylist}
         >
@@ -142,7 +168,7 @@ function LibraryPage() {
           {playlists.length === 0 && (
             <div className="py-6 text-center">
               <p className="text-muted text-sm mb-3">{copy.library.noPlaylists}</p>
-              <Button variant="outline" size="sm" onClick={() => void handleCreatePlaylist()}>
+              <Button variant="outline" size="sm" onClick={openCreateConfirmation}>
                 {copy.nav.createPlaylist}
               </Button>
             </div>
@@ -225,6 +251,65 @@ function LibraryPage() {
               <p className="text-muted text-sm">{copy.library.noSavedAudiobooks}</p>
             </div>
           )}
+        </div>
+      )}
+
+      {confirmCreateOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center bg-black/60 p-4 backdrop-blur-md"
+          onClick={(event) => {
+            if (!createMutation.isPending && event.target === event.currentTarget) {
+              setConfirmCreateOpen(false);
+            }
+          }}
+        >
+          <div className="mx-auto w-full max-w-sm overflow-hidden rounded-2xl bg-surface-alt shadow-2xl">
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                void handleConfirmCreatePlaylist();
+              }}
+            >
+            <div className="px-6 py-5">
+              <h2 className="mb-2 text-base font-semibold text-white">
+                {copy.library.createPlaylistTitle}
+              </h2>
+              <p className="text-sm leading-relaxed text-muted">{copy.library.createPlaylistBody}</p>
+              <label className="mt-4 block text-xs font-medium text-muted" htmlFor="library-playlist-name">
+                {copy.library.playlistName}
+              </label>
+              <input
+                id="library-playlist-name"
+                autoFocus
+                value={playlistName}
+                onChange={(event) => {
+                  setPlaylistName(event.target.value);
+                  if (createError) setCreateError(null);
+                }}
+                disabled={createMutation.isPending}
+                className="mt-1 w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm font-medium text-white placeholder:text-white/35 focus:border-brand focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+              />
+              {createError && <p className="mt-3 text-sm text-red-300">{createError}</p>}
+            </div>
+            <div className="flex justify-end gap-3 border-t border-white/10 px-6 py-4">
+              <button
+                type="button"
+                onClick={() => setConfirmCreateOpen(false)}
+                disabled={createMutation.isPending}
+                className="rounded-lg bg-white/10 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {copy.common.no}
+              </button>
+              <button
+                type="submit"
+                disabled={createMutation.isPending}
+                className="rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {createMutation.isPending ? copy.library.creatingPlaylist : copy.common.yes}
+              </button>
+            </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

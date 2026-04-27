@@ -37,20 +37,22 @@ export default function HeroBanner({ albums, tracks }: { albums: Album[]; tracks
   return (
     <div className="mb-8">
       {/* Pagination dots above */}
-      <div className="flex justify-center gap-1.5 mb-2">
+      <div className="mb-3 flex justify-center gap-2">
         {banners.map((_, i) => (
           <button
             key={i}
+            type="button"
+            aria-label={`Show banner ${i + 1}`}
             onClick={() => setActive(i)}
-            className={`h-1.5 rounded-full transition-all ${
-              i === activeIndex ? 'w-5 bg-[#1CA2EA]' : 'w-1.5 bg-white/20'
+            className={`h-2 rounded-full transition-all duration-200 ${
+              i === activeIndex ? 'w-9 bg-[#45A7EE]' : 'w-2 bg-white/15 hover:bg-white/30'
             }`}
           />
         ))}
       </div>
 
       {/* Banner carousel */}
-      <div className="relative overflow-hidden rounded-xl h-44 sm:h-60 lg:h-72">
+      <div className="relative h-44 overflow-hidden rounded-xl bg-[#07111f] shadow-[0_18px_45px_rgba(0,0,0,0.20)] sm:h-60 lg:h-[320px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={banners[activeIndex].id}
@@ -61,12 +63,19 @@ export default function HeroBanner({ albums, tracks }: { albums: Album[]; tracks
           >
             <img
               src={banners[activeIndex].imageUrl}
-              alt={banners[activeIndex].label}
-              className="w-full h-full object-cover"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            <div className="absolute bottom-4 left-5">
-              <span className="bg-black/40 backdrop-blur-sm text-white text-sm font-semibold px-4 py-1.5 rounded-full">
+            <div className="absolute inset-0 bg-black/30" />
+            <img
+              src={banners[activeIndex].imageUrl}
+              alt={banners[activeIndex].label}
+              className="relative h-full w-full object-contain"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-black/10" />
+            <div className="absolute bottom-4 left-4 max-w-[calc(100%-2rem)] sm:left-5">
+              <span className="block truncate rounded-full bg-[rgba(20,20,28,0.68)] px-4 py-1.5 text-sm font-semibold !text-white shadow-lg backdrop-blur-md sm:text-base">
                 {banners[activeIndex].label}
               </span>
             </div>

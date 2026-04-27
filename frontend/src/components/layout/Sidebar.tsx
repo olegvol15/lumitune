@@ -9,6 +9,8 @@ import {
   Clock,
   Music2,
 } from 'lucide-react';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePlayerStore } from '../../store/playerStore';
 import SongCoverImage from '../ui/SongCoverImage';
@@ -24,15 +26,102 @@ export default function Sidebar() {
   const { data: playlists = [] } = usePlaylistsQuery();
   const createMutation = useCreatePlaylistMutation();
   const { copy } = useI18n();
+  const [confirmCreateOpen, setConfirmCreateOpen] = useState(false);
+  const [playlistName, setPlaylistName] = useState('');
+  const [createError, setCreateError] = useState<string | null>(null);
   const personalPlaylists = playlists.filter((playlist) => playlist.kind === 'user');
   const curatedPlaylists = playlists.filter((playlist) => playlist.kind === 'curated');
+  const nextPlaylistName = `${copy.nav.createPlaylist} #${personalPlaylists.length + 1}`;
 
-  const handleCreatePlaylist = async () => {
-    const playlist = await createMutation.mutateAsync(
-      `${copy.nav.createPlaylist} #${personalPlaylists.length + 1}`
-    );
-    navigate({ to: '/playlist/$id', params: { id: playlist.id } });
+  const openCreateConfirmation = () => {
+    setCreateError(null);
+    setPlaylistName(nextPlaylistName);
+    setConfirmCreateOpen(true);
   };
+
+  const handleConfirmCreatePlaylist = async () => {
+    const trimmedName = playlistName.trim();
+    if (!trimmedName) {
+      setCreateError(copy.library.playlistNameRequired);
+      return;
+    }
+
+    try {
+      setCreateError(null);
+      const playlist = await createMutation.mutateAsync(trimmedName);
+      setConfirmCreateOpen(false);
+      navigate({ to: '/playlist/$id', params: { id: playlist.id } });
+    } catch (error) {
+      const errorWithMessage = error as { response?: { data?: { message?: string } }; message?: string };
+      setCreateError(
+        errorWithMessage.response?.data?.message ??
+          errorWithMessage.message ??
+          copy.library.createPlaylistError
+      );
+    }
+  };
+
+  const createPlaylistModal = confirmCreateOpen
+    ? createPortal(
+        <div
+          className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center bg-black/60 p-4 backdrop-blur-md"
+          onClick={(event) => {
+            if (!createMutation.isPending && event.target === event.currentTarget) {
+              setConfirmCreateOpen(false);
+            }
+          }}
+        >
+          <div className="mx-auto w-full max-w-sm overflow-hidden rounded-2xl bg-surface-alt shadow-2xl">
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                void handleConfirmCreatePlaylist();
+              }}
+            >
+              <div className="px-6 py-5">
+                <h2 className="mb-2 text-base font-semibold text-white">
+                  {copy.library.createPlaylistTitle}
+                </h2>
+                <p className="text-sm leading-relaxed text-muted">{copy.library.createPlaylistBody}</p>
+                <label className="mt-4 block text-xs font-medium text-muted" htmlFor="sidebar-playlist-name">
+                  {copy.library.playlistName}
+                </label>
+                <input
+                  id="sidebar-playlist-name"
+                  autoFocus
+                  value={playlistName}
+                  onChange={(event) => {
+                    setPlaylistName(event.target.value);
+                    if (createError) setCreateError(null);
+                  }}
+                  disabled={createMutation.isPending}
+                  className="mt-1 w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm font-medium text-white placeholder:text-white/35 focus:border-brand focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                />
+                {createError && <p className="mt-3 text-sm text-red-300">{createError}</p>}
+              </div>
+              <div className="flex justify-end gap-3 border-t border-white/10 px-6 py-4">
+                <button
+                  type="button"
+                  onClick={() => setConfirmCreateOpen(false)}
+                  disabled={createMutation.isPending}
+                  className="rounded-lg bg-white/10 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {copy.common.no}
+                </button>
+                <button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {createMutation.isPending ? copy.library.creatingPlaylist : copy.common.yes}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>,
+        document.body
+      )
+    : null;
 
   return (
     <aside className="sticky top-16 h-[calc(100vh-4rem)] w-64 bg-[#060d19]/80 backdrop-blur-sm border-r border-[#1a3050] overflow-y-auto flex flex-col flex-shrink-0 z-[10]">
@@ -90,7 +179,7 @@ export default function Sidebar() {
         </Link>
 
         <button
-          onClick={() => void handleCreatePlaylist()}
+          onClick={openCreateConfirmation}
           className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors mt-1"
         >
           <ListPlus size={18} />
@@ -218,6 +307,8 @@ export default function Sidebar() {
           </div>
         )}
       </div>
+
+      {createPlaylistModal}
     </aside>
   );
 }
