@@ -18,6 +18,8 @@ import { staggerContainer, staggerItem } from '../../lib/motion';
 import { usePlaylistsQuery, useCreatePlaylistMutation } from '../../hooks/playlists';
 import { useI18n } from '../../lib/i18n';
 
+const SIDEBAR_PLAYLIST_LIMIT = 3;
+
 export default function Sidebar() {
   const { location } = useRouterState();
   const pathname = location.pathname;
@@ -31,6 +33,8 @@ export default function Sidebar() {
   const [createError, setCreateError] = useState<string | null>(null);
   const personalPlaylists = playlists.filter((playlist) => playlist.kind === 'user');
   const curatedPlaylists = playlists.filter((playlist) => playlist.kind === 'curated');
+  const visiblePersonalPlaylists = personalPlaylists.slice(0, SIDEBAR_PLAYLIST_LIMIT);
+  const hiddenPlaylistCount = personalPlaylists.length - visiblePersonalPlaylists.length;
   const nextPlaylistName = `${copy.nav.createPlaylist} #${personalPlaylists.length + 1}`;
 
   const openCreateConfirmation = () => {
@@ -196,7 +200,7 @@ export default function Sidebar() {
           <p className="text-muted text-xs px-3 py-2">{copy.nav.noPlaylistsYet}</p>
         ) : (
           <AnimatePresence>
-            {personalPlaylists.map((playlist) => (
+            {visiblePersonalPlaylists.map((playlist) => (
               <motion.div
                 key={playlist.id}
                 variants={staggerItem}
@@ -230,7 +234,13 @@ export default function Sidebar() {
               </motion.div>
             ))}
             {curatedPlaylists.length > 0 && (
-              <motion.div variants={staggerItem} initial="initial" animate="animate" className="px-3 pt-4">
+              <motion.div
+                key="curated-playlists-header"
+                variants={staggerItem}
+                initial="initial"
+                animate="animate"
+                className="px-3 pt-4"
+              >
                 <span className="text-[11px] font-semibold uppercase tracking-wide text-white/40">
                   Curated
                 </span>
@@ -270,6 +280,14 @@ export default function Sidebar() {
               </motion.div>
             ))}
           </AnimatePresence>
+        )}
+        {hiddenPlaylistCount > 0 && (
+          <button
+            onClick={() => navigate({ to: '/library' })}
+            className="mt-1 flex w-full items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-[#1CA2EA] transition-colors hover:bg-white/5 hover:text-white"
+          >
+            {copy.common.showAll}
+          </button>
         )}
       </div>
 
