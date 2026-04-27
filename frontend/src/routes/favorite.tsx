@@ -1,13 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
-import { Heart, SortAsc } from 'lucide-react';
-import TrackRow from '../components/ui/TrackRow';
+import { Heart, Pause, Play, Search } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
-import Button from '../components/ui/Button';
-import type { FavoriteSortKey } from '../types/routes/route.types';
 import { useCatalogTracks } from '../hooks/tracks';
 import { useI18n } from '../lib/i18n';
 import { useAuthStore } from '../store/authStore';
+import { formatDuration } from '../utils/format';
+import TrackCard from '../components/ui/TrackCard';
 
 export const Route = createFileRoute('/favorite')({ component: FavoritePage });
 
@@ -64,8 +63,11 @@ function FavoriteHero({
 }
 
 function FavoritePage() {
-  const [sort, setSort] = useState<FavoriteSortKey>('recent');
+  const [query, setQuery] = useState('');
   const play = usePlayerStore((s) => s.play);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
+  const togglePlay = usePlayerStore((s) => s.togglePlay);
   const { tracks } = useCatalogTracks();
   const { copy } = useI18n();
   const user = useAuthStore((state) => state.user);
@@ -77,63 +79,73 @@ function FavoritePage() {
       ? user.profilePicture
       : undefined;
 
-  const sorted = [...likedTracks].sort((a, b) => {
-    if (sort === 'az') return a.title.localeCompare(b.title);
-    if (sort === 'artist') return a.artistName.localeCompare(b.artistName);
-    return 0; // recent = original order
+  const sorted = [...likedTracks];
+  const filteredTracks = sorted.filter((track) => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return true;
+    return [track.title, track.artistName, track.albumTitle]
+      .filter(Boolean)
+      .some((value) => value.toLowerCase().includes(normalizedQuery));
   });
 
   const playAll = () => {
-    if (sorted.length > 0) play(sorted[0], sorted);
+    if (filteredTracks.length === 0) return;
+    if (currentTrack && filteredTracks.some((track) => track.id === currentTrack.id)) {
+      togglePlay();
+      return;
+    }
+    play(filteredTracks[0], filteredTracks);
   };
+  const isFavoriteQueueActive = Boolean(
+    currentTrack && filteredTracks.some((track) => track.id === currentTrack.id)
+  );
 
   return (
     <div className="px-5 pb-12 pt-2 sm:px-8 lg:px-3">
       <FavoriteHero ownerName={ownerName} avatarUrl={avatarUrl} trackCount={likedTracks.length} />
 
       <div className="px-0 lg:px-10">
-
-      {/* Controls */}
-      <div className="flex items-center justify-between mt-4 mb-4">
-        <Button variant="secondary" shape="pill" onClick={playAll} className="px-6">
-          {copy.common.playAll}
-        </Button>
-        <div className="relative">
-          <button className="flex items-center gap-1.5 p-2.5 bg-surface-alt rounded-full text-muted text-sm">
-            <SortAsc size={16} />
-          </button>
+        <div className="mb-7 flex flex-wrap items-center gap-5">
+          <div className="flex items-center gap-5 text-[#9deaff]">
+            <button
+              type="button"
+              onClick={playAll}
+              className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#9deaff] transition-colors hover:bg-[#9deaff]/10"
+              aria-label={copy.common.playAll}
+            >
+              {isFavoriteQueueActive && isPlaying ? (
+                <Pause size={22} className="fill-[#9deaff] text-[#9deaff]" />
+              ) : (
+                <Play size={22} className="ml-0.5 fill-[#9deaff] text-[#9deaff]" />
+              )}
+            </button>
+          </div>
+          <div className="relative w-full max-w-sm">
+            <Search size={17} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#bfefff]/70" />
+            <input
+              type="text"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={copy.search.placeholder}
+              className="w-full rounded-full border border-[#24455a] bg-[#07162a]/70 py-2 pl-9 pr-4 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-[#9deaff]"
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Sort pills */}
-      <div className="flex gap-2 mb-4">
-        {(['recent', 'az', 'artist'] as FavoriteSortKey[]).map((s) => (
-          <Button
-            key={s}
-            variant={sort === s ? 'secondary' : 'ghost'}
-            shape="pill"
-            size="sm"
-            onClick={() => setSort(s)}
-            className={sort !== s ? 'bg-surface-alt' : ''}
-          >
-            {s === 'recent' ? copy.favorites.recent : s === 'az' ? copy.favorites.az : copy.favorites.artist}
-          </Button>
-        ))}
-      </div>
-
-      {/* Track list */}
-      <div className="space-y-1">
-        {sorted.map((t) => (
-          <TrackRow
-            key={t.id}
-            track={t}
-            queue={sorted}
-            disableHoverEffects
-            disableTapAnimation
-            playOnRowClick
-          />
-        ))}
-      </div>
+        <div className="space-y-2">
+          {filteredTracks.map((track) => (
+            <TrackCard
+              key={track.id}
+              track={track}
+              queue={filteredTracks}
+              metadata={[
+                { key: 'album', label: track.albumTitle, className: 'w-36' },
+                { key: 'duration', label: formatDuration(track.duration), className: 'w-12 text-right' },
+              ]}
+              onPlay={() => play(track, filteredTracks)}
+            />
+          ))}
+        </div>
 
       {likedTracks.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">

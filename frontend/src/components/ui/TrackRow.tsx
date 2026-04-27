@@ -1,4 +1,4 @@
-import { Heart, MoreVertical, Play } from 'lucide-react';
+import { Heart, MoreVertical, Pause, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { formatDuration, formatPlayCount } from '../../utils/format';
 import { usePlayerStore } from '../../store/playerStore';
@@ -55,23 +55,23 @@ export default function TrackRow({
             event.stopPropagation();
             handlePlay();
           }}
-          className={`absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg transition-opacity ${
+          className={`absolute inset-0 z-10 flex items-center justify-center bg-black/50 rounded-lg transition-opacity ${
             alwaysShowPlayButton
               ? 'opacity-100'
               : disableHoverEffects
-              ? 'opacity-0'
+              ? 'opacity-0 hover:opacity-100'
               : 'opacity-0 group-hover:opacity-100'
           }`}
         >
           {isActive && isPlaying ? (
-            <span className="w-2.5 h-2.5 bg-brand rounded-sm" />
+            <Pause size={14} className="text-white fill-white" />
           ) : (
             <Play size={14} className="text-white fill-white ml-0.5" />
           )}
         </button>
         {showIndex && index !== undefined && (
           <span
-            className={`absolute inset-0 flex items-center justify-center text-xs font-bold transition-opacity ${
+            className={`pointer-events-none absolute inset-0 flex items-center justify-center text-xs font-bold transition-opacity ${
               alwaysShowPlayButton ? 'opacity-0' : disableHoverEffects ? '' : 'group-hover:opacity-0'
             } ${
               isActive ? 'text-brand' : 'text-muted'

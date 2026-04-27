@@ -7,6 +7,7 @@ import { formatDuration, formatPlayCount } from '../utils/format';
 import Button from '../components/ui/Button';
 import { useCatalogTracks } from '../hooks/tracks';
 import SongCoverImage from '../components/ui/SongCoverImage';
+import TrackCard from '../components/ui/TrackCard';
 import {
   usePlaylistsQuery,
   useRenamePlaylistMutation,
@@ -235,27 +236,17 @@ function PlaylistPage() {
             <h2 className="text-white font-bold text-base mb-3">{copy.media.inPlaylist}</h2>
             <div className="space-y-1">
               {playlistTracks.map((track) => (
-                <div
+                <TrackCard
                   key={track.id}
-                  className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 group transition-colors"
-                >
-                  <SongCoverImage
-                    src={track.albumCover}
-                    alt={track.albumTitle}
-                    className="w-10 h-10 rounded-lg object-cover flex-shrink-0 cursor-pointer"
-                    onClick={() => play(track, playlistTracks)}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white text-sm font-semibold truncate">{track.title}</p>
-                    <p className="text-muted text-xs truncate">{track.artistName}</p>
-                  </div>
-                  <span className="text-muted text-xs flex-shrink-0 hidden sm:block">
-                    {track.albumTitle}
-                  </span>
-                  <span className="text-muted text-xs flex-shrink-0 w-12 text-right">
-                    {formatDuration(track.duration)}
-                  </span>
-                  {canEditPlaylist && (
+                  track={track}
+                  queue={playlistTracks}
+                  onPlay={() => play(track, playlistTracks)}
+                  metadata={[
+                    { key: 'album', label: track.albumTitle, className: 'w-36' },
+                    { key: 'duration', label: formatDuration(track.duration), className: 'w-12 text-right' },
+                  ]}
+                  action={
+                    canEditPlaylist ? (
                     <button
                       onClick={() => removeSongMutation.mutate({ playlistId: id, songId: track.id })}
                       disabled={removeSongMutation.isPending}
@@ -264,8 +255,9 @@ function PlaylistPage() {
                     >
                       <X size={14} />
                     </button>
-                  )}
-                </div>
+                    ) : null
+                  }
+                />
               ))}
             </div>
           </div>
@@ -307,39 +299,27 @@ function PlaylistPage() {
             <>
               <div className="space-y-1">
                 {recommendations.slice(0, recsShown).map((track) => (
-                  <div
+                  <TrackCard
                     key={track.id}
-                    className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 group transition-colors"
-                  >
-                    <SongCoverImage
-                      src={track.albumCover}
-                      alt={track.albumTitle}
-                      className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white text-sm font-semibold truncate">{track.title}</p>
-                      <p className="text-muted text-xs truncate">{track.artistName}</p>
-                    </div>
-                    <span className="text-muted text-xs flex-shrink-0 hidden md:block w-32 truncate text-right">
-                      {track.albumTitle}
-                    </span>
-                    <span className="text-muted text-xs flex-shrink-0 w-12 text-right hidden sm:block">
-                      {formatPlayCount(track.playCount)}
-                    </span>
-                    <span className="text-muted text-xs flex-shrink-0 w-10 text-right">
-                      {formatDuration(track.duration)}
-                    </span>
-                    <button
-                      onClick={() =>
-                        addSongMutation.mutate({ playlistId: id, songId: track.id })
-                      }
-                      disabled={addSongMutation.isPending}
-                      className="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors flex-shrink-0 disabled:opacity-30"
-                      title={copy.media.addToPlaylist}
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
+                    track={track}
+                    metadata={[
+                      { key: 'album', label: track.albumTitle, className: 'w-32 text-right' },
+                      { key: 'plays', label: formatPlayCount(track.playCount), className: 'w-12 text-right' },
+                      { key: 'duration', label: formatDuration(track.duration), className: 'w-10 text-right' },
+                    ]}
+                    action={
+                      <button
+                        onClick={() =>
+                          addSongMutation.mutate({ playlistId: id, songId: track.id })
+                        }
+                        disabled={addSongMutation.isPending}
+                        className="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors flex-shrink-0 disabled:opacity-30"
+                        title={copy.media.addToPlaylist}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    }
+                  />
                 ))}
               </div>
 
