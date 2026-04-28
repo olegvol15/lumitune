@@ -1,203 +1,221 @@
-# Lumitune (Spotify clone)
+# LumiTune
 
-A full-stack music streaming application built with React and Express in a pnpm monorepo.
+Full-stack Spotify-style music streaming app built as a pnpm workspace. The app includes a React web client, an Express REST API, user and admin authentication, media uploads, streaming playback, playlists, likes, search, albums, podcasts, audiobooks, genres, moods, and an admin dashboard.
 
-## Tech Stack
+## Stack
 
-**Frontend** — React 19, Vite 7, TypeScript, TanStack Router, TanStack Query, Zustand, Tailwind CSS, Axios
+**Frontend:** React 19, Vite 7, TypeScript, TanStack Router, TanStack Query, Zustand, Tailwind CSS, Axios, Framer Motion, Recharts
 
-**Backend** — Node.js, Express 5, TypeScript, MongoDB/Mongoose, JWT, Multer, music-metadata
+**Backend:** Node.js, Express 5, TypeScript, MongoDB/Mongoose, JWT auth with refresh tokens, Passport OAuth, Multer, music-metadata, Nodemailer, Zod
 
-## Project Structure
+## Workspace
 
-```
+```txt
 spotify-clone/
-├── frontend/        # React SPA (Vite)
-├── backend/         # Express REST API
-├── uploads/         # Audio file storage
-├── package.json     # Monorepo root
-└── pnpm-workspace.yaml
+  frontend/              React SPA
+  backend/               Express API
+  uploads/               Root upload placeholder
+  postman/               Postman globals/environments
+  pnpm-workspace.yaml    Workspace package list
+  WORKSPACE.md           Architecture notes for contributors
 ```
 
-## Getting Started
+Workspace packages:
 
-### Prerequisites
+- `@lumitune/frontend`
+- `@lumitune/backend`
+
+## Requirements
 
 - Node.js 18+
 - pnpm
-- MongoDB (local or Atlas)
+- MongoDB, local or hosted
 
-### 1. Install dependencies
+## Setup
+
+Install dependencies from the repository root:
 
 ```bash
 pnpm install
 ```
 
-### 2. Configure environment variables
+Create environment files:
 
 ```bash
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 ```
 
-Fill in the values in `backend/.env` — see `backend/.env.example` for all required keys.
+At minimum, set `MONGODB_URI` and `JWT_SECRET` in `backend/.env`. OAuth and SMTP settings are optional unless you need social login or email delivery.
 
-### 3. Start development servers
+Start both development servers in separate terminals:
 
 ```bash
-# Terminal 1 — backend (http://localhost:3000)
 pnpm dev:backend
-
-# Terminal 2 — frontend (http://localhost:5173)
 pnpm dev:frontend
 ```
 
-Check the backend is up: `http://localhost:3000/health` → `{"status":"OK"}`
+Default local URLs:
 
-## Scripts
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:3000`
+- Health check: `http://localhost:3000/health`
 
-| Command               | Description                               |
-| --------------------- | ----------------------------------------- |
-| `pnpm dev:backend`    | Start backend with nodemon (auto-restart) |
-| `pnpm dev:frontend`   | Start Vite dev server                     |
-| `pnpm build:backend`  | Compile backend TypeScript to `dist/`     |
-| `pnpm build:frontend` | Build frontend for production             |
-| `pnpm typecheck`      | Run TypeScript checks across workspace    |
-| `pnpm lint:frontend`  | Run frontend ESLint                       |
-| `pnpm build`          | Build all workspace packages              |
+The Vite dev server proxies `/api` and `/uploads` to the backend, so frontend API clients use `/api` as their base URL.
 
-## API Reference
+## Root Scripts
 
-### Admin Auth — `/api/admin/auth`
+| Command | Description |
+| --- | --- |
+| `pnpm dev:backend` | Start the backend with nodemon and ts-node |
+| `pnpm dev:frontend` | Start the Vite dev server |
+| `pnpm build:backend` | Compile backend TypeScript to `backend/dist` |
+| `pnpm build:frontend` | Type-check and build the frontend |
+| `pnpm typecheck:backend` | Run backend TypeScript checks |
+| `pnpm typecheck:frontend` | Run frontend TypeScript checks |
+| `pnpm typecheck` | Run type checks across workspace packages |
+| `pnpm lint:frontend` | Run frontend ESLint |
+| `pnpm build` | Build all workspace packages |
 
-| Method | Endpoint             | Auth   | Description                |
-| ------ | -------------------- | ------ | -------------------------- |
-| POST   | `/signup`            | —      | Register admin             |
-| POST   | `/login`             | —      | Login admin, returns token |
-| GET    | `/me`                | Bearer | Get current admin          |
-| POST   | `/forgot-password`   | —      | Request reset code         |
-| POST   | `/verify-reset-code` | —      | Verify reset code          |
-| POST   | `/reset-password`    | —      | Reset password             |
+## Backend Environment
 
-### Admin Songs — `/api/admin/songs`
+Required for local API startup:
 
-| Method | Endpoint  | Auth         | Description                                                             |
-| ------ | --------- | ------------ | ----------------------------------------------------------------------- |
-| GET    | `/`       | Admin Bearer | List songs for admin table                                              |
-| GET    | `/:id`    | Admin Bearer | Get song by ID                                                          |
-| POST   | `/upload` | Admin Bearer | Create song (`multipart/form-data`, `audio` required, `cover` optional) |
-| PUT    | `/:id`    | Admin Bearer | Update song metadata and optional `cover` (`multipart/form-data`)       |
-| DELETE | `/:id`    | Admin Bearer | Delete song and associated local files                                  |
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017/lumitune
+JWT_SECRET=replace-with-a-long-random-secret
+```
 
-### Auth — `/api/auth`
+Common optional values:
 
-| Method | Endpoint    | Auth   | Description         |
-| ------ | ----------- | ------ | ------------------- |
-| POST   | `/register` | —      | Register a new user |
-| POST   | `/login`    | —      | Login, returns JWT  |
-| GET    | `/me`       | Bearer | Get current user    |
+```env
+PORT=3000
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:5173
+FRONTEND_URL=http://localhost:5173
+API_BASE_URL=http://localhost:3000
+ADMIN_JWT_SECRET=replace-with-a-long-random-admin-secret
+UPLOAD_PATH=uploads/
+MAX_FILE_SIZE=524288000
+```
 
-### Songs — `/api/songs`
+See [backend/.env.example](/Users/olegvolostnyh/spotify-clone/backend/.env.example) for the full list, including refresh token, reset code, SMTP, and OAuth settings.
 
-| Method | Endpoint      | Auth   | Description                                              |
-| ------ | ------------- | ------ | -------------------------------------------------------- |
-| GET    | `/`           | —      | List songs (supports `page`, `limit`, `search`, `genre`) |
-| GET    | `/:id`        | —      | Get song by ID                                           |
-| GET    | `/:id/stream` | —      | Stream audio (supports HTTP range requests)              |
-| POST   | `/upload`     | Bearer | Upload song (`multipart/form-data`)                      |
+## Frontend Environment
 
-### Playlists — `/api/playlists`
+```env
+VITE_API_URL=/api
+```
 
-| Method | Endpoint             | Auth   | Description               |
-| ------ | -------------------- | ------ | ------------------------- |
-| GET    | `/`                  | Bearer | Get user's playlists      |
-| POST   | `/`                  | Bearer | Create playlist           |
-| GET    | `/:id`               | Bearer | Get playlist              |
-| PUT    | `/:id`               | Bearer | Update playlist           |
-| DELETE | `/:id`               | Bearer | Delete playlist           |
-| POST   | `/:id/songs`         | Bearer | Add song to playlist      |
-| DELETE | `/:id/songs/:songId` | Bearer | Remove song from playlist |
+Current API clients use `/api` directly, with Vite proxying requests to the backend during development.
 
-### Other
+## API Overview
 
-| Method | Endpoint     | Description                          |
-| ------ | ------------ | ------------------------------------ |
-| GET    | `/health`    | Health check                         |
-| GET    | `/uploads/*` | Serve uploaded audio and cover files |
+All API routes are mounted under `/api` except `/health` and `/uploads`.
 
-## Frontend Routes
+| Area | Base path | Notes |
+| --- | --- | --- |
+| User auth | `/api/auth` | Register, login, refresh, logout, profile, password reset |
+| OAuth | `/api/auth/oauth` | Google, Facebook, and Apple when provider env vars are configured |
+| Admin auth | `/api/admin/auth` | Separate admin session and refresh flow |
+| Songs | `/api/songs` | Public catalog, user uploads, own songs, streaming |
+| Admin songs | `/api/admin/songs` | Protected song CRUD for admin screens |
+| Playlists | `/api/playlists` | Authenticated user playlists |
+| Admin playlists | `/api/admin/playlists` | Protected playlist management |
+| Likes | `/api/likes` | Authenticated liked-song operations |
+| Recently played | `/api/recently-played` | Authenticated listening history |
+| Search | `/api/search` | Catalog search |
+| Podcasts | `/api/podcasts` | Public podcast content |
+| Admin podcasts | `/api/admin/podcasts` | Protected podcast management |
+| Albums | `/api/albums` | Public album content |
+| Admin albums | `/api/admin/albums` | Protected album management |
+| Audiobooks | `/api/audiobooks` | Public audiobook content |
+| Admin audiobooks | `/api/admin/audiobooks` | Protected audiobook management |
+| Moods | `/api/moods` | Public mood content |
+| Admin moods | `/api/admin/moods` | Protected mood management |
+| Admin users | `/api/admin/users` | Protected user management |
+| Admin dashboard | `/api/admin/dashboard` | Protected dashboard metrics |
 
-| Path                    | Description            |
-| ----------------------- | ---------------------- |
-| `/`                     | Home / discover        |
-| `/search`               | Search tracks          |
-| `/library`              | User library           |
-| `/profile`              | User profile           |
-| `/settings`             | Settings               |
-| `/notifications`        | Notifications          |
-| `/player`               | Full-screen player     |
-| `/artist/:id`           | Artist page            |
-| `/album/:id`            | Album page             |
-| `/playlist/:id`         | Playlist page          |
-| `/auth/signin`          | Sign in                |
-| `/auth/signup`          | Sign up                |
-| `/auth/forgot-password` | Password reset         |
-| `/admin`                | Admin dashboard        |
-| `/admin/tracks`         | Admin track management |
+### Important Endpoints
 
-## State Management (Zustand)
-
-| Store               | Responsibility                                                                           |
-| ------------------- | ---------------------------------------------------------------------------------------- |
-| `authStore`         | User auth state — token, user profile, setAuth/logout                                    |
-| `playerStore`       | Playback state — current track, queue, play/pause, seek/progress, volume, shuffle/repeat |
-| `playlistStore`     | Playlist management                                                                      |
-| `adminAuthStore`    | Admin panel authentication (session-based, separate from user auth)                      |
-| `adminTracksStore`  | Admin track upload/management                                                            |
-| `songsCatalogStore` | Public songs catalog loaded from backend (`/api/songs`)                                  |
-
-## Authentication
-
-JWT-based auth. Tokens are stored in `localStorage` under the key `auth_token` and automatically attached to requests via the Axios interceptor in `frontend/src/lib/apiClient.ts`. A 401 response clears the stored token.
+| Method | Endpoint | Auth | Description |
+| --- | --- | --- | --- |
+| `GET` | `/health` | No | Backend health check |
+| `POST` | `/api/auth/register` | No | Register user |
+| `POST` | `/api/auth/login` | No | Login user |
+| `POST` | `/api/auth/refresh` | Cookie | Refresh user access token |
+| `POST` | `/api/auth/logout` | Cookie | Logout current session |
+| `GET` | `/api/auth/me` | Bearer | Get current user |
+| `PATCH` | `/api/auth/me` | Bearer | Update current user profile |
+| `POST` | `/api/admin/auth/login` | No | Login admin |
+| `POST` | `/api/admin/auth/refresh` | Cookie | Refresh admin access token |
+| `GET` | `/api/admin/auth/me` | Admin Bearer | Get current admin |
+| `GET` | `/api/songs` | No | List songs |
+| `GET` | `/api/songs/:id` | No | Get song details |
+| `GET` | `/api/songs/:id/stream` | No | Stream audio with range support |
+| `GET` | `/api/songs/mine` | Bearer | List current user's uploads |
+| `POST` | `/api/songs/upload` | Bearer | Upload a song with `audio` and optional `cover` files |
+| `PUT` | `/api/songs/:id` | Bearer | Update one of the user's songs |
+| `GET` | `/api/admin/songs` | Admin Bearer | List songs for admin |
+| `POST` | `/api/admin/songs/upload` | Admin Bearer | Create a song with `audio` and optional `cover` files |
+| `PUT` | `/api/admin/songs/:id` | Admin Bearer | Update song metadata and optional cover |
+| `DELETE` | `/api/admin/songs/:id` | Admin Bearer | Delete a song and local files |
 
 ## File Uploads
 
-Uploads are handled by Multer.
+Uploads are handled by Multer and served from `/uploads`.
 
-- Audio formats: `mp3`, `wav`, `m4a`, `flac`, `aac`, `ogg`
-- Cover image formats: `jpg`, `jpeg`, `png`, `webp`, `gif`
-- Duration is extracted automatically using `music-metadata`
-- Files are stored in `uploads/` and served from `/uploads/*`
+- Audio upload field: `audio`
+- Cover image upload field: `cover`
+- Supported audio extensions: `mp3`, `wav`, `m4a`, `flac`, `aac`, `ogg`
+- Supported image extensions: `jpg`, `jpeg`, `png`, `webp`, `gif`
+- Default max file size: 500 MB
+- Song duration is extracted automatically with `music-metadata`
 
-## Playback Flow (Frontend)
+## Frontend Routes
 
-- UI actions call `playerStore` (`play`, `togglePlay`, `seek`, `next`, `prev`)
-- A single global audio engine component (`frontend/src/components/player/AudioEngine.tsx`) is mounted in root layout
-- The audio engine streams current track from `GET /api/songs/:id/stream`
-- Audio element events update store progress and playback state
-- Controls in mini player, desktop player, track rows, and player page stay synchronized through store state
+| Path | Description |
+| --- | --- |
+| `/` | Home and discovery |
+| `/search` | Search |
+| `/library` | User library |
+| `/favorite` | Favorite content |
+| `/profile` | Profile |
+| `/settings` | Settings |
+| `/notifications` | Notifications |
+| `/player` | Full-screen player |
+| `/artist/:id` | Artist detail |
+| `/album/:id` | Album detail |
+| `/playlist/:id` | Playlist detail |
+| `/podcast/:id` | Podcast detail |
+| `/audiobook/:id` | Audiobook detail |
+| `/auth/signin` | User sign in |
+| `/auth/signup` | User sign up |
+| `/auth/forgot-password` | User password reset |
+| `/admin` | Admin dashboard |
+| `/admin/tracks` | Track management |
+| `/admin/albums` | Album management |
+| `/admin/playlists` | Playlist management |
+| `/admin/podcasts` | Podcast management |
+| `/admin/audiobooks` | Audiobook management |
+| `/admin/authors` | Author management |
+| `/admin/genres` | Genre management |
+| `/admin/moods` | Mood management |
+| `/admin/users` | User management |
+| `/admin/settings` | Admin settings |
+| `/admin/login` | Admin sign in |
+| `/admin/signup` | Admin sign up |
+| `/admin/forgot-password` | Admin password reset |
+| `/admin/reset-password` | Admin reset-code flow |
 
-## Catalog Data Flow (Frontend)
+## Architecture Notes
 
-- User-facing track pages now load songs from backend (not static `data/tracks.ts`)
-- Mapping layer: `frontend/src/utils/song-catalog.utils.ts` converts backend song payloads to `Track`
-- Cover fallback UI component: `frontend/src/components/ui/SongCoverImage.tsx`
-- Applied in track and media UI so missing/broken cover images render a designed placeholder
+- Backend route handlers stay thin and delegate business logic to services.
+- Auth uses short-lived access tokens plus refresh-token cookies.
+- User and admin auth are separate flows with separate stores and API refresh handling.
+- Frontend server state is fetched through API modules and hooks, with TanStack Query used for cacheable flows.
+- Player state lives in Zustand, while `AudioEngine` owns the single global audio element.
+- Uploaded media is streamed from the backend instead of bundled into the frontend.
+- Generated TanStack Router file `frontend/src/routeTree.gen.ts` should not be edited by hand.
 
-## Recent Changes
-
-- Backend architecture normalized to controller/service split for songs
-- Added full admin song CRUD API with auth protection
-- Added admin song create/edit support for optional cover image upload
-- Admin panel now reads/writes real backend songs
-- User-facing app now reads songs from backend catalog
-- Added real streamed audio playback via global audio engine
-- Added reusable song-cover fallback component across UI
-
-## Database Models
-
-**User** — email, username, hashed password, profilePicture
-
-**Song** — title, artist, album, genre, duration, filePath, coverImage, plays, uploadedBy
-
-**Playlist** — name, description, coverImage, owner, songs[], isPublic
+More contributor notes are in [WORKSPACE.md](/Users/olegvolostnyh/spotify-clone/WORKSPACE.md) and [frontend/docs/FRONTEND_ONBOARDING.md](/Users/olegvolostnyh/spotify-clone/frontend/docs/FRONTEND_ONBOARDING.md).
