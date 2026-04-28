@@ -9,25 +9,37 @@ import { useAlbumsQuery } from '../hooks/albums';
 import { useI18n } from '../lib/i18n';
 import { useArtistsQuery } from '../hooks/artists';
 
-export const Route = createFileRoute('/search')({ component: SearchPage });
+export const Route = createFileRoute('/search')({
+  validateSearch: (search: Record<string, unknown>) => ({
+    q: typeof search.q === 'string' ? search.q : '',
+  }),
+  component: SearchPage,
+});
 
 function SearchPage() {
+  const search = Route.useSearch();
   const { tracks } = useCatalogTracks();
   const { data: audiobooks = [] } = useAudiobooksQuery();
   const { data: albums = [] } = useAlbumsQuery();
   const { data: artists = [] } = useArtistsQuery();
-  const { query, setQuery, results, hasResults } = useSearch(tracks, audiobooks, albums, artists);
   const navigate = useNavigate();
+  const { query, setQuery, results, hasResults } = useSearch(
+    tracks,
+    audiobooks,
+    albums,
+    artists,
+    search.q
+  );
   const { copy } = useI18n();
   const genreColors = [
-    'from-pink-500 to-rose-600',
-    'from-orange-500 to-red-600',
-    'from-yellow-500 to-orange-500',
-    'from-cyan-500 to-blue-600',
-    'from-purple-500 to-pink-600',
-    'from-amber-600 to-yellow-500',
-    'from-emerald-500 to-teal-600',
-    'from-indigo-500 to-purple-600',
+    'border-[#2f73bf] bg-[#0f2945]',
+    'border-[#30b7aa] bg-[#102f34]',
+    'border-[#7c5cff] bg-[#21194a]',
+    'border-[#d94f8c] bg-[#3a1730]',
+    'border-[#d69b35] bg-[#382711]',
+    'border-[#4c8dff] bg-[#15284d]',
+    'border-[#5fbf72] bg-[#163421]',
+    'border-[#9a6cff] bg-[#291c46]',
   ];
   const genres = Array.from(
     new Set([
@@ -41,24 +53,35 @@ function SearchPage() {
     color: genreColors[index % genreColors.length],
   }));
 
+  const updateQuery = (nextQuery: string) => {
+    setQuery(nextQuery);
+    const trimmedQuery = nextQuery.trim();
+
+    navigate({
+      to: '/search',
+      search: { q: trimmedQuery },
+      replace: true,
+    });
+  };
+
   return (
     <div className="px-4 pt-4">
       {/* Header */}
       <h1 className="text-white text-2xl font-bold mb-4">{copy.search.title}</h1>
 
-      {/* Search bar */}
-      <div className="relative mb-5">
+      {/* Mobile search bar */}
+      <div className="relative mb-5 lg:hidden">
         <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
         <input
           type="text"
           placeholder={copy.search.placeholder}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => updateQuery(e.target.value)}
           className="w-full bg-surface-alt text-white placeholder-muted rounded-xl py-3 pl-10 pr-10 outline-none focus:ring-2 focus:ring-brand/50 text-sm"
         />
         {query ? (
           <button
-            onClick={() => setQuery('')}
+            onClick={() => updateQuery('')}
             className="absolute right-3.5 top-1/2 -translate-y-1/2"
           >
             <X size={18} className="text-muted" />
@@ -142,13 +165,16 @@ function SearchPage() {
       ) : (
         <>
           <h2 className="text-white font-bold mb-3">{copy.search.browseGenres}</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {genres.map((g) => (
               <button
                 key={g.id}
-                className={`bg-gradient-to-br ${g.color} rounded-2xl h-24 flex items-end p-3 overflow-hidden relative`}
+                type="button"
+                onClick={() => updateQuery(g.label)}
+                className={`relative flex h-24 items-end overflow-hidden rounded-xl border p-3 text-left transition hover:-translate-y-0.5 hover:border-[#8AB8F0] hover:shadow-[0_12px_28px_rgba(0,0,0,0.22)] ${g.color}`}
               >
-                <span className="text-white font-bold text-base">{g.label}</span>
+                <span className="absolute right-3 top-3 h-10 w-10 rounded-full border border-white/10 bg-white/5" />
+                <span className="relative text-sm font-bold text-white">{g.label}</span>
               </button>
             ))}
           </div>

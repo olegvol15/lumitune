@@ -1,13 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Album, Artist, Audiobook, Track } from '../types';
 
 export function useSearch(
   tracks: Track[],
   audiobooks: Audiobook[] = [],
   albums: Album[] = [],
-  artists: Artist[] = []
+  artists: Artist[] = [],
+  initialQuery = ''
 ) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
 
   const q = query.toLowerCase().trim();
   const results = q
