@@ -17,6 +17,7 @@ const HIDDEN_NAV_ROUTES = [
   '/auth/signin',
   '/auth/signup',
   '/auth/forgot-password',
+  '/oauth/callback',
   '/admin',
 ];
 

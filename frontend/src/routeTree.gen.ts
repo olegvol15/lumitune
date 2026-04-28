@@ -20,6 +20,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PodcastIdRouteImport } from './routes/podcast.$id'
 import { Route as PlaylistIdRouteImport } from './routes/playlist.$id'
+import { Route as OauthCallbackRouteImport } from './routes/oauth/callback'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
@@ -94,6 +95,11 @@ const PodcastIdRoute = PodcastIdRouteImport.update({
 const PlaylistIdRoute = PlaylistIdRouteImport.update({
   id: '/playlist/$id',
   path: '/playlist/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OauthCallbackRoute = OauthCallbackRouteImport.update({
+  id: '/oauth/callback',
+  path: '/oauth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
@@ -226,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/oauth/callback': typeof OauthCallbackRoute
   '/playlist/$id': typeof PlaylistIdRoute
   '/podcast/$id': typeof PodcastIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -259,6 +266,7 @@ export interface FileRoutesByTo {
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/oauth/callback': typeof OauthCallbackRoute
   '/playlist/$id': typeof PlaylistIdRoute
   '/podcast/$id': typeof PodcastIdRoute
   '/admin': typeof AdminIndexRoute
@@ -293,6 +301,7 @@ export interface FileRoutesById {
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/oauth/callback': typeof OauthCallbackRoute
   '/playlist/$id': typeof PlaylistIdRoute
   '/podcast/$id': typeof PodcastIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -328,6 +337,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/signin'
     | '/auth/signup'
+    | '/oauth/callback'
     | '/playlist/$id'
     | '/podcast/$id'
     | '/admin/'
@@ -361,6 +371,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/signin'
     | '/auth/signup'
+    | '/oauth/callback'
     | '/playlist/$id'
     | '/podcast/$id'
     | '/admin'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/signin'
     | '/auth/signup'
+    | '/oauth/callback'
     | '/playlist/$id'
     | '/podcast/$id'
     | '/admin/'
@@ -428,6 +440,7 @@ export interface RootRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthSigninRoute: typeof AuthSigninRoute
   AuthSignupRoute: typeof AuthSignupRoute
+  OauthCallbackRoute: typeof OauthCallbackRoute
   PlaylistIdRoute: typeof PlaylistIdRoute
   PodcastIdRoute: typeof PodcastIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -510,6 +523,13 @@ declare module '@tanstack/react-router' {
       path: '/playlist/$id'
       fullPath: '/playlist/$id'
       preLoaderRoute: typeof PlaylistIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oauth/callback': {
+      id: '/oauth/callback'
+      path: '/oauth/callback'
+      fullPath: '/oauth/callback'
+      preLoaderRoute: typeof OauthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/signup': {
@@ -684,6 +704,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthSigninRoute: AuthSigninRoute,
   AuthSignupRoute: AuthSignupRoute,
+  OauthCallbackRoute: OauthCallbackRoute,
   PlaylistIdRoute: PlaylistIdRoute,
   PodcastIdRoute: PodcastIdRoute,
   AdminIndexRoute: AdminIndexRoute,

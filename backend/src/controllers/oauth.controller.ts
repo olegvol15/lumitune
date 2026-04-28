@@ -34,7 +34,7 @@ export const oauthCallback = async (req: Request, res: Response) => {
     setUserRefreshCookie(res, refreshToken);
 
     // Access token goes in the URL for the frontend SPA to pick up
-    return res.redirect(`${FRONTEND_URL}/oauth/callback?token=${accessToken}`);
+    return res.redirect(`${FRONTEND_URL}/oauth/callback?token=${encodeURIComponent(accessToken)}`);
   } catch {
     return res.redirect(`${FRONTEND_URL}/oauth/callback?error=auth_failed`);
   }

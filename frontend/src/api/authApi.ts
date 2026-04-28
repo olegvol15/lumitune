@@ -18,6 +18,10 @@ const authApi = {
 
   updateProfile: (payload: UpdateProfilePayload) =>
     apiClient.patch<MeResponse>('/auth/me', payload),
+
+  startGoogleOAuth: () => {
+    window.location.assign('/api/auth/oauth/google');
+  },
 };
 
 export default authApi;

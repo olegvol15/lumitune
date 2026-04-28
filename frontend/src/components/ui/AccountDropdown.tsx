@@ -47,7 +47,9 @@ export default function AccountDropdown() {
       await logoutMutation.mutateAsync();
       setOpen(false);
       navigate({ to: '/auth/signin' });
-    } catch {}
+    } catch {
+      setOpen(false);
+    }
   };
 
   return (
@@ -64,6 +66,7 @@ export default function AccountDropdown() {
         aria-label={copy.nav.accountMenu}
       >
         <Avatar
+          src={user?.profilePicture}
           alt={user?.displayName || user?.username || user?.email || 'User'}
           size={40}
           className="bg-transparent text-[14px] font-bold text-[#dbe7f8]"

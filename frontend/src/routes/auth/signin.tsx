@@ -5,6 +5,7 @@ import { FaFacebook, FaApple } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import AuthLogo from '../../components/auth/AuthLogo';
 import Button from '../../components/ui/Button';
+import authApi from '../../api/authApi';
 import { useAuthLoginMutation } from '../../hooks/auth';
 import { useAuthStore } from '../../store/authStore';
 import { useI18n } from '../../lib/i18n';
@@ -51,10 +52,12 @@ function SignInPage() {
           {socialButtons.map(({ id, icon, label }) => (
             <Button
               key={id}
+              type="button"
               variant="auth-outline"
               size="lg"
               shape="rect"
               fullWidth
+              onClick={id === 'google' ? authApi.startGoogleOAuth : undefined}
               leftIcon={
                 <div className="w-7 flex flex-col sm:items-center sm:justify-center">{icon}</div>
               }

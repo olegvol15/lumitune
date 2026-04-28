@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { User } from '../models/user.model';
 import { OAuthProfile } from '../types/auth/oauth.types';
+import { normalizeEmail } from '../utils/email.utils';
 
 // passport-apple has no @types package — require bypasses the TS error
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -8,7 +9,38 @@ const AppleStrategy = require('passport-apple');
 
 // ─── Shared: find-or-create logic ─────────────────────────────────────────
 
+const toUsernameBase = (profile: OAuthProfile): string => {
+  const source = profile.displayName || profile.email.split('@')[0] || 'user';
+  const normalized = source
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 24);
+
+  return normalized.length >= 3 ? normalized : `user_${normalized}`.slice(0, 24);
+};
+
+const createUniqueUsername = async (profile: OAuthProfile): Promise<string> => {
+  const baseUsername = toUsernameBase(profile);
+
+  for (let i = 0; i < 10; i += 1) {
+    const suffix = Math.floor(1000 + Math.random() * 9000);
+    const username = `${baseUsername}_${suffix}`.slice(0, 30);
+    const existingUser = await User.exists({ username });
+
+    if (!existingUser) {
+      return username;
+    }
+  }
+
+  return `${baseUsername}_${Date.now().toString(36)}`.slice(0, 30);
+};
+
 const findOrCreateOAuthUser = async (profile: OAuthProfile) => {
+  const email = normalizeEmail(profile.email);
+  const displayName = String(profile.displayName ?? '').trim() || email.split('@')[0] || 'OAuth User';
+
   let user = await User.findOne({
     oauthProvider: profile.provider,
     oauthId: profile.oauthId,
@@ -16,27 +48,20 @@ const findOrCreateOAuthUser = async (profile: OAuthProfile) => {
 
   if (user) return user;
 
-  if (profile.email) {
-    user = await User.findOne({ email: profile.email }).select('+oauthProvider +oauthId');
-    if (user) {
-      user.oauthProvider = profile.provider;
-      user.oauthId = profile.oauthId;
-      await user.save({ validateBeforeSave: false });
-      return user;
-    }
+  user = await User.findOne({ email }).select('+oauthProvider +oauthId');
+  if (user) {
+    user.oauthProvider = profile.provider;
+    user.oauthId = profile.oauthId;
+    await user.save({ validateBeforeSave: false });
+    return user;
   }
 
-  const baseUsername = profile.displayName
-    .toLowerCase()
-    .replace(/[^a-z0-9_]/g, '_')
-    .slice(0, 25);
-  const suffix = Math.floor(1000 + Math.random() * 9000);
-  const username = `${baseUsername}_${suffix}`;
+  const username = await createUniqueUsername({ ...profile, email, displayName });
 
   user = await User.create({
-    email: profile.email,
+    email,
     username,
-    displayName: profile.displayName,
+    displayName,
     profilePicture: profile.profilePicture || 'default-avatar.png',
     role: 'user',
     oauthProvider: profile.provider,
@@ -62,11 +87,16 @@ export const initPassport = () => {
         },
         async (_at: string, _rt: string, profile: any, done: any) => {
           try {
+            const email = profile.emails?.[0]?.value;
+            if (!email) {
+              return done(null, false);
+            }
+
             const user = await findOrCreateOAuthUser({
               provider: 'google',
               oauthId: profile.id,
-              email: profile.emails?.[0]?.value ?? '',
-              displayName: profile.displayName,
+              email,
+              displayName: profile.displayName ?? email.split('@')[0] ?? 'Google User',
               profilePicture: profile.photos?.[0]?.value,
             });
             done(null, user);
