@@ -9,10 +9,12 @@ import {
 } from '../types/playlist-service.types';
 import { ensureObjectId } from '../utils/mongoose.utils';
 
-const ensureUserId = (userId?: string) => {
+const ensureUserId = (userId?: string): string => {
   if (!userId) {
     throw new ServiceError(401, 'Not authorized to access this route');
   }
+
+  return userId;
 };
 
 const populateSongs = 'songs';
@@ -24,16 +26,27 @@ const ensurePlaylistName = (name?: string) => {
   return name.trim();
 };
 
+const visiblePlaylistFilter = (userId: string) => ({
+  $or: [
+    { kind: 'user', owner: userId },
+    { kind: { $exists: false }, owner: userId },
+    { kind: 'curated', isPublic: true },
+    { kind: 'curated', isPublic: { $exists: false } },
+    { kind: { $exists: false }, owner: { $exists: false }, isPublic: { $ne: false } },
+  ],
+});
+
+const editableUserPlaylistFilter = (userId: string, playlistId: string) => ({
+  _id: playlistId,
+  owner: userId,
+  $or: [{ kind: 'user' }, { kind: { $exists: false } }],
+});
+
 export const playlistService = {
   async listByOwner(userId?: string): Promise<PlaylistListResult> {
-    ensureUserId(userId);
+    const ownerId = ensureUserId(userId);
 
-    const playlists = await Playlist.find({
-      $or: [
-        { kind: 'user', owner: userId },
-        { kind: 'curated', isPublic: true },
-      ],
-    })
+    const playlists = await Playlist.find(visiblePlaylistFilter(ownerId))
       .populate(populateSongs)
       .sort({ updatedAt: -1 });
 
@@ -41,7 +54,7 @@ export const playlistService = {
   },
 
   async create(userId: string | undefined, input: PlaylistCreateInput): Promise<PlaylistResult> {
-    ensureUserId(userId);
+    const ownerId = ensureUserId(userId);
 
     const playlist = await Playlist.create({
       name: ensurePlaylistName(input.name),
@@ -49,7 +62,7 @@ export const playlistService = {
       coverImage: input.coverImage,
       isPublic: input.isPublic ?? true,
       kind: 'user',
-      owner: userId,
+      owner: ownerId,
       songs: [],
     });
 
@@ -57,15 +70,12 @@ export const playlistService = {
   },
 
   async getById(userId: string | undefined, playlistId: string): Promise<PlaylistResult> {
-    ensureUserId(userId);
+    const ownerId = ensureUserId(userId);
     ensureObjectId(playlistId, 'playlistId');
 
     const playlist = await Playlist.findOne({
       _id: playlistId,
-      $or: [
-        { kind: 'user', owner: userId },
-        { kind: 'curated', isPublic: true },
-      ],
+      ...visiblePlaylistFilter(ownerId),
     }).populate(populateSongs);
     if (!playlist) {
       throw new ServiceError(404, 'Playlist not found');
@@ -79,7 +89,7 @@ export const playlistService = {
     playlistId: string,
     input: PlaylistUpdateInput
   ): Promise<PlaylistResult> {
-    ensureUserId(userId);
+    const ownerId = ensureUserId(userId);
     ensureObjectId(playlistId, 'playlistId');
 
     const updateData: PlaylistUpdateInput = {};
@@ -93,7 +103,7 @@ export const playlistService = {
     }
 
     const playlist = await Playlist.findOneAndUpdate(
-      { _id: playlistId, owner: userId, kind: 'user' },
+      editableUserPlaylistFilter(ownerId, playlistId),
       updateData,
       { new: true, runValidators: true }
     ).populate(populateSongs);
@@ -106,10 +116,12 @@ export const playlistService = {
   },
 
   async remove(userId: string | undefined, playlistId: string): Promise<void> {
-    ensureUserId(userId);
+    const ownerId = ensureUserId(userId);
     ensureObjectId(playlistId, 'playlistId');
 
-    const playlist = await Playlist.findOneAndDelete({ _id: playlistId, owner: userId, kind: 'user' });
+    const playlist = await Playlist.findOneAndDelete(
+      editableUserPlaylistFilter(ownerId, playlistId)
+    );
     if (!playlist) {
       throw new ServiceError(404, 'Playlist not found');
     }
@@ -120,7 +132,7 @@ export const playlistService = {
     playlistId: string,
     songId: string
   ): Promise<PlaylistResult> {
-    ensureUserId(userId);
+    const ownerId = ensureUserId(userId);
     ensureObjectId(playlistId, 'playlistId');
     ensureObjectId(songId, 'songId');
 
@@ -129,7 +141,7 @@ export const playlistService = {
       throw new ServiceError(404, 'Song not found');
     }
 
-    const playlist = await Playlist.findOne({ _id: playlistId, owner: userId, kind: 'user' });
+    const playlist = await Playlist.findOne(editableUserPlaylistFilter(ownerId, playlistId));
     if (!playlist) {
       throw new ServiceError(404, 'Playlist not found');
     }
@@ -149,11 +161,11 @@ export const playlistService = {
     playlistId: string,
     songId: string
   ): Promise<PlaylistResult> {
-    ensureUserId(userId);
+    const ownerId = ensureUserId(userId);
     ensureObjectId(playlistId, 'playlistId');
     ensureObjectId(songId, 'songId');
 
-    const playlist = await Playlist.findOne({ _id: playlistId, owner: userId, kind: 'user' });
+    const playlist = await Playlist.findOne(editableUserPlaylistFilter(ownerId, playlistId));
     if (!playlist) {
       throw new ServiceError(404, 'Playlist not found');
     }

@@ -40,6 +40,7 @@ export default function DesktopPlayer() {
     setVolume,
   } = usePlayerStore();
   const toggleTrackLikeMutation = useToggleTrackLikeMutation();
+  const currentTrackLiked = Boolean(currentTrack?.liked);
 
   const isLight = useThemeStore((s) => s.theme === 'ice');
   const barRef = useRef<HTMLDivElement>(null);
@@ -99,7 +100,7 @@ export default function DesktopPlayer() {
                   if (currentTrack) {
                     toggleTrackLikeMutation.mutate({
                       songId: currentTrack.id,
-                      liked: currentTrack.liked,
+                      liked: currentTrackLiked,
                     });
                   }
                 }}
@@ -108,7 +109,7 @@ export default function DesktopPlayer() {
                 <Heart
                   size={16}
                   className={
-                    currentTrack?.liked
+                    currentTrackLiked
                       ? 'text-[#1CA2EA] fill-[#1CA2EA]'
                       : 'text-white/45 hover:text-white'
                   }

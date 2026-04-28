@@ -1,15 +1,16 @@
 import type { BackendSong } from './song-api.types';
 
-export interface BackendPlaylistSong extends BackendSong {}
+export type BackendPlaylistSong = BackendSong;
 
 export interface BackendPlaylist {
   _id: string;
   name: string;
   description?: string;
   coverImage?: string;
+  owner?: string;
   songs: BackendPlaylistSong[];
   isPublic: boolean;
-  kind: 'user' | 'curated';
+  kind?: 'user' | 'curated';
 }
 
 export interface PlaylistResponse {

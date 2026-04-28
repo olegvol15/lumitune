@@ -92,6 +92,14 @@ export interface AvatarProps {
   className?: string;
 }
 
+export interface TooltipProps {
+  content: ReactNode;
+  children: ReactNode;
+  className?: string;
+  position?: 'top' | 'bottom';
+  disabled?: boolean;
+}
+
 export interface ArtistSectionProps {
   title: string;
   accentWord: string;

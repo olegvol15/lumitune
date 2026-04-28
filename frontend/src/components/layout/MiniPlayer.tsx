@@ -21,6 +21,7 @@ export default function MiniPlayer() {
   } =
     usePlayerStore();
   const toggleTrackLikeMutation = useToggleTrackLikeMutation();
+  const currentTrackLiked = Boolean(currentTrack?.liked);
   const navigate = useNavigate();
 
   const activeMedia = currentTrack
@@ -73,7 +74,7 @@ export default function MiniPlayer() {
                       if (currentTrack) {
                         toggleTrackLikeMutation.mutate({
                           songId: currentTrack.id,
-                          liked: currentTrack.liked,
+                          liked: currentTrackLiked,
                         });
                       }
                     }}
@@ -81,7 +82,7 @@ export default function MiniPlayer() {
                   >
                     <Heart
                       size={18}
-                      className={currentTrack?.liked ? 'text-brand fill-brand' : 'text-muted'}
+                      className={currentTrackLiked ? 'text-brand fill-brand' : 'text-muted'}
                     />
                   </button>
                 )}

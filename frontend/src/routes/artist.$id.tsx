@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router';
 import { ChevronLeft, UserCheck, Share2, MoreHorizontal } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import TrackRow from '../components/ui/TrackRow';
+import TrackCard from '../components/ui/TrackCard';
 import MediaCard from '../components/ui/MediaCard';
 import SectionHeader from '../components/ui/SectionHeader';
 import Button from '../components/ui/Button';
@@ -9,6 +9,7 @@ import { useCatalogTracks } from '../hooks/tracks';
 import { useI18n } from '../lib/i18n';
 import { useAlbumsQuery } from '../hooks/albums';
 import { useArtistsQuery } from '../hooks/artists';
+import { formatDuration, formatPlayCount } from '../utils/format';
 
 export const Route = createFileRoute('/artist/$id')({
   component: ArtistPage,
@@ -148,14 +149,15 @@ function ArtistPage() {
           <>
             <SectionHeader title={copy.media.popularTracks} />
             <div className="space-y-1 mb-6">
-              {artistTracks.map((t, i) => (
-                <TrackRow
-                  key={t.id}
-                  track={t}
-                  index={i}
+              {artistTracks.map((track) => (
+                <TrackCard
+                  key={track.id}
+                  track={track}
                   queue={artistTracks}
-                  showIndex
-                  showPlayCount
+                  metadata={[
+                    { key: 'plays', label: formatPlayCount(track.playCount), className: 'w-16 text-right' },
+                    { key: 'duration', label: formatDuration(track.duration), className: 'w-12 text-right' },
+                  ]}
                 />
               ))}
             </div>

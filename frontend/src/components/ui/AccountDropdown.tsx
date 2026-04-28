@@ -8,6 +8,9 @@ import Button from './Button';
 import { dropdownVariants } from '../../lib/motion';
 import { useI18n } from '../../lib/i18n';
 
+const menuItemClass =
+  'flex w-full items-center rounded-md px-3 py-2 text-left text-sm font-medium text-[#e8eef8] transition-colors hover:bg-white/8 hover:text-white focus-visible:bg-white/8 focus-visible:outline-none';
+
 export default function AccountDropdown() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
@@ -76,30 +79,29 @@ export default function AccountDropdown() {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="absolute right-0 top-[calc(100%+8px)] z-[70] w-[176px]"
+            className="absolute right-0 top-[calc(100%+10px)] z-[70] w-44"
             variants={dropdownVariants}
             initial="initial"
             animate="animate"
             exit="exit"
           >
-            <div className="ml-auto h-0 w-0 border-x-[7px] border-b-[11px] border-x-transparent border-b-[#343b55] mr-[14px]" />
-            <div className="rounded-[10px] bg-[#343b55] px-3 py-2.5 shadow-[0_16px_32px_rgba(0,0,0,0.34)]">
+            <div className="mr-4 ml-auto h-3 w-3 rotate-45 border-l border-t border-[#2b4166] bg-[#101d33]" />
+            <div className="-mt-1 overflow-hidden rounded-lg border border-[#2b4166] bg-[#101d33] p-1.5 shadow-[0_18px_44px_rgba(0,0,0,0.42)] backdrop-blur-xl">
               <Link
                 to="/profile"
                 onClick={() => setOpen(false)}
-                className="block py-1.5 text-[15px] font-semibold tracking-[-0.02em] text-[#f5f7fb] transition hover:text-white"
+                className={menuItemClass}
               >
                 {copy.nav.profile}
               </Link>
-              <div className="h-px bg-[#707892]" />
               <Link
                 to="/settings"
                 onClick={() => setOpen(false)}
-                className="block py-1.5 text-[15px] font-semibold tracking-[-0.02em] text-[#f5f7fb] transition hover:text-white"
+                className={menuItemClass}
               >
                 {copy.nav.settings}
               </Link>
-              <div className="h-px bg-[#707892]" />
+              <div className="my-1 h-px bg-white/10" />
               <Button
                 type="button"
                 variant="ghost"
@@ -107,7 +109,7 @@ export default function AccountDropdown() {
                 shape="rect"
                 onClick={() => void handleLogout()}
                 disabled={logoutMutation.isPending}
-                className="!block !px-0 !py-1.5 text-[15px] font-semibold tracking-[-0.02em] !text-[#f5f7fb] transition hover:!text-white disabled:cursor-not-allowed disabled:opacity-60"
+                className={`${menuItemClass} !justify-start !text-[#ffb4b4] hover:!bg-red-500/10 hover:!text-[#ffd1d1] disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 {logoutMutation.isPending ? copy.nav.loggingOut : copy.nav.logout}
               </Button>

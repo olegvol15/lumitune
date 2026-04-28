@@ -12,15 +12,17 @@ function coverUrl(path?: string) {
 }
 
 function mapPlaylist(p: BackendPlaylist): UserPlaylist {
+  const kind = p.kind ?? (p.owner ? 'user' : 'curated');
+
   return {
     id: p._id,
     title: p.name,
-    trackIds: p.songs.map((s) => s._id),
+    trackIds: (p.songs ?? []).map((s) => s._id),
     description: p.description ?? '',
     coverUrl: coverUrl(p.coverImage),
-    isPublic: p.isPublic,
-    kind: p.kind,
-    canEdit: p.kind === 'user',
+    isPublic: p.isPublic ?? true,
+    kind,
+    canEdit: kind === 'user',
   };
 }
 

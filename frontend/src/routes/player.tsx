@@ -49,6 +49,7 @@ function PlayerPage() {
     play,
   } = usePlayerStore();
   const toggleTrackLikeMutation = useToggleTrackLikeMutation();
+  const currentTrackLiked = Boolean(currentTrack?.liked);
 
   const activeMedia = currentTrack
     ? {
@@ -59,7 +60,7 @@ function PlayerPage() {
         subtitle: `by ${currentTrack.artistName}`,
         duration: currentTrack.duration,
         showLike: true,
-        liked: currentTrack.liked,
+        liked: currentTrackLiked,
       }
     : currentEpisode
     ? {
@@ -138,7 +139,7 @@ function PlayerPage() {
               if (currentTrack) {
                 toggleTrackLikeMutation.mutate({
                   songId: currentTrack.id,
-                  liked: currentTrack.liked,
+                  liked: currentTrackLiked,
                 });
               }
             }}

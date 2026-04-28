@@ -7,6 +7,7 @@ import { useI18n } from '../lib/i18n';
 import { useAuthStore } from '../store/authStore';
 import { formatDuration } from '../utils/format';
 import TrackCard from '../components/ui/TrackCard';
+import { useLikedSongsQuery, useToggleTrackLikeMutation } from '../hooks/likes';
 
 export const Route = createFileRoute('/favorite')({ component: FavoritePage });
 
@@ -69,10 +70,16 @@ function FavoritePage() {
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const togglePlay = usePlayerStore((s) => s.togglePlay);
   const { tracks } = useCatalogTracks();
+  const { data: likedTracksData = [] } = useLikedSongsQuery();
+  const toggleTrackLikeMutation = useToggleTrackLikeMutation();
   const { copy } = useI18n();
   const user = useAuthStore((state) => state.user);
 
-  const likedTracks = tracks.filter((t) => t.liked);
+  const catalogTracksById = new Map(tracks.map((track) => [track.id, track]));
+  const likedTracks = likedTracksData.map((track) => ({
+    ...(catalogTracksById.get(track.id) ?? track),
+    liked: true,
+  }));
   const ownerName = user?.displayName || user?.username || 'HannaD';
   const avatarUrl =
     user?.profilePicture && user.profilePicture !== 'default-avatar.png'
@@ -142,6 +149,22 @@ function FavoritePage() {
                 { key: 'album', label: track.albumTitle, className: 'w-36' },
                 { key: 'duration', label: formatDuration(track.duration), className: 'w-12 text-right' },
               ]}
+              action={
+                <button
+                  type="button"
+                  onClick={() =>
+                    toggleTrackLikeMutation.mutate({
+                      songId: track.id,
+                      liked: track.liked,
+                    })
+                  }
+                  disabled={toggleTrackLikeMutation.isPending}
+                  className="rounded-full p-1.5 text-brand transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Unlike track"
+                >
+                  <Heart size={16} className="fill-brand text-brand" />
+                </button>
+              }
               onPlay={() => play(track, filteredTracks)}
             />
           ))}

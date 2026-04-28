@@ -5,6 +5,7 @@ import { FaFacebook, FaApple } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import AuthLogo from '../../components/auth/AuthLogo';
 import Button from '../../components/ui/Button';
+import Tooltip from '../../components/ui/Tooltip';
 import authApi from '../../api/authApi';
 import { useAuthLoginMutation } from '../../hooks/auth';
 import { useAuthStore } from '../../store/authStore';
@@ -49,22 +50,28 @@ function SignInPage() {
         <AuthLogo heading={copy.auth.signInHeading} />
 
         <div className="space-y-2.5">
-          {socialButtons.map(({ id, icon, label }) => (
-            <Button
-              key={id}
-              type="button"
-              variant="auth-outline"
-              size="lg"
-              shape="rect"
-              fullWidth
-              onClick={id === 'google' ? authApi.startGoogleOAuth : undefined}
-              leftIcon={
-                <div className="w-7 flex flex-col sm:items-center sm:justify-center">{icon}</div>
-              }
-            >
-              <span className="flex-1 text-center">{label}</span>
-            </Button>
-          ))}
+          {socialButtons.map(({ id, icon, label }) => {
+            const isComingSoon = id !== 'google';
+
+            return (
+              <Tooltip key={id} content="Coming soon!" disabled={!isComingSoon} className="w-full">
+                <Button
+                  type="button"
+                  variant="auth-outline"
+                  size="lg"
+                  shape="rect"
+                  fullWidth
+                  disabled={isComingSoon}
+                  onClick={id === 'google' ? authApi.startGoogleOAuth : undefined}
+                  leftIcon={
+                    <div className="w-7 flex flex-col sm:items-center sm:justify-center">{icon}</div>
+                  }
+                >
+                  <span className="flex-1 text-center">{label}</span>
+                </Button>
+              </Tooltip>
+            );
+          })}
         </div>
 
         <div className="auth-muted-line mt-6 mb-5" />
