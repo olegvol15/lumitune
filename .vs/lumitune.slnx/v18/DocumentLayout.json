@@ -3,6 +3,34 @@
   "WorkspaceRootPath": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\config\\database.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\server.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\server.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\passport.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\config\\passport.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\recently-played.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\routes\\recently-played.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\routes\\song.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\recently-played.service.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\services\\recently-played.service.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\app.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\app.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\validation.schemas.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\utils\\validation.schemas.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
@@ -31,10 +59,6 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\controllers\\song.controller.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\routes\\song.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\validate.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\middleware\\validate.middleware.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
@@ -43,16 +67,8 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\app.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\app.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\search.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\routes\\search.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\recently-played.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\routes\\recently-played.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\likes.routes.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -93,10 +109,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\search.service.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\services\\search.service.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\recently-played.service.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\services\\recently-played.service.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\likes.service.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -187,10 +199,6 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\tsconfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\config\\database.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\song.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\models\\song.model.ts||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
@@ -214,85 +222,20 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "user.types.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\user\\user.types.ts",
-              "RelativeDocumentMoniker": "backend\\src\\types\\user\\user.types.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\user\\user.types.ts",
-              "RelativeToolTip": "backend\\src\\types\\user\\user.types.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-14T14:59:47.928Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "user.model.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\user.model.ts",
-              "RelativeDocumentMoniker": "backend\\src\\models\\user.model.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\user.model.ts",
-              "RelativeToolTip": "backend\\src\\models\\user.model.ts",
-              "ViewState": "AgIAAD0AAAAAAAAAAAAAAF4AAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-14T14:59:29.235Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "song.controller.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\song.controller.ts",
-              "RelativeDocumentMoniker": "backend\\src\\controllers\\song.controller.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\song.controller.ts",
-              "RelativeToolTip": "backend\\src\\controllers\\song.controller.ts",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAqwBUAAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:36:40.787Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "auth.service.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\auth.service.ts",
-              "RelativeDocumentMoniker": "backend\\src\\services\\auth.service.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\auth.service.ts",
-              "RelativeToolTip": "backend\\src\\services\\auth.service.ts",
-              "ViewState": "AgIAAHAAAAAAAAAAAADwv8cAAAACAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-08T06:58:14.512Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "auth.utils.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\auth.utils.ts",
-              "RelativeDocumentMoniker": "backend\\src\\utils\\auth.utils.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\auth.utils.ts",
-              "RelativeToolTip": "backend\\src\\utils\\auth.utils.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-08T06:29:07.485Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "validation.schemas.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\validation.schemas.ts",
-              "RelativeDocumentMoniker": "backend\\src\\utils\\validation.schemas.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\validation.schemas.ts",
-              "RelativeToolTip": "backend\\src\\utils\\validation.schemas.ts",
-              "ViewState": "AgIAAEkAAAAAAAAAAAAAwGoAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-08T19:20:02.917Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "server.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\server.ts",
+              "RelativeDocumentMoniker": "backend\\src\\server.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\server.ts",
+              "RelativeToolTip": "backend\\src\\server.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-29T08:30:37.493Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "auth-service.types.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\auth\\auth-service.types.ts",
               "RelativeDocumentMoniker": "backend\\src\\types\\auth\\auth-service.types.ts",
@@ -300,84 +243,84 @@
               "RelativeToolTip": "backend\\src\\types\\auth\\auth-service.types.ts",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-08T06:57:50.688Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-08T06:57:50.688Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "playlist.routes.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\playlist.routes.ts",
-              "RelativeDocumentMoniker": "backend\\src\\routes\\playlist.routes.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\playlist.routes.ts",
-              "RelativeToolTip": "backend\\src\\routes\\playlist.routes.ts",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:12:09.696Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "song.routes.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts",
-              "RelativeDocumentMoniker": "backend\\src\\routes\\song.routes.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts",
-              "RelativeToolTip": "backend\\src\\routes\\song.routes.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:13:30.878Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "validate.middleware.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\validate.middleware.ts",
-              "RelativeDocumentMoniker": "backend\\src\\middleware\\validate.middleware.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\validate.middleware.ts",
-              "RelativeToolTip": "backend\\src\\middleware\\validate.middleware.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-08T19:20:11.808Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "package.json",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\package.json",
-              "RelativeDocumentMoniker": "backend\\package.json",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\package.json",
-              "RelativeToolTip": "backend\\package.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-03-03T14:16:41.766Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 6,
               "Title": "app.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\app.ts",
               "RelativeDocumentMoniker": "backend\\src\\app.ts",
               "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\app.ts",
               "RelativeToolTip": "backend\\src\\app.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEIAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
               "WhenOpened": "2026-03-03T14:12:19.015Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "search.routes.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\search.routes.ts",
-              "RelativeDocumentMoniker": "backend\\src\\routes\\search.routes.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\search.routes.ts",
-              "RelativeToolTip": "backend\\src\\routes\\search.routes.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAWAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "song.routes.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts",
+              "RelativeDocumentMoniker": "backend\\src\\routes\\song.routes.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\song.routes.ts",
+              "RelativeToolTip": "backend\\src\\routes\\song.routes.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-08T19:22:06.294Z"
+              "WhenOpened": "2026-03-03T14:13:30.878Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 10,
+              "Title": "auth.utils.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\auth.utils.ts",
+              "RelativeDocumentMoniker": "backend\\src\\utils\\auth.utils.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\auth.utils.ts",
+              "RelativeToolTip": "backend\\src\\utils\\auth.utils.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-08T06:29:07.485Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "database.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts",
+              "RelativeDocumentMoniker": "backend\\src\\config\\database.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts",
+              "RelativeToolTip": "backend\\src\\config\\database.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:12:42.593Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "validation.schemas.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\validation.schemas.ts",
+              "RelativeDocumentMoniker": "backend\\src\\utils\\validation.schemas.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\validation.schemas.ts",
+              "RelativeToolTip": "backend\\src\\utils\\validation.schemas.ts",
+              "ViewState": "AgIAAEkAAAAAAAAAAAAAwFgAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-08T19:20:02.917Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "passport.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\passport.ts",
+              "RelativeDocumentMoniker": "backend\\src\\config\\passport.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\passport.ts",
+              "RelativeToolTip": "backend\\src\\config\\passport.ts",
+              "ViewState": "AgIAAE4AAAAAAAAAAAAAAFYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T12:32:13.252Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "recently-played.routes.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\recently-played.routes.ts",
               "RelativeDocumentMoniker": "backend\\src\\routes\\recently-played.routes.ts",
@@ -389,7 +332,115 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "user.types.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\user\\user.types.ts",
+              "RelativeDocumentMoniker": "backend\\src\\types\\user\\user.types.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\user\\user.types.ts",
+              "RelativeToolTip": "backend\\src\\types\\user\\user.types.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-14T14:59:47.928Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "recently-played.service.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\recently-played.service.ts",
+              "RelativeDocumentMoniker": "backend\\src\\services\\recently-played.service.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\recently-played.service.ts",
+              "RelativeToolTip": "backend\\src\\services\\recently-played.service.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADEAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-08T19:21:05.188Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "auth.service.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\auth.service.ts",
+              "RelativeDocumentMoniker": "backend\\src\\services\\auth.service.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\auth.service.ts",
+              "RelativeToolTip": "backend\\src\\services\\auth.service.ts",
+              "ViewState": "AgIAAHAAAAAAAAAAAADwv8cAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-08T06:58:14.512Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 13,
+              "Title": "song.controller.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\song.controller.ts",
+              "RelativeDocumentMoniker": "backend\\src\\controllers\\song.controller.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\song.controller.ts",
+              "RelativeToolTip": "backend\\src\\controllers\\song.controller.ts",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAqwBUAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:36:40.787Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "user.model.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\user.model.ts",
+              "RelativeDocumentMoniker": "backend\\src\\models\\user.model.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\user.model.ts",
+              "RelativeToolTip": "backend\\src\\models\\user.model.ts",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAAAF4AAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-14T14:59:29.235Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "playlist.routes.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\playlist.routes.ts",
+              "RelativeDocumentMoniker": "backend\\src\\routes\\playlist.routes.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\playlist.routes.ts",
+              "RelativeToolTip": "backend\\src\\routes\\playlist.routes.ts",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-03T14:12:09.696Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "validate.middleware.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\validate.middleware.ts",
+              "RelativeDocumentMoniker": "backend\\src\\middleware\\validate.middleware.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\validate.middleware.ts",
+              "RelativeToolTip": "backend\\src\\middleware\\validate.middleware.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-08T19:20:11.808Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "package.json",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\package.json",
+              "RelativeDocumentMoniker": "backend\\package.json",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\package.json",
+              "RelativeToolTip": "backend\\package.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-03T14:16:41.766Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "search.routes.ts",
+              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\search.routes.ts",
+              "RelativeDocumentMoniker": "backend\\src\\routes\\search.routes.ts",
+              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\search.routes.ts",
+              "RelativeToolTip": "backend\\src\\routes\\search.routes.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-03-08T19:22:06.294Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
               "Title": "likes.routes.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\likes.routes.ts",
               "RelativeDocumentMoniker": "backend\\src\\routes\\likes.routes.ts",
@@ -401,7 +452,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 19,
               "Title": "admin-auth.routes.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\admin-auth.routes.ts",
               "RelativeDocumentMoniker": "backend\\src\\routes\\admin-auth.routes.ts",
@@ -413,7 +464,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 21,
               "Title": "search.controller.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\search.controller.ts",
               "RelativeDocumentMoniker": "backend\\src\\controllers\\search.controller.ts",
@@ -425,7 +476,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 22,
               "Title": "recently-played.controller.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\recently-played.controller.ts",
               "RelativeDocumentMoniker": "backend\\src\\controllers\\recently-played.controller.ts",
@@ -437,7 +488,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 23,
               "Title": "likes.controller.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\likes.controller.ts",
               "RelativeDocumentMoniker": "backend\\src\\controllers\\likes.controller.ts",
@@ -449,7 +500,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 24,
               "Title": "auth.controller.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\auth.controller.ts",
               "RelativeDocumentMoniker": "backend\\src\\controllers\\auth.controller.ts",
@@ -461,7 +512,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 25,
               "Title": "song.service.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\song.service.ts",
               "RelativeDocumentMoniker": "backend\\src\\services\\song.service.ts",
@@ -473,7 +524,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 20,
               "Title": "auth.routes.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\routes\\auth.routes.ts",
               "RelativeDocumentMoniker": "backend\\src\\routes\\auth.routes.ts",
@@ -485,7 +536,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 26,
               "Title": "search.service.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\search.service.ts",
               "RelativeDocumentMoniker": "backend\\src\\services\\search.service.ts",
@@ -497,19 +548,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "recently-played.service.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\recently-played.service.ts",
-              "RelativeDocumentMoniker": "backend\\src\\services\\recently-played.service.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\recently-played.service.ts",
-              "RelativeToolTip": "backend\\src\\services\\recently-played.service.ts",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwDEAAAACAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-08T19:21:05.188Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 27,
               "Title": "likes.service.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\likes.service.ts",
               "RelativeDocumentMoniker": "backend\\src\\services\\likes.service.ts",
@@ -521,7 +560,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 28,
               "Title": "admin-auth.service.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\services\\admin-auth.service.ts",
               "RelativeDocumentMoniker": "backend\\src\\services\\admin-auth.service.ts",
@@ -533,7 +572,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 29,
               "Title": "liked-song.model.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\liked-song.model.ts",
               "RelativeDocumentMoniker": "backend\\src\\models\\liked-song.model.ts",
@@ -545,7 +584,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 30,
               "Title": "recently-played.model.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\recently-played.model.ts",
               "RelativeDocumentMoniker": "backend\\src\\models\\recently-played.model.ts",
@@ -557,7 +596,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 31,
               "Title": "user-reset-code.model.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\user-reset-code.model.ts",
               "RelativeDocumentMoniker": "backend\\src\\models\\user-reset-code.model.ts",
@@ -569,7 +608,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 32,
               "Title": "refresh-token.model.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\refresh-token.model.ts",
               "RelativeDocumentMoniker": "backend\\src\\models\\refresh-token.model.ts",
@@ -581,7 +620,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 33,
               "Title": "refresh-token.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\refresh-token.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\refresh-token.utils.ts",
@@ -593,7 +632,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 34,
               "Title": "mailer.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\mailer.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\mailer.utils.ts",
@@ -605,7 +644,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 35,
               "Title": "song.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\song.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\song.utils.ts",
@@ -617,7 +656,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 37,
               "Title": "mongoose.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\mongoose.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\mongoose.utils.ts",
@@ -629,7 +668,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 38,
               "Title": "file.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\file.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\file.utils.ts",
@@ -641,7 +680,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 39,
               "Title": "error.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\error.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\error.utils.ts",
@@ -653,7 +692,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 40,
               "Title": "email.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\email.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\email.utils.ts",
@@ -665,7 +704,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 41,
               "Title": "admin-jwt.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\admin-jwt.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\admin-jwt.utils.ts",
@@ -677,7 +716,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 42,
               "Title": "admin-auth.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\admin-auth.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\admin-auth.utils.ts",
@@ -689,7 +728,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 36,
               "Title": "jwt.utils.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\utils\\jwt.utils.ts",
               "RelativeDocumentMoniker": "backend\\src\\utils\\jwt.utils.ts",
@@ -701,7 +740,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 43,
               "Title": "playlist.controller.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\playlist.controller.ts",
               "RelativeDocumentMoniker": "backend\\src\\controllers\\playlist.controller.ts",
@@ -713,7 +752,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 44,
               "Title": "admin-auth.controller.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\controllers\\admin-auth.controller.ts",
               "RelativeDocumentMoniker": "backend\\src\\controllers\\admin-auth.controller.ts",
@@ -725,7 +764,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 48,
               "Title": "tsconfig.json",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\tsconfig.json",
               "RelativeDocumentMoniker": "backend\\tsconfig.json",
@@ -737,7 +776,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 46,
               "Title": "upload.middleware.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\upload.middleware.ts",
               "RelativeDocumentMoniker": "backend\\src\\middleware\\upload.middleware.ts",
@@ -749,7 +788,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 45,
               "Title": "auth.middleware.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\auth.middleware.ts",
               "RelativeDocumentMoniker": "backend\\src\\middleware\\auth.middleware.ts",
@@ -761,19 +800,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
-              "Title": "database.ts",
-              "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts",
-              "RelativeDocumentMoniker": "backend\\src\\config\\database.ts",
-              "ToolTip": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\config\\database.ts",
-              "RelativeToolTip": "backend\\src\\config\\database.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-03-03T14:12:42.593Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 51,
               "Title": "error.middleware.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\middleware\\error.middleware.ts",
               "RelativeDocumentMoniker": "backend\\src\\middleware\\error.middleware.ts",
@@ -785,7 +812,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 47,
               "Title": "playlist.model.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\playlist.model.ts",
               "RelativeDocumentMoniker": "backend\\src\\models\\playlist.model.ts",
@@ -797,7 +824,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 50,
               "Title": "express.d.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\types\\express.d.ts",
               "RelativeDocumentMoniker": "backend\\src\\types\\express.d.ts",
@@ -809,7 +836,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 49,
               "Title": "song.model.ts",
               "DocumentMoniker": "C:\\Users\\Eugene\\Documents\\GitHub\\lumitune\\backend\\src\\models\\song.model.ts",
               "RelativeDocumentMoniker": "backend\\src\\models\\song.model.ts",

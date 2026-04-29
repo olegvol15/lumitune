@@ -3,13 +3,9 @@
     "",
     "\\backend",
     "\\backend\\src",
-    "\\backend\\src\\models",
-    "\\backend\\src\\services",
-    "\\backend\\src\\types",
-    "\\backend\\src\\types\\error",
-    "\\backend\\src\\types\\song",
-    "\\backend\\src\\types\\user",
-    "\\backend\\src\\utils"
+    "\\backend\\src\\config",
+    "\\backend\\src\\types"
   ],
+  "SelectedNode": "\\backend\\src\\config\\database.ts",
   "PreviewInSolutionExplorer": false
 }

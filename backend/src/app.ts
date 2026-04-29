@@ -30,6 +30,8 @@ import adminPlaylistRoutes from './routes/admin-playlist.routes';
 import adminGenreRoutes from './routes/admin-genre.routes';
 import moodRoutes from './routes/mood.routes';
 import adminMoodRoutes from './routes/admin-mood.routes';
+import userRoutes from './routes/user.routes';
+import adminFollowRoutes from './routes/admin-follow.routes';
 
 import { errorHandler } from './middleware/error.middleware';
 
@@ -82,6 +84,8 @@ app.use('/api/admin/dashboard', adminDashboardRoutes);
 app.use('/api/admin/genres', adminGenreRoutes);
 app.use('/api/moods', moodRoutes);
 app.use('/api/admin/moods', adminMoodRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/admin/users', adminFollowRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {
