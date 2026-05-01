@@ -1,5 +1,7 @@
 import { User } from '../models/user.model';
 import { UserResetCode } from '../models/user-reset-code.model';
+import { Album } from '../models/album.model';
+import { Song } from '../models/song.model';
 import { generateToken } from '../utils/jwt.utils';
 import {
   createRefreshToken,
@@ -171,6 +173,26 @@ export const authService = {
 
     if (typeof input.coverImage === 'string') {
       updateData.coverImage = input.coverImage;
+    }
+
+    if (input.role === 'user' || input.role === 'creator') {
+      const currentUser = await User.findById(userId).select('role');
+      if (!currentUser) {
+        throw new ServiceError(404, 'User not found');
+      }
+
+      if (currentUser.role === 'creator' && input.role === 'user') {
+        const [trackCount, albumCount] = await Promise.all([
+          Song.countDocuments({ uploadedBy: userId }),
+          Album.countDocuments({ artistUserId: userId }),
+        ]);
+
+        if (trackCount > 0 || albumCount > 0) {
+          throw new ServiceError(409, 'Delete your uploaded tracks and albums before switching to listener');
+        }
+      }
+
+      updateData.role = input.role;
     }
 
     const user = await User.findByIdAndUpdate(userId, updateData, {

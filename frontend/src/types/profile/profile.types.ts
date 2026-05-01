@@ -69,6 +69,8 @@ export type ProfileTrackCardProps = {
   track: CreatorTrack;
   onPlay: () => void;
   onEdit: () => void;
+  onDelete: () => void;
+  deleting?: boolean;
 };
 
 export type ProfileAlbumCardProps = {

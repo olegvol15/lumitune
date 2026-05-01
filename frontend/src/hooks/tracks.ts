@@ -151,3 +151,16 @@ export function useUpdateCreatorTrackMutation() {
     },
   });
 }
+
+export function useDeleteCreatorTrackMutation() {
+  return useMutation({
+    mutationFn: (songId: string) => songsApi.deleteCreatorTrack(songId),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: tracksKeys.catalog() }),
+        queryClient.invalidateQueries({ queryKey: tracksKeys.mine() }),
+        queryClient.invalidateQueries({ queryKey: albumKeys.all }),
+      ]);
+    },
+  });
+}

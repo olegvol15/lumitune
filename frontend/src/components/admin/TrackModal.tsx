@@ -27,6 +27,7 @@ export default function TrackModal() {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState('/vite.svg');
+  const [dragTarget, setDragTarget] = useState<'audio' | 'cover' | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const saveTrackMutation = useSaveAdminTrackMutation();
@@ -47,6 +48,8 @@ export default function TrackModal() {
 
   useEffect(() => {
     if (track) {
+      // Reset modal-local draft fields when a different track is opened.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setForm({ ...track });
       setAudioFile(null);
       setCoverFile(null);
@@ -60,6 +63,8 @@ export default function TrackModal() {
 
   useEffect(() => {
     if (!coverFile) {
+      // Keep preview synced with the selected album or persisted cover when no new file is selected.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCoverPreviewUrl(form?.albumCover || selectedAlbum?.coverUrl || '/vite.svg');
       return undefined;
     }
@@ -68,6 +73,7 @@ export default function TrackModal() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [coverFile, form?.albumCover, selectedAlbum?.coverUrl]);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const audioSummary = useMemo(() => {
     if (audioFile) return audioFile.name;
     if (mode === 'edit' && form?.sourceFilePath) return form.sourceFilePath.split('/').pop() || 'Current audio file';
@@ -124,13 +130,45 @@ export default function TrackModal() {
     }
   };
 
+  const handleDropFile = (
+    event: React.DragEvent<HTMLLabelElement>,
+    target: 'audio' | 'cover'
+  ) => {
+    event.preventDefault();
+    setDragTarget(null);
+    const file = event.dataTransfer.files?.[0];
+    if (!file) return;
+
+    if (target === 'audio') {
+      if (!file.type.startsWith('audio/')) {
+        setError('Please drop an audio file.');
+        return;
+      }
+      setAudioFile(file);
+      setError(null);
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please drop an image file.');
+      return;
+    }
+    setCoverFile(file);
+    setError(null);
+  };
+
+  const getUploadCardClass = (target: 'audio' | 'cover') =>
+    `${uploadCardClass} ${
+      dragTarget === target ? 'border-[#3dc9b0] bg-[#1d2b42] shadow-[0_0_0_1px_rgba(61,201,176,0.22)]' : ''
+    }`;
+
   const labelClass = 'block text-[#7a8faa] text-xs font-medium mb-1';
   const inputClass =
     'w-full bg-[#19233a] border border-[#2a3a52] rounded-md px-3 py-2 text-sm text-white placeholder:text-[#4a5a72] focus:outline-none focus:border-[#3dc9b0] transition-colors';
   const sectionTitleClass = 'text-[11px] font-semibold uppercase tracking-[0.16em] text-[#5f7391]';
   const panelClass = 'rounded-xl border border-[#2a3a52] bg-[#151d2e] p-4';
   const uploadCardClass =
-    'group flex min-h-[132px] flex-col rounded-xl border border-dashed border-[#2a3a52] bg-[#19233a] p-4 text-left transition-colors hover:border-[#3dc9b0]';
+    'group flex min-h-[132px] min-w-0 flex-col rounded-xl border border-dashed border-[#2a3a52] bg-[#19233a] p-4 text-left transition-colors hover:border-[#3dc9b0]';
   const saveDisabled = isSaving || Boolean(titleError) || Boolean(audioError);
 
   return (
@@ -138,7 +176,7 @@ export default function TrackModal() {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
       onClick={(e) => e.target === e.currentTarget && closeModal()}
     >
-      <div className="w-full max-w-3xl rounded-2xl bg-[#1e2638] shadow-2xl overflow-hidden">
+      <div className="w-full max-w-3xl overflow-hidden rounded-2xl bg-[#1e2638] shadow-2xl">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#2a3a52]">
           <div>
             <h2 className="text-white font-semibold text-base">
@@ -159,7 +197,7 @@ export default function TrackModal() {
         </div>
 
         <div className="max-h-[78vh] overflow-y-auto px-6 py-5">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
+          <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
             <div className="space-y-5">
               <section className={panelClass}>
                 <p className={sectionTitleClass}>Details</p>
@@ -321,14 +359,22 @@ export default function TrackModal() {
               <section className={panelClass}>
                 <p className={sectionTitleClass}>Assets</p>
                 <div className="mt-4 space-y-3">
-                  <label className={uploadCardClass}>
+                  <label
+                    className={getUploadCardClass('audio')}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setDragTarget('audio');
+                    }}
+                    onDragLeave={() => setDragTarget(null)}
+                    onDrop={(event) => handleDropFile(event, 'audio')}
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 text-white">
                           <Music2 size={16} className="text-[#3dc9b0]" />
                           <span className="text-sm font-medium">Audio file {mode === 'new' ? '*' : ''}</span>
                         </div>
-                        <p className="mt-1 text-sm text-[#7a8faa] break-all">{audioSummary}</p>
+                        <p className="mt-1 max-w-full overflow-hidden break-words text-sm text-[#7a8faa]">{audioSummary}</p>
                       </div>
                       <Upload size={16} className="shrink-0 text-[#7a8faa] group-hover:text-[#3dc9b0]" />
                     </div>
@@ -344,14 +390,22 @@ export default function TrackModal() {
                   </label>
                   {audioError && <p className="text-xs text-red-400">{audioError}</p>}
 
-                  <label className={uploadCardClass}>
+                  <label
+                    className={getUploadCardClass('cover')}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setDragTarget('cover');
+                    }}
+                    onDragLeave={() => setDragTarget(null)}
+                    onDrop={(event) => handleDropFile(event, 'cover')}
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 text-white">
                           <ImageIcon size={16} className="text-[#3dc9b0]" />
                           <span className="text-sm font-medium">Cover image</span>
                         </div>
-                        <p className="mt-1 text-sm text-[#7a8faa] break-all">
+                        <p className="mt-1 max-w-full overflow-hidden break-words text-sm text-[#7a8faa]">
                           {coverFile ? coverFile.name : 'Optional cover artwork for the track or single.'}
                         </p>
                       </div>
@@ -372,31 +426,31 @@ export default function TrackModal() {
 
               <section className={panelClass}>
                 <p className={sectionTitleClass}>Preview</p>
-                <div className="mt-4 flex items-center gap-4">
-                  <div className="h-24 w-24 overflow-hidden rounded-xl bg-[#19233a] shadow-inner">
+                <div className="mt-4 flex min-w-0 items-center gap-4">
+                  <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-[#19233a] shadow-inner">
                     <img src={coverPreviewUrl} alt={form.title || 'Track cover'} className="h-full w-full object-cover" />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 overflow-hidden">
                     <p className="truncate text-lg font-semibold text-white">{form.title || 'Untitled track'}</p>
                     <p className="mt-1 truncate text-sm text-[#7a8faa]">
                       {(form.artistName || form.artistId) || 'Unknown artist'}
                       {selectedAlbum ? ` · ${selectedAlbum.title}` : ''}
                     </p>
-                    <div className="mt-3 flex items-center gap-3">
+                    <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2">
                       <span
-                        className={`inline-flex min-w-[58px] items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        className={`inline-flex max-w-full items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold ${
                           form.adult ? 'bg-[#f07282]/20 text-[#f7a1ad]' : 'bg-[#253050] text-[#8ea4c2]'
                         }`}
                       >
                         {form.adult ? 'Explicit' : 'Clean'}
                       </span>
                       {form.genreId && (
-                        <span className="inline-flex items-center rounded-full bg-[#253050] px-2.5 py-1 text-xs text-[#8ea4c2]">
+                        <span className="inline-flex max-w-full items-center truncate rounded-full bg-[#253050] px-2.5 py-1 text-xs text-[#8ea4c2]">
                           {form.genreId}
                         </span>
                       )}
                       {currentMood && (
-                        <span className="inline-flex items-center rounded-full bg-[#253050] px-2.5 py-1 text-xs text-[#8ea4c2]">
+                        <span className="inline-flex max-w-full items-center truncate rounded-full bg-[#253050] px-2.5 py-1 text-xs text-[#8ea4c2]">
                           {currentMood}
                         </span>
                       )}

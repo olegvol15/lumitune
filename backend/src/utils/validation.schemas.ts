@@ -63,6 +63,7 @@ export const updateProfileSchema = z.object({
   bio: z.string().max(600).optional(),
   profilePicture: z.string().max(2_000_000).optional(),
   coverImage: z.string().max(2_000_000).optional(),
+  role: z.enum(['user', 'creator']).optional(),
 });
 
 // ─── Admin Auth ────────────────────────────────────────────────────────────

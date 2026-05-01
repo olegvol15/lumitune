@@ -6,6 +6,7 @@ import {
   streamSong,
   getOwnSongs,
   updateOwnSong,
+  deleteOwnSong,
 } from '../controllers/song.controller';
 import { protect } from '../middleware/auth.middleware';
 import { adminSongUpload } from '../middleware/upload.middleware';
@@ -31,5 +32,6 @@ router.put(
   adminSongUpload.fields([{ name: 'audio', maxCount: 1 }, { name: 'cover', maxCount: 1 }]),
   h(updateOwnSong)
 );
+router.delete('/:id', auth, h(deleteOwnSong));
 
 export default router;

@@ -5,6 +5,7 @@ import { usePlayerStore } from '../store/playerStore';
 import { formatLongDuration } from '../utils/format';
 import type { Episode } from '../types';
 import { useI18n } from '../lib/i18n';
+import { localizePodcastCategory } from '../utils/category.utils';
 
 export const Route = createFileRoute('/podcast/$id')({
   component: PodcastPage,
@@ -14,7 +15,7 @@ function PodcastPage() {
   const { id } = Route.useParams();
   const router = useRouter();
   const { data: podcast, isLoading } = usePodcastQuery(id);
-  const { copy } = useI18n();
+  const { copy, language } = useI18n();
   const currentEpisode = usePlayerStore((s) => s.currentEpisode);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const playEpisode = usePlayerStore((s) => s.playEpisode);
@@ -37,6 +38,7 @@ function PodcastPage() {
   }
 
   const episodes = podcast.episodes ?? [];
+  const category = localizePodcastCategory(podcast.category, language);
 
   const handlePlay = (episode: Episode) => {
     if (currentEpisode?.id === episode.id) {
@@ -76,9 +78,9 @@ function PodcastPage() {
               <p className="text-white/50 text-xs uppercase tracking-widest mb-1">{copy.common.podcast}</p>
               <h1 className="text-white text-3xl font-bold leading-tight mb-2">{podcast.title}</h1>
               <p className="text-white/70 text-sm mb-1">{podcast.author}</p>
-              {podcast.category && (
+              {category && (
                 <span className="text-xs text-brand bg-brand/10 px-2 py-0.5 rounded-full w-fit">
-                  {podcast.category}
+                  {category}
                 </span>
               )}
               <p className="text-white/50 text-sm mt-3 line-clamp-3 max-w-xl">

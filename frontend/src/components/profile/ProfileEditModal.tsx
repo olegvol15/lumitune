@@ -25,6 +25,7 @@ export default function ProfileEditModal({
       : fallbackAvatar
   );
   const [coverImage, setCoverImage] = useState(user?.coverImage || fallbackCover);
+  const [role, setRole] = useState<'user' | 'creator'>(user?.role ?? 'user');
   const [error, setError] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement | null>(null);
   const coverInputRef = useRef<HTMLInputElement | null>(null);
@@ -32,6 +33,8 @@ export default function ProfileEditModal({
 
   useEffect(() => {
     if (!open || !user) return;
+    // Reset modal-local draft fields from the latest persisted user when the modal opens.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDisplayName(user.displayName || '');
     setBio(user.bio || copy.profile.defaultBio);
     setProfilePicture(
@@ -40,6 +43,7 @@ export default function ProfileEditModal({
         : fallbackAvatar
     );
     setCoverImage(user.coverImage || fallbackCover);
+    setRole(user.role);
   }, [copy.profile.defaultBio, fallbackAvatar, fallbackCover, open, user]);
 
   const handleSave = async () => {
@@ -51,6 +55,7 @@ export default function ProfileEditModal({
         bio,
         profilePicture,
         coverImage,
+        role,
       });
       onClose();
     } catch (err) {
@@ -163,6 +168,31 @@ export default function ProfileEditModal({
                       className="w-full rounded-[16px] border border-[#6e96b5] bg-[#587b93] px-4 py-3 text-[13px] italic leading-7 text-[#e7f5ff] outline-none"
                     />
                   </label>
+
+                  <div>
+                    <span className="mb-2 block text-[15px] font-semibold text-[#e5f2fc]">
+                      {copy.auth.whoAreYou}
+                    </span>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { value: 'user' as const, label: copy.auth.regularUser },
+                        { value: 'creator' as const, label: copy.auth.creator },
+                      ].map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => setRole(option.value)}
+                          className={`rounded-[14px] border px-4 py-3 text-left text-[13px] font-semibold transition-colors ${
+                            role === option.value
+                              ? 'border-[#7bc7ea] bg-[#7bc7ea] text-[#0d2330]'
+                              : 'border-[#6e96b5] bg-[#587b93] text-[#e7f5ff] hover:bg-[#6388a2]'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
                   {error ? <p className="text-xs text-red-200">{error}</p> : null}
 

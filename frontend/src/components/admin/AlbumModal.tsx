@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import { ArrowDown, ArrowUp, Check, Plus, Search, X } from 'lucide-react';
 import type { Album } from '../../types';
 import { useAdminTracksQuery } from '../../hooks/tracks';
@@ -32,12 +32,15 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
   const [selectedTrackIds, setSelectedTrackIds] = useState<string[]>(album?.trackIds ?? []);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState(album?.coverUrl ?? '');
+  const [isCoverDragOver, setIsCoverDragOver] = useState(false);
   const [trackToAdd, setTrackToAdd] = useState('');
   const [trackQuery, setTrackQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!album) return;
+    // Reset modal-local draft fields when a different album is opened.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTitle(album.title);
     setArtistName(album.artistName);
     setGenre(album.genre);
@@ -53,10 +56,12 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
 
   useEffect(() => {
     if (mode !== 'edit' || !albumDetailQuery.data) return;
+    // Hydrate editable track order after loading the album detail payload.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedTrackIds(albumDetailQuery.data.tracks.map((track) => track.id));
   }, [albumDetailQuery.data, mode]);
 
-  const tracks = tracksQuery.data ?? [];
+  const tracks = useMemo(() => tracksQuery.data ?? [], [tracksQuery.data]);
   const trackMap = useMemo(
     () => new Map(tracks.map((track) => [track.backendId || track.id, track])),
     [tracks]
@@ -74,6 +79,8 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
 
   useEffect(() => {
     if (!lockedArtist) return;
+    // Keep album artist aligned with the first selected track when the field is empty.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setArtistName((currentArtistName) => {
       const trimmed = currentArtistName.trim();
       if (!trimmed || trimmed === lockedArtist) return lockedArtist;
@@ -83,6 +90,8 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
 
   useEffect(() => {
     if (!coverFile) {
+      // Keep preview synced with the persisted cover when no new file is selected.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCoverPreviewUrl(album?.coverUrl ?? '');
       return undefined;
     }
@@ -91,22 +100,20 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
     return () => URL.revokeObjectURL(objectUrl);
   }, [album?.coverUrl, coverFile]);
 
-  const availableTracks = useMemo(() => {
-    return tracks.filter((track) => {
-      const trackId = track.backendId || track.id;
-      const isSelected = selectedTrackIds.includes(trackId);
-      if (isSelected) return false;
+  const availableTracks = tracks.filter((track) => {
+    const trackId = track.backendId || track.id;
+    const isSelected = selectedTrackIds.includes(trackId);
+    if (isSelected) return false;
 
-      const sameArtist = !lockedArtist || track.artistName.trim().toLowerCase() === lockedArtist.toLowerCase();
-      if (!sameArtist) return false;
+    const sameArtist = !lockedArtist || track.artistName.trim().toLowerCase() === lockedArtist.toLowerCase();
+    if (!sameArtist) return false;
 
-      if (!normalizedTrackQuery) return true;
+    if (!normalizedTrackQuery) return true;
 
-      return [track.title, track.artistName, track.albumTitle]
-        .filter(Boolean)
-        .some((value) => value.toLowerCase().includes(normalizedTrackQuery));
-    });
-  }, [tracks, selectedTrackIds, lockedArtist, normalizedTrackQuery]);
+    return [track.title, track.artistName, track.albumTitle]
+      .filter(Boolean)
+      .some((value) => value.toLowerCase().includes(normalizedTrackQuery));
+  });
 
   const toggleTrack = (trackId: string) => {
     setError(null);
@@ -120,6 +127,19 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
     if (!trackId) return;
     setError(null);
     setSelectedTrackIds((prev) => (prev.includes(trackId) ? prev : [...prev, trackId]));
+  };
+
+  const handleCoverDrop = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    setIsCoverDragOver(false);
+    const file = event.dataTransfer.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Please drop an image file.');
+      return;
+    }
+    setCoverFile(file);
+    setError(null);
   };
 
   const moveTrack = (trackId: string, direction: -1 | 1) => {
@@ -208,7 +228,17 @@ export default function AlbumModal({ mode, album, onClose }: Props) {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-[#2a3a52] bg-[#19233a] px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
+                  <label
+                    className={`flex cursor-pointer items-center gap-2 rounded-md border border-dashed bg-[#19233a] px-3 py-2 text-sm transition-colors hover:border-[#3dc9b0] hover:text-[#3dc9b0] ${
+                      isCoverDragOver ? 'border-[#3dc9b0] text-[#3dc9b0]' : 'border-[#2a3a52] text-[#4a5a72]'
+                    }`}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setIsCoverDragOver(true);
+                    }}
+                    onDragLeave={() => setIsCoverDragOver(false)}
+                    onDrop={handleCoverDrop}
+                  >
                     <Plus size={14} />
                     <span className="truncate">{coverFile ? coverFile.name : 'Choose image'}</span>
                     <input

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type DragEvent } from 'react';
 import { X, Upload } from 'lucide-react';
 import { useCreateAudiobookMutation, useUpdateAudiobookMutation } from '../../hooks/audiobooks';
 import { useAdminGenresQuery } from '../../hooks/admin-genres';
@@ -22,6 +22,7 @@ export default function AudiobookModal({ mode, audiobook, onClose }: Props) {
   const [description, setDescription] = useState(audiobook?.description ?? '');
   const [genre, setGenre] = useState(audiobook?.genre ?? '');
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [isCoverDragOver, setIsCoverDragOver] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,6 +62,19 @@ export default function AudiobookModal({ mode, audiobook, onClose }: Props) {
       setError(e.response?.data?.message ?? e.message ?? copy.admin.saveError);
     }
     setIsSaving(false);
+  };
+
+  const handleCoverDrop = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    setIsCoverDragOver(false);
+    const file = event.dataTransfer.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Please drop an image file.');
+      return;
+    }
+    setCoverFile(file);
+    setError(null);
   };
 
   return (
@@ -117,7 +131,17 @@ export default function AudiobookModal({ mode, audiobook, onClose }: Props) {
 
           <div>
             <label className={labelClass}>{copy.admin.coverImage}</label>
-            <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
+            <label
+              className={`flex w-full cursor-pointer items-center gap-2 rounded-md border border-dashed bg-[#19233a] px-3 py-2 text-sm transition-colors hover:border-[#3dc9b0] hover:text-[#3dc9b0] ${
+                isCoverDragOver ? 'border-[#3dc9b0] text-[#3dc9b0]' : 'border-[#2a3a52] text-[#4a5a72]'
+              }`}
+              onDragOver={(event) => {
+                event.preventDefault();
+                setIsCoverDragOver(true);
+              }}
+              onDragLeave={() => setIsCoverDragOver(false)}
+              onDrop={handleCoverDrop}
+            >
               <Upload size={14} />
               <span>{coverFile ? coverFile.name : copy.common.chooseImage}</span>
               <input

@@ -13,7 +13,12 @@ import ProfileTrackCard from '../components/profile/ProfileTrackCard';
 import ProfileTrackEditorModal from '../components/profile/ProfileTrackEditorModal';
 import ProfileTrackSectionTools from '../components/profile/ProfileTrackSectionTools';
 import { useThemeStore } from '../store/themeStore';
-import { useCreatorTracksQuery, useUpdateCreatorTrackMutation, useUploadCreatorTrackMutation } from '../hooks/tracks';
+import {
+  useCreatorTracksQuery,
+  useDeleteCreatorTrackMutation,
+  useUpdateCreatorTrackMutation,
+  useUploadCreatorTrackMutation,
+} from '../hooks/tracks';
 import type { CreatorTrack, TrackModalState } from '../types/profile/profile.types';
 import Button from '../components/ui/Button';
 import { useAuthStore } from '../store/authStore';
@@ -52,12 +57,14 @@ function ProfilePage() {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [trackModal, setTrackModal] = useState<TrackModalState>({ open: false });
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
+  const [deleteTrackTarget, setDeleteTrackTarget] = useState<CreatorTrack | null>(null);
   const creatorTracksQuery = useCreatorTracksQuery();
   const myAlbumsQuery = useMyAlbumsQuery();
   const albumsQuery = useAlbumsQuery();
   const moodsQuery = useMoodsQuery();
   const uploadCreatorTrackMutation = useUploadCreatorTrackMutation();
   const updateCreatorTrackMutation = useUpdateCreatorTrackMutation();
+  const deleteCreatorTrackMutation = useDeleteCreatorTrackMutation();
   const createAlbumMutation = useCreateAlbumMutation();
   const followingQuery = useFollowingQuery(user?.id);
   const followedArtistsQuery = useFollowedArtistsQuery();
@@ -128,6 +135,12 @@ function ProfilePage() {
     );
   };
 
+  const confirmDeleteTrack = async () => {
+    if (!deleteTrackTarget) return;
+    await deleteCreatorTrackMutation.mutateAsync(deleteTrackTarget.id);
+    setDeleteTrackTarget(null);
+  };
+
   const statCards = [
     { label: copy.profile.following, value: followingTotal, icon: UserRoundPlus },
     { label: copy.profile.music, value: musicTotal, icon: Music2 },
@@ -155,7 +168,7 @@ function ProfilePage() {
               <div className="flex items-start justify-between">
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-black/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-normal text-white/80 backdrop-blur">
                   <Disc3 size={14} />
-                  {copy.profile.title}
+                  {user?.role === 'creator' ? copy.auth.creator : copy.auth.regularUser}
                 </div>
                 <ProfileHeroActions
                   onEditProfile={() => setIsEditProfileOpen(true)}
@@ -248,6 +261,8 @@ function ProfilePage() {
                     track={track}
                     onPlay={() => playTrack(track)}
                     onEdit={() => setTrackModal({ open: true, mode: 'edit', trackId: track.id })}
+                    onDelete={() => setDeleteTrackTarget(track)}
+                    deleting={deleteCreatorTrackMutation.isPending}
                   />
                 ))}
               </div>
@@ -416,6 +431,38 @@ function ProfilePage() {
           setIsAlbumModalOpen(false);
         }}
       />
+      {deleteTrackTarget && (
+        <div
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+          onClick={(event) => event.target === event.currentTarget && setDeleteTrackTarget(null)}
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-[#2a3a52] bg-[#1e2638] shadow-2xl">
+            <div className="px-6 py-5">
+              <h2 className="text-base font-semibold text-white">{copy.common.delete}</h2>
+              <p className="mt-2 text-sm leading-6 text-[#9fb3cf]">
+                {copy.common.delete} {deleteTrackTarget.title}?
+              </p>
+            </div>
+            <div className="flex justify-end gap-3 border-t border-[#2a3a52] px-6 py-4">
+              <button
+                type="button"
+                onClick={() => setDeleteTrackTarget(null)}
+                className="rounded-lg bg-[#2a3a52] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#354a62]"
+              >
+                {copy.common.no}
+              </button>
+              <button
+                type="button"
+                onClick={() => void confirmDeleteTrack()}
+                disabled={deleteCreatorTrackMutation.isPending}
+                className="rounded-lg bg-[#f07282] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#d9606f] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {copy.common.yes}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

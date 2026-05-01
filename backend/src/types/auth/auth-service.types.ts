@@ -25,6 +25,7 @@ export interface UpdateUserProfileInput {
   bio?: string;
   profilePicture?: string;
   coverImage?: string;
+  role?: 'user' | 'creator';
 }
 
 export interface AuthUserResponse {

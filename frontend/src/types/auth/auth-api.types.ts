@@ -18,4 +18,5 @@ export interface UpdateProfilePayload {
   bio?: string;
   profilePicture?: string;
   coverImage?: string;
+  role?: 'user' | 'creator';
 }

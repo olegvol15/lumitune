@@ -288,6 +288,24 @@ export const songService = {
     }
   },
 
+  async deleteSongForUploader(songId: string, userId: string | undefined) {
+    if (!userId) {
+      throw new ServiceError(401, 'Not authorized to access this route');
+    }
+
+    ensureObjectId(songId, 'songId');
+    const existingSong = await Song.findById(songId);
+    if (!existingSong) {
+      throw new ServiceError(404, 'Song not found');
+    }
+
+    if (String(existingSong.uploadedBy) !== userId) {
+      throw new ServiceError(403, 'You can only delete your own tracks');
+    }
+
+    await this.deleteSong(songId);
+  },
+
   async streamSong(
     songId: string,
     rangeHeader?: string,

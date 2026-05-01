@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type DragEvent } from 'react';
 import { X, Upload } from 'lucide-react';
 import {
   useUpdateAudiobookChapterMutation,
@@ -32,6 +32,7 @@ export default function AudiobookChapterModal({
   const [chapterNumber, setChapterNumber] = useState(chapter?.chapterNumber ?? nextChapterNumber);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [dragTarget, setDragTarget] = useState<'audio' | 'cover' | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,6 +71,35 @@ export default function AudiobookChapterModal({
     }
     setIsSaving(false);
   };
+
+  const handleDropFile = (event: DragEvent<HTMLLabelElement>, target: 'audio' | 'cover') => {
+    event.preventDefault();
+    setDragTarget(null);
+    const file = event.dataTransfer.files?.[0];
+    if (!file) return;
+
+    if (target === 'audio') {
+      if (!file.type.startsWith('audio/')) {
+        setError('Please drop an audio file.');
+        return;
+      }
+      setAudioFile(file);
+      setError(null);
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please drop an image file.');
+      return;
+    }
+    setCoverFile(file);
+    setError(null);
+  };
+
+  const dropLabelClass = (target: 'audio' | 'cover') =>
+    `flex w-full cursor-pointer items-center gap-2 rounded-md border border-dashed bg-[#19233a] px-3 py-2 text-sm transition-colors hover:border-[#3dc9b0] hover:text-[#3dc9b0] ${
+      dragTarget === target ? 'border-[#3dc9b0] text-[#3dc9b0]' : 'border-[#2a3a52] text-[#4a5a72]'
+    }`;
 
   return (
     <div
@@ -122,7 +152,15 @@ export default function AudiobookChapterModal({
               <label className={labelClass}>
                 Audio File {mode === 'new' ? '*' : '(leave empty to keep existing)'}
               </label>
-              <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
+              <label
+                className={dropLabelClass('audio')}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  setDragTarget('audio');
+                }}
+                onDragLeave={() => setDragTarget(null)}
+                onDrop={(event) => handleDropFile(event, 'audio')}
+              >
                 <Upload size={14} />
                 <span className="truncate">{audioFile ? audioFile.name : 'Choose audio'}</span>
                 <input
@@ -135,7 +173,15 @@ export default function AudiobookChapterModal({
             </div>
             <div>
               <label className={labelClass}>Cover Image</label>
-              <label className="flex items-center gap-2 cursor-pointer w-full bg-[#19233a] border border-[#2a3a52] border-dashed rounded-md px-3 py-2 text-sm text-[#4a5a72] hover:border-[#3dc9b0] hover:text-[#3dc9b0] transition-colors">
+              <label
+                className={dropLabelClass('cover')}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  setDragTarget('cover');
+                }}
+                onDragLeave={() => setDragTarget(null)}
+                onDrop={(event) => handleDropFile(event, 'cover')}
+              >
                 <Upload size={14} />
                 <span className="truncate">{coverFile ? coverFile.name : 'Choose image'}</span>
                 <input

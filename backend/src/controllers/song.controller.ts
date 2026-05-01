@@ -57,6 +57,23 @@ export const updateOwnSong = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const deleteOwnSong = async (req: AuthRequest, res: Response) => {
+  try {
+    await songService.deleteSongForUploader(
+      String(req.params.id),
+      req.user?._id ? String(req.user._id) : undefined
+    );
+
+    res.status(200).json({ success: true, message: 'Song deleted successfully' });
+  } catch (error) {
+    if (error instanceof ServiceError)
+      return res.status(error.status).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: getErrorMessage(error, 'Error deleting song') });
+  }
+};
+
 export const getAllSongs = async (req: Request, res: Response) => {
   try {
     const { songs, pagination } = await songService.listSongs(req.query);

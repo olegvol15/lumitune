@@ -17,6 +17,7 @@ const songsApi = {
     apiClient.put<SongResponse>(`/songs/${songId}`, data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
+  deleteCreatorTrack: (songId: string) => apiClient.delete(`/songs/${songId}`),
 };
 
 export default songsApi;

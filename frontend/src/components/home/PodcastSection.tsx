@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { usePodcastsQuery } from '../../hooks/podcasts';
 import { formatLongDuration } from '../../utils/format';
 import { useI18n } from '../../lib/i18n';
+import { localizePodcastCategory } from '../../utils/category.utils';
 
 export default function PodcastSection() {
   const { data: podcasts = [], isLoading } = usePodcastsQuery();
@@ -38,6 +39,7 @@ export default function PodcastSection() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
         {podcasts.slice(0, 3).map((podcast) => {
           const latestEpisode = podcast.episodes?.[0];
+          const category = localizePodcastCategory(podcast.category, language);
           return (
             <Link
               key={podcast.id}
@@ -49,11 +51,11 @@ export default function PodcastSection() {
                 <h3 className="text-white text-lg font-bold leading-tight">{podcast.title}</h3>
                 <p className="text-[#8FA8C5] text-sm mt-1 leading-none">
                   {podcast.author}
-                  {podcast.category && (
+                  {category && (
                     <>
                       {' '}
                       <span className="text-[#6C87A8]">·</span>{' '}
-                      <span className="text-[#C4D7EC]">{podcast.category}</span>
+                      <span className="text-[#C4D7EC]">{category}</span>
                     </>
                   )}
                 </p>
