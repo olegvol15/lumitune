@@ -10,7 +10,7 @@ export type CreatorTrack = {
   mood: string;
   audioFileName?: string;
   releaseDate: string;
-  likes: number;
+  plays: number;
 };
 
 export type CreatorAlbum = {
@@ -31,7 +31,7 @@ export type CreatorTrackDraft = {
   genre: string;
   mood: string;
   releaseDate: string;
-  likes: number;
+  plays: number;
   audioFile?: File | null;
   audioFileName?: string;
   coverFile?: File | null;

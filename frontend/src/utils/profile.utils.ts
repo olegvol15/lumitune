@@ -39,7 +39,7 @@ export function mapBackendSongToCreatorTrack(song: BackendSong): CreatorTrack {
     mood: song.mood || '',
     audioFileName: song.filePath.split('/').pop(),
     releaseDate: song.createdAt ? new Date(song.createdAt).toLocaleDateString('uk-UA') : new Date().toLocaleDateString('uk-UA'),
-    likes: song.plays || 0,
+    plays: song.plays || 0,
   };
 }
 

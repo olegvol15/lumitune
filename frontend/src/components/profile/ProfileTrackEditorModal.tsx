@@ -144,7 +144,7 @@ function ProfileTrackEditorFields({
                 audioFileName,
                 coverFile,
                 releaseDate: initialTrack?.releaseDate || new Date().toLocaleDateString(),
-                likes: initialTrack?.likes || 0,
+                plays: initialTrack?.plays || 0,
               })
             }
             className="rounded-[7px] bg-[#80c8eb] px-2 py-2 text-[10px] font-semibold text-[#123042] hover:bg-[#93d3f1]"

@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { Pencil } from 'lucide-react';
+import { Disc3, Library, Music2, Pencil, Radio, UserRoundPlus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import ProfileAlbumCard from '../components/profile/ProfileAlbumCard';
 import ProfileAlbumUploadModal from '../components/profile/ProfileAlbumUploadModal';
@@ -94,7 +94,7 @@ function ProfilePage() {
   const followedArtists = followedArtistsQuery.data ?? [];
   const followingTotal = (userProfileQuery.data?.followingCount ?? followingUsers.length) + followedArtists.length;
   const musicTotal = creatorTracks.length;
-  const listenerTotal = creatorTracks.reduce((sum, track) => sum + track.likes, 0);
+  const listenerTotal = creatorTracks.reduce((sum, track) => sum + track.plays, 0);
 
   const topTracks = useMemo(() => creatorTracks.slice(0, 3), [creatorTracks]);
   const editingTrack = creatorTracks.find((track) => track.id === trackModal.trackId);
@@ -110,8 +110,8 @@ function ProfilePage() {
         albumTitle: track.title,
         albumCover: track.albumCover,
         duration: track.duration,
-        playCount: track.likes,
-        liked: true,
+        playCount: track.plays,
+        liked: false,
       },
       creatorTracks.map((item) => ({
         id: item.id,
@@ -122,114 +122,126 @@ function ProfilePage() {
         albumTitle: item.title,
         albumCover: item.albumCover,
         duration: item.duration,
-        playCount: item.likes,
-        liked: true,
+        playCount: item.plays,
+        liked: false,
       }))
     );
   };
 
+  const statCards = [
+    { label: copy.profile.following, value: followingTotal, icon: UserRoundPlus },
+    { label: copy.profile.music, value: musicTotal, icon: Music2 },
+    { label: copy.profile.listeners, value: listenerTotal, icon: Radio },
+  ];
+
   return (
     <>
-      <div className="px-6 pb-10 pt-5">
-        <div
-          className="overflow-hidden rounded-[28px] border border-[#27465d] shadow-[0_28px_90px_rgba(0,0,0,0.42)]"
-          style={{ background: isLight ? '#c8dff0' : 'linear-gradient(180deg,#0d1c29 0%,#08141d 100%)' }}
-        >
+      <div className="px-4 pb-10 pt-5 sm:px-6">
+        <div className="mx-auto max-w-[1320px]">
           <section
-            className="relative overflow-hidden border-b border-[#30586f] px-6 py-4"
+            className="relative overflow-hidden rounded-[24px] border border-[#284964] shadow-[0_26px_85px_rgba(0,0,0,0.38)]"
             style={{
               backgroundImage: isLight
-                ? `linear-gradient(180deg,rgba(184,211,230,0.55),rgba(200,221,237,0.7)), url(${cover})`
-                : `linear-gradient(180deg,rgba(8,22,30,0.58),rgba(12,58,74,0.66)), url(${cover})`,
+                ? `linear-gradient(135deg,rgba(186,213,231,0.78),rgba(205,225,239,0.9)), url(${cover})`
+                : `linear-gradient(135deg,rgba(8,18,31,0.72),rgba(10,45,61,0.62) 48%,rgba(8,15,28,0.92)), url(${cover})`,
               backgroundPosition: 'center',
               backgroundSize: 'cover',
             }}
           >
             {!isLight && (
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(61,150,177,0.16),transparent_25%),radial-gradient(circle_at_70%_0%,rgba(164,219,233,0.12),transparent_22%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,8,18,0.05),rgba(3,8,18,0.74))]" />
             )}
-            <div className="relative">
-              <div className="mb-2 text-[11px] font-medium text-white">{copy.profile.title}</div>
-
-              <div className="grid gap-4 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-start">
-                <div className="flex items-center">
-                  <div className="rounded-full bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.2),transparent_65%),linear-gradient(180deg,#cce8f2,#6d98ab)] p-[3px] shadow-[0_18px_45px_rgba(0,0,0,0.35)]">
-                    <img
-                      src={avatar}
-                      alt={displayName}
-                      className="h-[84px] w-[84px] rounded-full object-cover"
-                    />
-                  </div>
+            <div className="relative flex min-h-[300px] flex-col justify-between p-5 sm:p-7">
+              <div className="flex items-start justify-between">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-black/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-normal text-white/80 backdrop-blur">
+                  <Disc3 size={14} />
+                  {copy.profile.title}
                 </div>
-
-                <div className="pt-3">
-                  <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
-                    <h1 className="text-[26px] font-semibold tracking-[-0.04em] text-white">
-                      {displayName}
-                    </h1>
-
-                    <div className="flex gap-6 pb-1">
-                      <ProfileStat value={String(followingTotal)} label={copy.profile.following} />
-                      <ProfileStat value={String(musicTotal)} label={copy.profile.music} />
-                      <ProfileStat value={String(listenerTotal)} label={copy.profile.listeners} />
-                    </div>
-                  </div>
-                </div>
-
                 <ProfileHeroActions
                   onEditProfile={() => setIsEditProfileOpen(true)}
                   onOpenSettings={() => navigate({ to: '/settings' })}
                 />
               </div>
 
-              <div className="mt-2 flex justify-end">
-                <div className={`max-w-[440px] rounded-[8px] px-4 py-3 text-[11px] italic leading-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] ${isLight ? 'bg-[#c8dded]/40 text-[#0a1929]' : 'bg-black/22 text-[#e8f1f8]'}`}>
-                  {bio}
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+                <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-end">
+                  <div className="rounded-full bg-[linear-gradient(180deg,#d9eef7,#6f9db3)] p-[4px] shadow-[0_22px_55px_rgba(0,0,0,0.42)]">
+                    <img
+                      src={avatar}
+                      alt={displayName}
+                      className="h-28 w-28 rounded-full object-cover sm:h-36 sm:w-36"
+                    />
+                  </div>
+
+                  <div className="min-w-0 pb-1">
+                    <h1 className="truncate text-4xl font-black leading-none tracking-normal text-white sm:text-6xl">
+                      {displayName}
+                    </h1>
+                    <p className="mt-4 max-w-2xl text-sm leading-6 text-white/72 sm:text-[15px]">
+                      {bio}
+                    </p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        shape="rect"
+                        onClick={() => setTrackModal({ open: true, mode: 'create' })}
+                        className="rounded-lg px-4"
+                      >
+                        {copy.profile.uploadTrack}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        shape="rect"
+                        onClick={() => setIsAlbumModalOpen(true)}
+                        className="rounded-lg border-white/20 bg-white/5 px-4 backdrop-blur hover:bg-white/10"
+                      >
+                        {copy.profile.createAlbum}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-[#071522]/68 p-2 backdrop-blur-md">
+                  {statCards.map((stat) => {
+                    const Icon = stat.icon;
+                    return (
+                      <div key={stat.label} className="rounded-xl bg-white/[0.055] px-3 py-4 text-center">
+                        <Icon size={16} className="mx-auto mb-2 text-[#7fd8ff]" />
+                        <ProfileStat value={String(stat.value)} label={stat.label} />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="px-7 py-6">
-            <div className="mb-10 flex items-center justify-between">
-              <div className="flex gap-3">
-                <Button
-                  variant="auth-outline"
-                  size="sm"
-                  shape="rect"
-                  onClick={() => setTrackModal({ open: true, mode: 'create' })}
-                  className="rounded-md border-[#365a7a] bg-[#12283a] px-4 text-[12px] text-[#dbeaf8] hover:bg-[#173247]"
-                >
-                  {copy.profile.uploadTrack}
-                </Button>
-                <Button
-                  variant="auth-outline"
-                  size="sm"
-                  shape="rect"
-                  onClick={() => setIsAlbumModalOpen(true)}
-                  className="rounded-md border-[#365a7a] bg-[#12283a] px-4 text-[12px] text-[#dbeaf8] hover:bg-[#173247]"
-                >
-                  {copy.profile.createAlbum}
-                </Button>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                shape="pill"
-                onClick={() =>
-                  creatorTracks[0] &&
-                  setTrackModal({ open: true, mode: 'edit', trackId: creatorTracks[0].id })
+          <section className="mt-6 rounded-[24px] border border-[#18344d] bg-[#071320]/88 px-4 py-5 shadow-[0_22px_70px_rgba(0,0,0,0.24)] sm:px-6">
+            <section className="mb-10">
+              <ProfileSectionTitle
+                title={copy.profile.yourTracks}
+                right={
+                  <div className="flex items-center gap-2">
+                    <ProfileTrackSectionTools />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      shape="pill"
+                      onClick={() =>
+                        creatorTracks[0] &&
+                        setTrackModal({ open: true, mode: 'edit', trackId: creatorTracks[0].id })
+                      }
+                      className="!h-8 !w-8 !rounded-full !p-0 !text-white hover:!bg-white/5"
+                    >
+                      <Pencil size={16} />
+                    </Button>
+                  </div>
                 }
-                className="!h-8 !w-8 !rounded-full !p-0 !text-white hover:!bg-white/5"
-              >
-                <Pencil size={16} />
-              </Button>
-            </div>
+              />
 
-            <section className="mb-12">
-              <ProfileSectionTitle title={copy.profile.yourTracks} right={<ProfileTrackSectionTools />} />
-
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
                 {creatorTracks.map((track) => (
                   <ProfileTrackCard
                     key={track.id}
@@ -239,6 +251,11 @@ function ProfilePage() {
                   />
                 ))}
               </div>
+              {creatorTracks.length === 0 && (
+                <div className="rounded-xl border border-dashed border-[#2b4b64] px-4 py-10 text-center text-sm text-[#9fb8c9]">
+                  {copy.common.noResults}
+                </div>
+              )}
             </section>
 
             <section className="mb-12">
@@ -247,7 +264,7 @@ function ProfilePage() {
                 right={
                   <div className="grid grid-cols-[120px_110px_50px] gap-4 pr-4 text-sm font-semibold text-[#d2dce8]">
                     <span>{copy.profile.releaseDate}</span>
-                    <span>{copy.profile.likes}</span>
+                    <span>{copy.profile.plays}</span>
                     <span className="text-right">{copy.profile.time}</span>
                   </div>
                 }
@@ -263,6 +280,11 @@ function ProfilePage() {
                   />
                 ))}
               </div>
+              {topTracks.length === 0 && (
+                <div className="rounded-xl border border-[#1d3850] px-4 py-8 text-center text-sm text-[#9fb8c9]">
+                  {copy.common.noResults}
+                </div>
+              )}
             </section>
 
             <section className="mb-12">
@@ -280,6 +302,11 @@ function ProfilePage() {
                   />
                 ))}
               </div>
+              {creatorAlbums.length === 0 && (
+                <div className="rounded-xl border border-[#1d3850] px-4 py-8 text-center text-sm text-[#9fb8c9]">
+                  {copy.common.noResults}
+                </div>
+              )}
             </section>
 
             <section>
@@ -291,7 +318,7 @@ function ProfilePage() {
                       key={followedArtist._id}
                       type="button"
                       onClick={() => navigate({ to: '/artist/$id', params: { id: followedArtist.artistId } })}
-                      className="flex items-center gap-3 rounded-lg border border-[#27465d] bg-[#0d2038]/80 p-3 text-left transition-colors hover:bg-[#132b48]"
+                      className="flex min-w-0 items-center gap-3 rounded-xl border border-[#25435a] bg-[#0d2038]/88 p-3 text-left transition-colors hover:bg-[#14304a]"
                     >
                       <Avatar src={toImageUrl(followedArtist.image)} alt={followedArtist.artistName} size={44} />
                       <span className="min-w-0">
@@ -309,7 +336,7 @@ function ProfilePage() {
                         key={followedUser.id}
                         type="button"
                         onClick={() => navigate({ to: '/user/$id', params: { id: followedUser.id } })}
-                        className="flex items-center gap-3 rounded-lg border border-[#27465d] bg-[#0d2038]/80 p-3 text-left transition-colors hover:bg-[#132b48]"
+                        className="flex min-w-0 items-center gap-3 rounded-xl border border-[#25435a] bg-[#0d2038]/88 p-3 text-left transition-colors hover:bg-[#14304a]"
                       >
                         <Avatar src={toImageUrl(followedUser.profilePicture)} alt={name} size={44} />
                         <span className="min-w-0">
@@ -321,8 +348,9 @@ function ProfilePage() {
                   })}
                 </div>
               ) : (
-                <div className="rounded-2xl border border-[#27465d] px-4 py-8 text-center text-sm text-[#9fb8c9]">
-                  {copy.common.noResults}
+                <div className="flex items-center justify-center gap-2 rounded-xl border border-[#1d3850] px-4 py-8 text-center text-sm text-[#9fb8c9]">
+                  <Library size={17} />
+                  <span>{copy.common.noResults}</span>
                 </div>
               )}
             </section>

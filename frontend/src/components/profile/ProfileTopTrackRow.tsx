@@ -25,7 +25,7 @@ export default function ProfileTopTrackRow({ track, index, onPlay }: ProfileTopT
       </div>
       <div className="text-sm text-[#d1dce8]">{track.releaseDate}</div>
       <div className="flex items-center gap-2 text-sm text-[#d1dce8]">
-        <span>{track.likes}</span>
+        <span>{track.plays}</span>
         <span className="text-[#74a6ff]">♥</span>
       </div>
       <div className="text-right text-sm text-[#d1dce8]">{formatDuration(track.duration)}</div>
