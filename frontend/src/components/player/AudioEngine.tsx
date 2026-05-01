@@ -2,11 +2,23 @@ import { useEffect, useRef } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
 import audiobooksApi from '../../api/audiobooksApi';
 import { useAuthStore } from '../../store/authStore';
+import recentlyPlayedApi from '../../api/recentlyPlayedApi';
+import { queryClient } from '../../lib/queryClient';
+import { recentlyPlayedKeys } from '../../hooks/api-keys';
+import {
+  mergeRecentlyPlayedItems,
+  readRecentlyPlayedStorage,
+  writeRecentlyPlayedStorage,
+  type RecentlyPlayedItem,
+} from '../../hooks/recently-played';
 
 const buildTrackStreamUrl = (songId: string) => `/api/songs/${songId}/stream`;
 const buildEpisodeStreamUrl = (episodeId: string) => `/api/podcasts/episodes/${episodeId}/stream`;
 const buildAudiobookChapterStreamUrl = (chapterId: string) =>
   audiobooksApi.chapterStreamUrl(chapterId);
+const mongoIdPattern = /^[a-f\d]{24}$/i;
+const isMongoId = (value?: string): value is string =>
+  Boolean(value && mongoIdPattern.test(value));
 
 export default function AudioEngine() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -26,6 +38,77 @@ export default function AudioEngine() {
   const setProgress = usePlayerStore((state) => state.setProgress);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const currentTrackId = currentTrack?.id;
+  const currentEpisodeId = currentEpisode?.id;
+  const currentEpisodePodcastId = currentEpisode?.podcastId;
+  const currentAudiobookId = currentAudiobook?.id;
+  const currentAudiobookChapterId = currentAudiobookChapter?.id;
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const playedAt = new Date().toISOString();
+
+    const updateRecentlyPlayed = (item: RecentlyPlayedItem) => {
+      const storedItems = mergeRecentlyPlayedItems([item], readRecentlyPlayedStorage());
+      writeRecentlyPlayedStorage(storedItems);
+
+      queryClient.setQueriesData<RecentlyPlayedItem[]>(
+        { queryKey: recentlyPlayedKeys.list() },
+        (old = []) => {
+          return mergeRecentlyPlayedItems([item], old);
+        }
+      );
+    };
+
+    if (currentTrack) {
+      updateRecentlyPlayed({ type: 'song', track: currentTrack, playedAt });
+    }
+
+    if (isMongoId(currentTrackId)) {
+      void recentlyPlayedApi.record({ itemType: 'song', itemId: currentTrackId }).catch(() => {});
+      return;
+    }
+
+    if (currentEpisode) {
+      updateRecentlyPlayed({ type: 'podcast', episode: currentEpisode, playedAt });
+    }
+
+    if (isMongoId(currentEpisodeId) && isMongoId(currentEpisodePodcastId)) {
+      void recentlyPlayedApi.record({
+        itemType: 'podcast_episode',
+        itemId: currentEpisodeId,
+        parentId: currentEpisodePodcastId,
+      }).catch(() => {});
+      return;
+    }
+
+    if (currentAudiobook && currentAudiobookChapterId) {
+      updateRecentlyPlayed({
+        type: 'audiobook',
+        audiobook: currentAudiobook,
+        chapterId: currentAudiobookChapterId,
+        playedAt,
+      });
+    }
+
+    if (isMongoId(currentAudiobookId) && isMongoId(currentAudiobookChapterId)) {
+      void recentlyPlayedApi.record({
+        itemType: 'audiobook_chapter',
+        itemId: currentAudiobookChapterId,
+        parentId: currentAudiobookId,
+      }).catch(() => {});
+    }
+  }, [
+    currentTrackId,
+    currentEpisodeId,
+    currentEpisodePodcastId,
+    currentAudiobookId,
+    currentAudiobookChapterId,
+    currentTrack,
+    currentEpisode,
+    currentAudiobook,
+    isAuthenticated,
+  ]);
 
   useEffect(() => {
     const audio = audioRef.current;

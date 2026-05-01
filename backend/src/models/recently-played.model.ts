@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export interface IRecentlyPlayed extends mongoose.Document {
   userId: mongoose.Types.ObjectId;
-  itemType: 'song' | 'audiobook_chapter';
+  itemType: 'song' | 'podcast_episode' | 'audiobook_chapter';
   itemId: mongoose.Types.ObjectId;
   parentId?: mongoose.Types.ObjectId;
   playedAt: Date;
@@ -16,7 +16,7 @@ const recentlyPlayedSchema = new mongoose.Schema({
   },
   itemType: {
     type: String,
-    enum: ['song', 'audiobook_chapter'],
+    enum: ['song', 'podcast_episode', 'audiobook_chapter'],
     required: true,
   },
   itemId: {

@@ -42,6 +42,11 @@ export const tracksKeys = {
   mine: () => [...tracksKeys.all, 'mine'] as const,
 };
 
+export const recentlyPlayedKeys = {
+  all: ['recentlyPlayed'] as const,
+  list: () => [...recentlyPlayedKeys.all, 'list'] as const,
+};
+
 export const albumKeys = {
   all: ['albums'] as const,
   list: () => [...albumKeys.all, 'list'] as const,
@@ -89,6 +94,7 @@ export const QUERY_KEYS = {
   adminUsers: adminUsersKeys,
   moods: moodKeys,
   tracks: tracksKeys,
+  recentlyPlayed: recentlyPlayedKeys,
   albums: albumKeys,
   playlists: playlistKeys,
   follows: followKeys,

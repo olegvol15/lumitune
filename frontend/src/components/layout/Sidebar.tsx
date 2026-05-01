@@ -17,6 +17,7 @@ import SongCoverImage from '../ui/SongCoverImage';
 import { staggerContainer, staggerItem } from '../../lib/motion';
 import { usePlaylistsQuery, useCreatePlaylistMutation } from '../../hooks/playlists';
 import { useI18n } from '../../lib/i18n';
+import { useRecentlyPlayedQuery } from '../../hooks/recently-played';
 
 const SIDEBAR_PLAYLIST_LIMIT = 3;
 
@@ -24,8 +25,14 @@ export default function Sidebar() {
   const { location } = useRouterState();
   const pathname = location.pathname;
   const navigate = useNavigate();
-  const queue = usePlayerStore((s) => s.queue);
+  const play = usePlayerStore((s) => s.play);
   const { data: playlists = [] } = usePlaylistsQuery();
+  const {
+    data: recentlyPlayed = [],
+    isFetching: isRecentlyPlayedFetching,
+    refetch: refetchRecentlyPlayed,
+  } = useRecentlyPlayedQuery(4);
+  const recentTracks = recentlyPlayed.filter((item) => item.type === 'song').slice(0, 3);
   const createMutation = useCreatePlaylistMutation();
   const { copy } = useI18n();
   const [confirmCreateOpen, setConfirmCreateOpen] = useState(false);
@@ -293,29 +300,39 @@ export default function Sidebar() {
 
       <div className="h-px bg-[#1a3050] mx-5" />
 
-      {/* Нещодавно прослухані */}
       <div className="px-5 pt-5 pb-6">
         <div className="flex items-center justify-between mb-4">
           <span className="text-white text-sm font-semibold">{copy.nav.recentlyPlayed}</span>
-          <RefreshCw size={15} className="text-white/50" />
+          <button
+            type="button"
+            onClick={() => void refetchRecentlyPlayed()}
+            className="rounded-full p-1 text-white/50 transition-colors hover:bg-white/5 hover:text-white"
+            aria-label="Refresh recently played"
+          >
+            <RefreshCw size={15} className={isRecentlyPlayedFetching ? 'animate-spin' : ''} />
+          </button>
         </div>
 
-        {queue.length > 0 ? (
-          queue.slice(0, 3).map((track) => (
-            <div
-              key={track.id}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 cursor-pointer transition-colors"
+        {recentTracks.length > 0 ? (
+          recentTracks.map((item) => (
+            <button
+              key={`song-${item.track.id}`}
+              type="button"
+              onClick={() => {
+                play(item.track, [item.track]);
+              }}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/5"
             >
               <SongCoverImage
-                src={track.albumCover}
-                alt={track.title}
-                className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                src={item.track.albumCover}
+                alt={item.track.title}
+                className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
               />
-              <div className="min-w-0">
-                <p className="text-white text-sm font-medium truncate">{track.title}</p>
-                <p className="text-white/40 text-xs truncate">{track.artistName}</p>
-              </div>
-            </div>
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-medium text-white">{item.track.title}</span>
+                <span className="block truncate text-xs text-white/40">{item.track.artistName}</span>
+              </span>
+            </button>
           ))
         ) : (
           <div className="flex justify-center mt-4">
