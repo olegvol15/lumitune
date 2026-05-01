@@ -24,6 +24,8 @@ export function useArtistsQuery() {
         followers: current?.followers ?? 0,
         bio: current?.bio || '',
         verified: current?.verified ?? false,
+        artistUserId: current?.artistUserId || track.uploadedById,
+        isFollowable: Boolean(current?.artistUserId || track.uploadedById),
       });
     }
 
@@ -38,6 +40,8 @@ export function useArtistsQuery() {
         followers: current?.followers ?? 0,
         bio: current?.bio || album.description || '',
         verified: current?.verified ?? false,
+        artistUserId: current?.artistUserId || album.artistUserId,
+        isFollowable: Boolean(current?.artistUserId || album.artistUserId),
       });
     }
 

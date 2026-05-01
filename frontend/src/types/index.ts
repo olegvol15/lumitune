@@ -7,6 +7,8 @@ export interface Artist {
   followers: number;
   bio: string;
   verified: boolean;
+  artistUserId?: string;
+  isFollowable?: boolean;
 }
 
 export interface Album {

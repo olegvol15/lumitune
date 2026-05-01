@@ -21,6 +21,8 @@ export interface BackendSong {
   uploadedBy?: {
     _id: string;
     username: string;
+    displayName?: string;
+    profilePicture?: string;
   };
 }
 

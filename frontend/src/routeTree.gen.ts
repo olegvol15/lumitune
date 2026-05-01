@@ -18,6 +18,7 @@ import { Route as LibraryRouteImport } from './routes/library'
 import { Route as FavoriteRouteImport } from './routes/favorite'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as UserIdRouteImport } from './routes/user.$id'
 import { Route as PodcastIdRouteImport } from './routes/podcast.$id'
 import { Route as PlaylistIdRouteImport } from './routes/playlist.$id'
 import { Route as OauthCallbackRouteImport } from './routes/oauth/callback'
@@ -85,6 +86,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserIdRoute = UserIdRouteImport.update({
+  id: '/user/$id',
+  path: '/user/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PodcastIdRoute = PodcastIdRouteImport.update({
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/oauth/callback': typeof OauthCallbackRoute
   '/playlist/$id': typeof PlaylistIdRoute
   '/podcast/$id': typeof PodcastIdRoute
+  '/user/$id': typeof UserIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -269,6 +276,7 @@ export interface FileRoutesByTo {
   '/oauth/callback': typeof OauthCallbackRoute
   '/playlist/$id': typeof PlaylistIdRoute
   '/podcast/$id': typeof PodcastIdRoute
+  '/user/$id': typeof UserIdRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -304,6 +312,7 @@ export interface FileRoutesById {
   '/oauth/callback': typeof OauthCallbackRoute
   '/playlist/$id': typeof PlaylistIdRoute
   '/podcast/$id': typeof PodcastIdRoute
+  '/user/$id': typeof UserIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -340,6 +349,7 @@ export interface FileRouteTypes {
     | '/oauth/callback'
     | '/playlist/$id'
     | '/podcast/$id'
+    | '/user/$id'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -374,6 +384,7 @@ export interface FileRouteTypes {
     | '/oauth/callback'
     | '/playlist/$id'
     | '/podcast/$id'
+    | '/user/$id'
     | '/admin'
   id:
     | '__root__'
@@ -408,6 +419,7 @@ export interface FileRouteTypes {
     | '/oauth/callback'
     | '/playlist/$id'
     | '/podcast/$id'
+    | '/user/$id'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -443,6 +455,7 @@ export interface RootRouteChildren {
   OauthCallbackRoute: typeof OauthCallbackRoute
   PlaylistIdRoute: typeof PlaylistIdRoute
   PodcastIdRoute: typeof PodcastIdRoute
+  UserIdRoute: typeof UserIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -509,6 +522,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/$id': {
+      id: '/user/$id'
+      path: '/user/$id'
+      fullPath: '/user/$id'
+      preLoaderRoute: typeof UserIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/podcast/$id': {
@@ -707,6 +727,7 @@ const rootRouteChildren: RootRouteChildren = {
   OauthCallbackRoute: OauthCallbackRoute,
   PlaylistIdRoute: PlaylistIdRoute,
   PodcastIdRoute: PodcastIdRoute,
+  UserIdRoute: UserIdRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport

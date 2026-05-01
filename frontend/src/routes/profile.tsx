@@ -22,9 +22,16 @@ import { mapBackendSongToCreatorTrack } from '../utils/profile.utils';
 import { useI18n } from '../lib/i18n';
 import { useAlbumsQuery, useCreateAlbumMutation, useMyAlbumsQuery } from '../hooks/albums';
 import { useMoodsQuery } from '../hooks/moods';
+import { useFollowedArtistsQuery, useFollowingQuery, useUserProfileQuery } from '../hooks/follows';
+import Avatar from '../components/ui/Avatar';
 
 const FALLBACK_AVATAR = '/vite.svg';
 const FALLBACK_COVER = '/vite.svg';
+const toImageUrl = (value?: string) => {
+  if (!value || value === 'default-avatar.png') return undefined;
+  if (value.startsWith('http') || value.startsWith('/')) return value;
+  return `/${value}`;
+};
 
 export const Route = createFileRoute('/profile')({
   beforeLoad: () => {
@@ -52,6 +59,9 @@ function ProfilePage() {
   const uploadCreatorTrackMutation = useUploadCreatorTrackMutation();
   const updateCreatorTrackMutation = useUpdateCreatorTrackMutation();
   const createAlbumMutation = useCreateAlbumMutation();
+  const followingQuery = useFollowingQuery(user?.id);
+  const followedArtistsQuery = useFollowedArtistsQuery();
+  const userProfileQuery = useUserProfileQuery(user?.id);
 
   const displayName = user?.displayName || user?.username || user?.email || '';
   const bio =
@@ -80,6 +90,11 @@ function ProfilePage() {
     artistName: album.artistName,
     year: album.year,
   }));
+  const followingUsers = followingQuery.data?.following ?? [];
+  const followedArtists = followedArtistsQuery.data ?? [];
+  const followingTotal = (userProfileQuery.data?.followingCount ?? followingUsers.length) + followedArtists.length;
+  const musicTotal = creatorTracks.length;
+  const listenerTotal = creatorTracks.reduce((sum, track) => sum + track.likes, 0);
 
   const topTracks = useMemo(() => creatorTracks.slice(0, 3), [creatorTracks]);
   const editingTrack = creatorTracks.find((track) => track.id === trackModal.trackId);
@@ -154,12 +169,9 @@ function ProfilePage() {
                     </h1>
 
                     <div className="flex gap-6 pb-1">
-                      <ProfileStat value="66" label={copy.profile.following} />
-                      <ProfileStat
-                        value={String(Math.max(creatorTracks.length, 6))}
-                        label={copy.profile.music}
-                      />
-                      <ProfileStat value="666" label={copy.profile.listeners} />
+                      <ProfileStat value={String(followingTotal)} label={copy.profile.following} />
+                      <ProfileStat value={String(musicTotal)} label={copy.profile.music} />
+                      <ProfileStat value={String(listenerTotal)} label={copy.profile.listeners} />
                     </div>
                   </div>
                 </div>
@@ -272,9 +284,47 @@ function ProfilePage() {
 
             <section>
               <ProfileSectionTitle title={copy.profile.followingArtists} right={<ProfileSectionArrows />} />
-              <div className="rounded-2xl border border-[#27465d] px-4 py-8 text-center text-sm text-[#9fb8c9]">
-                {copy.common.noResults}
-              </div>
+              {followingUsers.length > 0 || followedArtists.length > 0 ? (
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  {followedArtists.map((followedArtist) => (
+                    <button
+                      key={followedArtist._id}
+                      type="button"
+                      onClick={() => navigate({ to: '/artist/$id', params: { id: followedArtist.artistId } })}
+                      className="flex items-center gap-3 rounded-lg border border-[#27465d] bg-[#0d2038]/80 p-3 text-left transition-colors hover:bg-[#132b48]"
+                    >
+                      <Avatar src={toImageUrl(followedArtist.image)} alt={followedArtist.artistName} size={44} />
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-semibold text-white">{followedArtist.artistName}</span>
+                        <span className="block truncate text-xs text-white/45">
+                          {followedArtist.genre || copy.search.artists}
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                  {followingUsers.map((followedUser) => {
+                    const name = followedUser.displayName || followedUser.username;
+                    return (
+                      <button
+                        key={followedUser.id}
+                        type="button"
+                        onClick={() => navigate({ to: '/user/$id', params: { id: followedUser.id } })}
+                        className="flex items-center gap-3 rounded-lg border border-[#27465d] bg-[#0d2038]/80 p-3 text-left transition-colors hover:bg-[#132b48]"
+                      >
+                        <Avatar src={toImageUrl(followedUser.profilePicture)} alt={name} size={44} />
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-semibold text-white">{name}</span>
+                          <span className="block truncate text-xs text-white/45">{followedUser.role}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-[#27465d] px-4 py-8 text-center text-sm text-[#9fb8c9]">
+                  {copy.common.noResults}
+                </div>
+              )}
             </section>
           </section>
         </div>

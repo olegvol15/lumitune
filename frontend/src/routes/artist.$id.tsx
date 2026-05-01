@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router';
 import { ChevronLeft, UserCheck, Share2, MoreHorizontal } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import TrackCard from '../components/ui/TrackCard';
 import MediaCard from '../components/ui/MediaCard';
 import SectionHeader from '../components/ui/SectionHeader';
@@ -10,6 +10,13 @@ import { useI18n } from '../lib/i18n';
 import { useAlbumsQuery } from '../hooks/albums';
 import { useArtistsQuery } from '../hooks/artists';
 import { formatDuration, formatPlayCount } from '../utils/format';
+import { useAuthStore } from '../store/authStore';
+import {
+  useArtistFollowMutation,
+  useArtistFollowStatusQuery,
+  useFollowMutation,
+  useUserProfileQuery,
+} from '../hooks/follows';
 
 export const Route = createFileRoute('/artist/$id')({
   component: ArtistPage,
@@ -19,11 +26,14 @@ function ArtistPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const router = useRouter();
-  const [following, setFollowing] = useState(false);
   const { tracks } = useCatalogTracks();
   const { data: albums = [] } = useAlbumsQuery();
   const { data: artists = [], isLoading: artistsLoading } = useArtistsQuery();
   const { copy } = useI18n();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const currentUser = useAuthStore((state) => state.user);
+  const followMutation = useFollowMutation();
+  const artistFollowMutation = useArtistFollowMutation();
 
   const derivedArtist = useMemo(() => {
     const catalogArtist = artists.find((item) => item.id === id);
@@ -38,6 +48,9 @@ function ArtistPage() {
       .filter((track) => track.artistId === id)
       .reduce((sum, track) => sum + track.playCount, 0);
 
+    const trackArtistUserId =
+      firstTrack.uploadedById || albums.find((album) => album.artistName === firstTrack.artistName)?.artistUserId;
+
     return {
       id,
       name: firstTrack.artistName,
@@ -47,9 +60,26 @@ function ArtistPage() {
       followers: 0,
       bio: '',
       verified: false,
+      artistUserId: trackArtistUserId,
+      isFollowable: Boolean(trackArtistUserId),
     };
   }, [albums, artists, id, tracks]);
   const artist = derivedArtist;
+  const artistUserId = artist?.artistUserId;
+  const artistProfileQuery = useUserProfileQuery(artistUserId);
+  const artistStatusQuery = useArtistFollowStatusQuery(artist?.id);
+  const isOwnArtist = Boolean(artistUserId && currentUser?.id === artistUserId);
+  const canFollowArtist = Boolean(artist && !isOwnArtist);
+  const following = artistUserId
+    ? Boolean(artistProfileQuery.data?.isFollowing)
+    : Boolean(artistStatusQuery.data?.following);
+  const followerCount = artistUserId
+    ? artistProfileQuery.data?.followerCount ?? artist?.followers ?? 0
+    : artistStatusQuery.data?.followerCount ?? artist?.followers ?? 0;
+  const isFollowBusy =
+    followMutation.isPending ||
+    artistFollowMutation.isPending ||
+    (artistUserId ? artistProfileQuery.isFetching : artistStatusQuery.isFetching);
 
   if (!artist && artistsLoading) {
     return <div className="flex items-center justify-center h-screen text-muted">{copy.common.loading}</div>;
@@ -131,14 +161,34 @@ function ArtistPage() {
       <div className="px-4 mt-4">
         {/* Follow + share */}
         <div className="flex items-center gap-3 mb-6">
-          <Button
-            variant={following ? 'secondary' : 'outline'}
-            shape="pill"
-            leftIcon={following ? <UserCheck size={16} /> : undefined}
-            onClick={() => setFollowing(!following)}
-          >
-            {following ? copy.media.following : copy.media.follow}
-          </Button>
+          {canFollowArtist && (
+            <Button
+              variant={following ? 'secondary' : 'outline'}
+              shape="pill"
+              leftIcon={following ? <UserCheck size={16} /> : undefined}
+              loading={isFollowBusy}
+              disabled={isFollowBusy}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  navigate({ to: '/auth/signin' });
+                  return;
+                }
+                if (artistUserId) {
+                  followMutation.mutate({ userId: artistUserId, following });
+                  return;
+                }
+                artistFollowMutation.mutate({
+                  artistId: artist.id,
+                  artistName: artist.name,
+                  image: artist.image,
+                  genre: artist.genre,
+                  following,
+                });
+              }}
+            >
+              {following ? copy.media.following : copy.media.follow}
+            </Button>
+          )}
           <button className="p-2.5 border border-white/20 rounded-full">
             <Share2 size={18} className="text-white" />
           </button>
@@ -202,13 +252,13 @@ function ArtistPage() {
         )}
 
         {/* About */}
-        {(artist.bio || artist.genre || artist.followers > 0) && (
+        {(artist.bio || artist.genre || followerCount > 0) && (
         <div className="bg-surface-alt rounded-2xl p-4">
           <h2 className="text-white font-bold mb-2">{copy.media.aboutArtist}</h2>
           {artist.bio && <p className="text-muted text-sm leading-relaxed">{artist.bio}</p>}
           <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/10">
             <div>
-              <p className="text-white font-bold text-sm">{fmtListeners(artist.followers)}</p>
+              <p className="text-white font-bold text-sm">{fmtListeners(followerCount)}</p>
               <p className="text-muted text-xs">{copy.media.followers}</p>
             </div>
             <div>

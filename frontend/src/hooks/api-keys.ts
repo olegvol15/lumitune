@@ -54,6 +54,16 @@ export const playlistKeys = {
   all: ['playlists'] as const,
 };
 
+export const followKeys = {
+  all: ['follows'] as const,
+  followingIds: () => [...followKeys.all, 'followingIds'] as const,
+  userProfile: (id: string) => [...followKeys.all, 'userProfile', id] as const,
+  followers: (id: string) => [...followKeys.all, 'followers', id] as const,
+  following: (id: string) => [...followKeys.all, 'following', id] as const,
+  followedArtists: () => [...followKeys.all, 'followedArtists'] as const,
+  artistStatus: (id: string) => [...followKeys.all, 'artistStatus', id] as const,
+};
+
 export const podcastKeys = {
   all: ['podcasts'] as const,
   list: () => [...podcastKeys.all, 'list'] as const,
@@ -81,6 +91,7 @@ export const QUERY_KEYS = {
   tracks: tracksKeys,
   albums: albumKeys,
   playlists: playlistKeys,
+  follows: followKeys,
   podcasts: podcastKeys,
   audiobooks: audiobookKeys,
 } as const;
