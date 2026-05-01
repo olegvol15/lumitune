@@ -21,10 +21,16 @@ function HomePage() {
   const { data: albums = [] } = useAlbumsQuery();
   const { data: artists = [] } = useArtistsQuery();
   const { copy } = useI18n();
-  const FILTER_TABS: HomeFilterTab[] = [copy.home.all, copy.home.tracks, copy.home.other] as HomeFilterTab[];
-  const [activeTab, setActiveTab] = useState<HomeFilterTab>(FILTER_TABS[0]);
+  const FILTER_TABS: Array<{ id: HomeFilterTab; label: string }> = [
+    { id: 'all', label: copy.home.all },
+    { id: 'tracks', label: copy.home.tracks },
+    { id: 'other', label: copy.home.other },
+  ];
+  const [activeTab, setActiveTab] = useState<HomeFilterTab>('all');
   const navigate = useNavigate();
   const play = usePlayerStore((state) => state.play);
+  const showTracks = activeTab === 'all' || activeTab === 'tracks';
+  const showOther = activeTab === 'all' || activeTab === 'other';
 
   const handleMediaClick = (item: Album | Track | Audiobook) => {
     if ('coverUrl' in item) {
@@ -52,49 +58,55 @@ function HomePage() {
       <div className="flex gap-2 mb-5">
         {FILTER_TABS.map((tab) => (
           <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
             className={`px-5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-              activeTab === tab
+              activeTab === tab.id
                 ? 'bg-[#0a1929] border-white/40 text-white'
                 : 'border-[#1a3050] text-white/60 hover:text-white hover:border-white/30'
             }`}
           >
-            {tab}
+            {tab.label}
           </button>
         ))}
       </div>
 
       <HeroBanner albums={albums} tracks={tracks} />
 
-      <MoodSection />
+      {showOther && <MoodSection />}
 
-      <HorizontalSection
-        title={copy.home.topMusic}
-        accentWord={copy.home.topMusicAccent}
-        items={tracks.slice(0, 5) as Track[]}
-        onItemClick={handleMediaClick}
-      />
-
-      <HorizontalSection
-        title={copy.home.newMusic}
-        accentWord={copy.home.newMusicAccent}
-        items={albums.slice(0, 6) as Album[]}
-        onItemClick={handleMediaClick}
-      />
-
-      {artists.length > 0 && (
-        <ArtistSection
-          title={copy.home.favoriteArtists}
-          accentWord={copy.home.favoriteArtistsAccent}
-          artists={artists}
-          onArtistClick={handleArtistClick}
+      {showTracks && (
+        <HorizontalSection
+          title={copy.home.topMusic}
+          accentWord={copy.home.topMusicAccent}
+          items={tracks.slice(0, 5) as Track[]}
+          onItemClick={handleMediaClick}
         />
       )}
 
-      <PodcastSection />
+      {showOther && (
+        <>
+          <HorizontalSection
+            title={copy.home.newMusic}
+            accentWord={copy.home.newMusicAccent}
+            items={albums.slice(0, 6) as Album[]}
+            onItemClick={handleMediaClick}
+          />
 
-      <AudiobookSection />
+          {artists.length > 0 && (
+            <ArtistSection
+              title={copy.home.favoriteArtists}
+              accentWord={copy.home.favoriteArtistsAccent}
+              artists={artists}
+              onArtistClick={handleArtistClick}
+            />
+          )}
+
+          <PodcastSection />
+
+          <AudiobookSection />
+        </>
+      )}
     </div>
   );
 }
