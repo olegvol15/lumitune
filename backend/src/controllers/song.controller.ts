@@ -87,6 +87,18 @@ export const getAllSongs = async (req: Request, res: Response) => {
   }
 };
 
+export const getArtistListenerStats = async (_req: Request, res: Response) => {
+  try {
+    const { artists } = await songService.getArtistListenerStats();
+    res.status(200).json({ success: true, artists });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: getErrorMessage(error, 'Error fetching artist listener stats'),
+    });
+  }
+};
+
 export const getOwnSongs = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?._id ? String(req.user._id) : undefined;

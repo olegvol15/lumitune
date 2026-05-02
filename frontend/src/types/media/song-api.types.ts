@@ -35,3 +35,11 @@ export interface SongResponse {
   success: boolean;
   song: BackendSong;
 }
+
+export interface ArtistListenerStatsResponse {
+  success: boolean;
+  artists: Array<{
+    artistName: string;
+    monthlyListeners: number;
+  }>;
+}

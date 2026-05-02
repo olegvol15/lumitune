@@ -1,10 +1,13 @@
 export interface Artist {
   id: string;
+  backendId?: string;
   name: string;
   image: string;
+  bannerImage?: string;
   genre: string;
   monthlyListeners: number;
   followers: number;
+  trackCount?: number;
   bio: string;
   verified: boolean;
   artistUserId?: string;

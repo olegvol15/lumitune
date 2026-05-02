@@ -33,6 +33,8 @@ import adminMoodRoutes from './routes/admin-mood.routes';
 import userRoutes from './routes/user.routes';
 import adminFollowRoutes from './routes/admin-follow.routes';
 import artistFollowRoutes from './routes/artist-follow.routes';
+import artistRoutes from './routes/artist.routes';
+import adminArtistRoutes from './routes/admin-artist.routes';
 
 import { errorHandler } from './middleware/error.middleware';
 
@@ -85,6 +87,8 @@ app.use('/api/admin/dashboard', adminDashboardRoutes);
 app.use('/api/admin/genres', adminGenreRoutes);
 app.use('/api/moods', moodRoutes);
 app.use('/api/admin/moods', adminMoodRoutes);
+app.use('/api/artists', artistRoutes);
+app.use('/api/admin/artists', adminArtistRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin/users', adminFollowRoutes);
 app.use('/api/artist-follows', artistFollowRoutes);

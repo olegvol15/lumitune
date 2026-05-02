@@ -1,5 +1,9 @@
 import apiClient from '../lib/apiClient';
-import type { SongResponse, SongsResponse } from '../types/media/song-api.types';
+import type {
+  ArtistListenerStatsResponse,
+  SongResponse,
+  SongsResponse,
+} from '../types/media/song-api.types';
 import { mapBackendSongToTrack } from '../utils/song-catalog.utils';
 
 const songsApi = {
@@ -8,6 +12,12 @@ const songsApi = {
   listCatalogTracks: async () => {
     const { data } = await apiClient.get<SongsResponse>('/songs');
     return data.songs.map(mapBackendSongToTrack);
+  },
+  listArtistListenerStats: async () => {
+    const { data } = await apiClient.get<ArtistListenerStatsResponse>(
+      '/songs/artist-listener-stats'
+    );
+    return data.artists;
   },
   uploadCreatorTrack: (data: FormData) =>
     apiClient.post<SongResponse>('/songs/upload', data, {

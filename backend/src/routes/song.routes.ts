@@ -7,6 +7,7 @@ import {
   getOwnSongs,
   updateOwnSong,
   deleteOwnSong,
+  getArtistListenerStats,
 } from '../controllers/song.controller';
 import { protect } from '../middleware/auth.middleware';
 import { adminSongUpload } from '../middleware/upload.middleware';
@@ -17,6 +18,7 @@ const h = (fn: Function) => fn as unknown as RequestHandler;
 
 router.get('/', getAllSongs);
 router.get('/mine', auth, h(getOwnSongs));
+router.get('/artist-listener-stats', h(getArtistListenerStats));
 router.get('/:id', getSongById);
 router.get('/:id/stream', h(streamSong));
 

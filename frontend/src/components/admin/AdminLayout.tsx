@@ -20,6 +20,7 @@ type AdminNavItem = {
 
 const ELEMENTS = [
   { label: 'Tracks',      icon: Music2,     path: '/admin/tracks' },
+  { label: 'Artists',     icon: UserRound,  path: '/admin/artists' },
   { label: 'Podcasts',    icon: Mic,        path: '/admin/podcasts' },
   { label: 'Audiobooks',  icon: BookOpen,   path: '/admin/audiobooks' },
   { label: 'Authors',     icon: UserRound,  path: '/admin/authors' },

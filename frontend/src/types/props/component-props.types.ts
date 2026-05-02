@@ -51,7 +51,7 @@ export interface MediaCardProps {
   title: string;
   subtitle?: string;
   onClick?: () => void;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'responsive';
   rounded?: boolean;
 }
 
@@ -113,5 +113,6 @@ export interface HorizontalSectionProps {
   title: string;
   accentWord: string;
   items: HorizontalSectionItem[];
+  maxItems?: number;
   onItemClick?: (item: HorizontalSectionItem) => void;
 }

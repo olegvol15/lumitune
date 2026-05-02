@@ -12,6 +12,7 @@ export default function HorizontalSection({
   title,
   accentWord,
   items,
+  maxItems = 12,
   onItemClick,
 }: HorizontalSectionProps) {
   const rowRef = useRef<HTMLDivElement>(null);
@@ -55,12 +56,12 @@ export default function HorizontalSection({
 
       <motion.div
         ref={rowRef}
-        className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth"
+        className="flex w-full gap-4 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth"
         variants={staggerContainer}
         initial="initial"
         animate="animate"
       >
-        {items.slice(0, 5).map((item) => {
+        {items.slice(0, maxItems).map((item) => {
           if (isAlbum(item)) {
             return (
               <motion.div key={item.id} className="snap-start" variants={staggerItem}>
@@ -68,6 +69,7 @@ export default function HorizontalSection({
                   image={item.coverUrl}
                   title={item.title}
                   subtitle={`By ${item.artistName}`}
+                  size="responsive"
                   onClick={() => onItemClick?.(item)}
                 />
               </motion.div>
@@ -81,6 +83,7 @@ export default function HorizontalSection({
                   image={audiobook.coverUrl}
                   title={audiobook.title}
                   subtitle={audiobook.author}
+                  size="responsive"
                   onClick={() => onItemClick?.(audiobook)}
                 />
               </motion.div>
@@ -94,6 +97,7 @@ export default function HorizontalSection({
                 image={track.albumCover}
                 title={track.title}
                 subtitle={track.artistName}
+                size="responsive"
                 onClick={() => onItemClick?.(item)}
               />
             </motion.div>
@@ -102,7 +106,7 @@ export default function HorizontalSection({
 
         {/* "Все тут" card */}
         <motion.button
-          className="w-28 sm:w-36 flex-shrink-0 snap-start flex flex-col items-center justify-center aspect-square rounded-xl border border-dashed border-[#1a3050] text-white/30 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors gap-2"
+          className="w-32 sm:w-36 2xl:w-40 flex-shrink-0 snap-start flex flex-col items-center justify-center aspect-square rounded-xl border border-dashed border-[#1a3050] text-white/30 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors gap-2"
           variants={staggerItem}
         >
           <Plus size={22} />

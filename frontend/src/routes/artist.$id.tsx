@@ -44,10 +44,6 @@ function ArtistPage() {
       return null;
     }
 
-    const monthlyListeners = tracks
-      .filter((track) => track.artistId === id)
-      .reduce((sum, track) => sum + track.playCount, 0);
-
     const trackArtistUserId =
       firstTrack.uploadedById || albums.find((album) => album.artistName === firstTrack.artistName)?.artistUserId;
 
@@ -55,8 +51,9 @@ function ArtistPage() {
       id,
       name: firstTrack.artistName,
       image: firstTrack.albumCover,
+      bannerImage: firstTrack.albumCover,
       genre: albums.find((album) => album.artistName === firstTrack.artistName)?.genre || '',
-      monthlyListeners,
+      monthlyListeners: 0,
       followers: 0,
       bio: '',
       verified: false,
@@ -103,22 +100,25 @@ function ArtistPage() {
 
   const fmtListeners = (n: number) => {
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+    if (n < 1_000) return n.toString();
     return `${(n / 1_000).toFixed(0)}K`;
   };
+
+  const heroImage = artist.bannerImage || artist.image;
 
   return (
     <div className="pb-4">
       {/* Hero */}
       <div className="relative h-72 overflow-hidden bg-[#07111f]">
         <img
-          src={artist.image}
+          src={heroImage}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full scale-110 object-cover opacity-55 blur-2xl"
         />
         <div className="absolute inset-0 bg-black/30" />
         <img
-          src={artist.image}
+          src={heroImage}
           alt={artist.name}
           className="relative h-full w-full object-contain"
         />

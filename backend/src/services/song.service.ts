@@ -3,6 +3,7 @@ import path from 'path';
 import * as musicMetadata from 'music-metadata';
 import { Song } from '../models/song.model';
 import { Album } from '../models/album.model';
+import { RecentlyPlayed } from '../models/recently-played.model';
 import { ServiceError } from '../types/error/service-error';
 import { safeUnlink } from '../utils/file.utils';
 import { parseRangeHeader, toPositiveInt } from '../utils/song.utils';
@@ -60,6 +61,52 @@ async function syncSongAlbumMembership(
 }
 
 export const songService = {
+  async getArtistListenerStats(days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const stats = await RecentlyPlayed.aggregate<{
+      artistName: string;
+      listenerIds: unknown[];
+    }>([
+      {
+        $match: {
+          itemType: 'song',
+          playedAt: { $gte: since },
+        },
+      },
+      {
+        $lookup: {
+          from: 'songs',
+          localField: 'itemId',
+          foreignField: '_id',
+          as: 'song',
+        },
+      },
+      { $unwind: '$song' },
+      {
+        $group: {
+          _id: '$song.artist',
+          listenerIds: { $addToSet: '$userId' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          artistName: '$_id',
+          listenerIds: 1,
+        },
+      },
+    ]);
+
+    return {
+      artists: stats.map((artist) => ({
+        artistName: artist.artistName,
+        monthlyListeners: artist.listenerIds.length,
+      })),
+    };
+  },
+
   async uploadSong(input: SongUploadInput) {
     const { file, body, uploadedBy, allowEmptyUploader, coverImage } = input;
 

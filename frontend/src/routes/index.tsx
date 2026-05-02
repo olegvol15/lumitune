@@ -79,7 +79,8 @@ function HomePage() {
         <HorizontalSection
           title={copy.home.topMusic}
           accentWord={copy.home.topMusicAccent}
-          items={tracks.slice(0, 5) as Track[]}
+          items={tracks.slice(0, 12) as Track[]}
+          maxItems={12}
           onItemClick={handleMediaClick}
         />
       )}
@@ -89,7 +90,8 @@ function HomePage() {
           <HorizontalSection
             title={copy.home.newMusic}
             accentWord={copy.home.newMusicAccent}
-            items={albums.slice(0, 6) as Album[]}
+            items={albums.slice(0, 12) as Album[]}
+            maxItems={12}
             onItemClick={handleMediaClick}
           />
 
