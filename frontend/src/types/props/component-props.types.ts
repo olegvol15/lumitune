@@ -115,4 +115,5 @@ export interface HorizontalSectionProps {
   items: HorizontalSectionItem[];
   maxItems?: number;
   onItemClick?: (item: HorizontalSectionItem) => void;
+  onSeeAll?: () => void;
 }

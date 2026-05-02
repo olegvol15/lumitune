@@ -14,6 +14,7 @@ export default function HorizontalSection({
   items,
   maxItems = 12,
   onItemClick,
+  onSeeAll,
 }: HorizontalSectionProps) {
   const rowRef = useRef<HTMLDivElement>(null);
   const { copy } = useI18n();
@@ -106,6 +107,8 @@ export default function HorizontalSection({
 
         {/* "Все тут" card */}
         <motion.button
+          type="button"
+          onClick={onSeeAll}
           className="w-32 sm:w-36 2xl:w-40 flex-shrink-0 snap-start flex flex-col items-center justify-center aspect-square rounded-xl border border-dashed border-[#1a3050] text-white/30 hover:border-[#1CA2EA] hover:text-[#1CA2EA] transition-colors gap-2"
           variants={staggerItem}
         >

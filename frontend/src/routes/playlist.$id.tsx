@@ -1,13 +1,13 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
-import { Search, Plus, X, ChevronLeft, Music2, Pencil, Trash2 } from 'lucide-react';
+import { Search, Plus, X, ChevronLeft, Pencil, Trash2 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { usePlayerStore } from '../store/playerStore';
 import { formatDuration, formatPlayCount } from '../utils/format';
 import Button from '../components/ui/Button';
 import { useCatalogTracks } from '../hooks/tracks';
-import SongCoverImage from '../components/ui/SongCoverImage';
 import TrackCard from '../components/ui/TrackCard';
+import PlaylistCover from '../components/ui/PlaylistCover';
 import {
   usePlaylistsQuery,
   useRenamePlaylistMutation,
@@ -140,21 +140,12 @@ function PlaylistPage() {
         <div className="flex items-start gap-5 mb-6">
           {/* Cover */}
           <div className="w-32 h-32 flex-shrink-0 rounded-xl bg-gradient-to-br from-[#1CA2EA]/40 to-[#0a1929] flex items-center justify-center shadow-xl overflow-hidden">
-            {playlist.coverUrl ? (
-              <SongCoverImage
-                src={playlist.coverUrl}
-                alt={playlist.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            ) : playlistTracks.length > 0 ? (
-              <SongCoverImage
-                src={playlistTracks[0].albumCover}
-                alt={playlist.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            ) : (
-              <Music2 size={40} className="text-[#1CA2EA]/60" />
-            )}
+            <PlaylistCover
+              title={playlist.title}
+              trackCoverUrls={playlistTracks.map((track) => track.albumCover)}
+              fallbackCoverUrl={playlist.coverUrl}
+              roundedClassName="rounded-xl"
+            />
           </div>
 
           <div className="min-w-0 flex-1">

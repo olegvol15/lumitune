@@ -4,6 +4,7 @@ import { playlistKeys } from './api-keys';
 import { useAuthStore } from '../store/authStore';
 import type { BackendPlaylist } from '../types/media/playlist-api.types';
 import type { UserPlaylist } from '../types/store/store.types';
+import { mapBackendSongToTrack } from '../utils/song-catalog.utils';
 
 function coverUrl(path?: string) {
   if (!path || path === 'default-playlist-cover.jpg') return undefined;
@@ -18,6 +19,7 @@ function mapPlaylist(p: BackendPlaylist): UserPlaylist {
     id: p._id,
     title: p.name,
     trackIds: (p.songs ?? []).map((s) => s._id),
+    trackCoverUrls: (p.songs ?? []).map((song) => mapBackendSongToTrack(song).albumCover),
     description: p.description ?? '',
     coverUrl: coverUrl(p.coverImage),
     isPublic: p.isPublic ?? true,

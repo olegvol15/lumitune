@@ -9,15 +9,22 @@ import { useAlbumsQuery } from '../hooks/albums';
 import { useI18n } from '../lib/i18n';
 import { useArtistsQuery } from '../hooks/artists';
 
+type SearchType = 'tracks' | 'albums' | 'artists' | 'audiobooks';
+
+const isSearchType = (value: unknown): value is SearchType =>
+  value === 'tracks' || value === 'albums' || value === 'artists' || value === 'audiobooks';
+
 export const Route = createFileRoute('/search')({
   validateSearch: (search: Record<string, unknown>) => ({
     q: typeof search.q === 'string' ? search.q : '',
+    type: isSearchType(search.type) ? search.type : undefined,
   }),
   component: SearchPage,
 });
 
 function SearchPage() {
   const search = Route.useSearch();
+  const activeType = search.type;
   const { tracks } = useCatalogTracks();
   const { data: audiobooks = [] } = useAudiobooksQuery();
   const { data: albums = [] } = useAlbumsQuery();
@@ -59,10 +66,25 @@ function SearchPage() {
 
     navigate({
       to: '/search',
-      search: { q: trimmedQuery },
+      search: { q: trimmedQuery, type: activeType },
       replace: true,
     });
   };
+
+  const clearType = () => {
+    navigate({ to: '/search', search: { q: query, type: undefined }, replace: true });
+  };
+
+  const catalogTitle =
+    activeType === 'tracks'
+      ? copy.search.tracks
+      : activeType === 'albums'
+      ? copy.search.albums
+      : activeType === 'artists'
+      ? copy.search.artists
+      : activeType === 'audiobooks'
+      ? copy.search.audiobooks
+      : '';
 
   return (
     <div className="px-4 pt-4">
@@ -161,6 +183,73 @@ function SearchPage() {
           <Search size={48} className="text-muted mb-4" />
           <p className="text-white font-semibold mb-1">{copy.common.noResults}</p>
           <p className="text-muted text-sm">{copy.common.tryAnotherQuery}</p>
+        </div>
+      ) : activeType ? (
+        <div>
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <h2 className="text-white font-bold">{catalogTitle}</h2>
+            <button
+              type="button"
+              onClick={clearType}
+              className="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-muted transition-colors hover:border-brand/50 hover:text-white"
+            >
+              {copy.common.back}
+            </button>
+          </div>
+
+          {activeType === 'tracks' && (
+            <div className="space-y-1">
+              {tracks.map((track) => (
+                <TrackRow key={track.id} track={track} queue={tracks} />
+              ))}
+            </div>
+          )}
+
+          {activeType === 'albums' && (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+              {albums.map((album) => (
+                <MediaCard
+                  key={album.id}
+                  image={album.coverUrl}
+                  title={album.title}
+                  subtitle={album.artistName}
+                  size="responsive"
+                  onClick={() => navigate({ to: '/album/$id', params: { id: album.id } })}
+                />
+              ))}
+            </div>
+          )}
+
+          {activeType === 'artists' && (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+              {artists.map((artist) => (
+                <MediaCard
+                  key={artist.id}
+                  image={artist.image}
+                  title={artist.name}
+                  subtitle={artist.genre}
+                  rounded
+                  size="responsive"
+                  onClick={() => navigate({ to: '/artist/$id', params: { id: artist.id } })}
+                />
+              ))}
+            </div>
+          )}
+
+          {activeType === 'audiobooks' && (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+              {audiobooks.map((book) => (
+                <MediaCard
+                  key={book.id}
+                  image={book.coverUrl}
+                  title={book.title}
+                  subtitle={book.author}
+                  size="responsive"
+                  onClick={() => navigate({ to: '/audiobook/$id', params: { id: book.id } })}
+                />
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <>

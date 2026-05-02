@@ -190,10 +190,10 @@ export const podcastService = {
     const episode = await Episode.findById(episodeId);
     if (!episode) throw new ServiceError(404, 'Episode not found');
 
-    await Episode.findByIdAndUpdate(episodeId, { $inc: { plays: 1 } });
-
     const filePath = path.resolve(episode.filePath);
     if (!fs.existsSync(filePath)) throw new ServiceError(404, 'Audio file not found');
+
+    await Episode.findByIdAndUpdate(episodeId, { $inc: { plays: 1 } });
 
     const fileSize = fs.statSync(filePath).size;
     const contentType = getAudioContentType(filePath);

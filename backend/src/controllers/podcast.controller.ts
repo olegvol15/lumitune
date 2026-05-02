@@ -97,8 +97,10 @@ export const streamEpisode = async (req: Request, res: Response) => {
     res.writeHead(statusCode, headers);
     stream.pipe(res);
   } catch (error) {
-    if (error instanceof ServiceError)
+    if (error instanceof ServiceError) {
+      console.warn(`Podcast episode stream failed: ${req.params.episodeId} - ${error.message}`);
       return res.status(error.status).json({ success: false, message: error.message });
+    }
     res.status(500).json({ success: false, message: getErrorMessage(error, 'Error streaming episode') });
   }
 };

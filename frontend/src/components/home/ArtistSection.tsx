@@ -1,9 +1,13 @@
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { formatListeners } from '../../utils/format';
 import type { ArtistSectionProps } from '../../types/props/component-props.types';
 import { staggerContainer, staggerItem } from '../../lib/motion';
+
+const formatTrackCount = (count?: number): string => {
+  const safeCount = count ?? 0;
+  return `${safeCount} ${safeCount === 1 ? 'track' : 'tracks'}`;
+};
 
 export default function ArtistSection({
   title,
@@ -72,7 +76,7 @@ export default function ArtistSection({
               {artist.name}
             </p>
             <p className="text-white/40 text-xs text-center">
-              {formatListeners(artist.monthlyListeners)}
+              {formatTrackCount(artist.trackCount)}
             </p>
           </motion.button>
         ))}

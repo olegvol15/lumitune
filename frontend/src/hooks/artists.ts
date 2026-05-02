@@ -30,7 +30,6 @@ export function useArtistsQuery() {
   });
 
   const artists = useMemo<Artist[]>(() => {
-    const byName = new Map<string, Artist>();
     const bySlug = new Map<string, Artist>();
     const monthlyListenersByName = new Map(
       (artistStatsQuery.data ?? []).map((artist) => [
@@ -40,13 +39,12 @@ export function useArtistsQuery() {
     );
 
     for (const artist of artistProfilesQuery.data ?? []) {
-      byName.set(artist.name, artist);
       bySlug.set(artist.id, artist);
     }
 
     for (const track of catalogTracks.tracks) {
       const artistId = track.artistId || slugify(track.artistName);
-      const current = bySlug.get(artistId) || byName.get(track.artistName);
+      const current = bySlug.get(artistId);
       const next = {
         id: current?.id || artistId,
         backendId: current?.backendId,
@@ -62,13 +60,12 @@ export function useArtistsQuery() {
         artistUserId: current?.artistUserId || track.uploadedById,
         isFollowable: Boolean(current?.artistUserId || track.uploadedById),
       };
-      byName.set(track.artistName, next);
       bySlug.set(next.id, next);
     }
 
     for (const album of albumsQuery.data ?? []) {
       const artistId = album.artistId || slugify(album.artistName);
-      const current = bySlug.get(artistId) || byName.get(album.artistName);
+      const current = bySlug.get(artistId);
       const next = {
         id: current?.id || artistId,
         backendId: current?.backendId,
@@ -84,11 +81,10 @@ export function useArtistsQuery() {
         artistUserId: current?.artistUserId || album.artistUserId,
         isFollowable: Boolean(current?.artistUserId || album.artistUserId),
       };
-      byName.set(album.artistName, next);
       bySlug.set(next.id, next);
     }
 
-    return Array.from(byName.values()).sort((a, b) => b.monthlyListeners - a.monthlyListeners);
+    return Array.from(bySlug.values()).sort((a, b) => b.monthlyListeners - a.monthlyListeners);
   }, [albumsQuery.data, artistProfilesQuery.data, artistStatsQuery.data, catalogTracks.tracks]);
 
   return {

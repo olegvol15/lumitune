@@ -5,6 +5,7 @@ export interface UserPlaylist {
   id: string;
   title: string;
   trackIds: string[];
+  trackCoverUrls: string[];
   description?: string;
   coverUrl?: string;
   isPublic: boolean;

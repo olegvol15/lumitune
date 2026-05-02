@@ -82,6 +82,7 @@ function HomePage() {
           items={tracks.slice(0, 12) as Track[]}
           maxItems={12}
           onItemClick={handleMediaClick}
+          onSeeAll={() => navigate({ to: '/search', search: { q: '', type: 'tracks' } })}
         />
       )}
 
@@ -93,6 +94,7 @@ function HomePage() {
             items={albums.slice(0, 12) as Album[]}
             maxItems={12}
             onItemClick={handleMediaClick}
+            onSeeAll={() => navigate({ to: '/search', search: { q: '', type: 'albums' } })}
           />
 
           {artists.length > 0 && (

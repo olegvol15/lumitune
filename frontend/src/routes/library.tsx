@@ -9,11 +9,12 @@ import { usePodcastsQuery } from '../hooks/podcasts';
 import { useSavedAlbumsQuery } from '../hooks/albums';
 import { useCatalogTracks } from '../hooks/tracks';
 import { usePlayerStore } from '../store/playerStore';
-import { formatListeners, formatLongDuration } from '../utils/format';
+import { formatLongDuration } from '../utils/format';
 import { useI18n } from '../lib/i18n';
 import { useArtistsQuery } from '../hooks/artists';
 import type { Track, Artist, Audiobook, Podcast } from '../types';
 import type { UserPlaylist } from '../types/store/store.types';
+import PlaylistCover from '../components/ui/PlaylistCover';
 
 export const Route = createFileRoute('/library')({
   beforeLoad: () => {
@@ -126,12 +127,14 @@ function AddTile({ label, onClick }: { label: string; onClick: () => void }) {
 
 function SquareCard({
   image,
+  cover,
   title,
   subtitle,
   fallbackIcon,
   onClick,
 }: {
   image?: string;
+  cover?: ReactNode;
   title: string;
   subtitle?: string;
   fallbackIcon?: ReactNode;
@@ -144,11 +147,11 @@ function SquareCard({
       className="w-28 shrink-0 rounded-lg bg-[#0d2038]/95 p-1.5 text-left transition-colors hover:bg-[#132b48] sm:w-36"
     >
       <div className="mb-2 flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-[#12385a] to-[#07111f]">
-        {image ? (
+        {cover ?? (image ? (
           <img src={image} alt={title} className="h-full w-full object-cover" />
         ) : (
           fallbackIcon ?? <Music2 size={28} className="text-[#1CA2EA]" />
-        )}
+        ))}
       </div>
       <p className="truncate text-sm font-medium text-white">{title}</p>
       {subtitle && <p className="mt-0.5 truncate text-xs text-white/45">{subtitle}</p>}
@@ -157,6 +160,8 @@ function SquareCard({
 }
 
 function ArtistCard({ artist, onClick }: { artist: Artist; onClick: () => void }) {
+  const trackCount = artist.trackCount ?? 0;
+
   return (
     <button type="button" onClick={onClick} className="w-32 shrink-0 text-center sm:w-40">
       <img
@@ -165,7 +170,9 @@ function ArtistCard({ artist, onClick }: { artist: Artist; onClick: () => void }
         className="mx-auto mb-3 h-28 w-28 rounded-full object-cover transition-opacity hover:opacity-85 sm:h-36 sm:w-36"
       />
       <p className="truncate text-sm font-semibold text-white">{artist.name}</p>
-      <p className="mt-1 text-xs text-white/45">{formatListeners(artist.monthlyListeners)}</p>
+      <p className="mt-1 text-xs text-white/45">
+        {trackCount} {trackCount === 1 ? 'track' : 'tracks'}
+      </p>
     </button>
   );
 }
@@ -178,22 +185,14 @@ function MixCard({ playlist, tracks }: { playlist: UserPlaylist; tracks: Track[]
 
   return (
     <div className="w-44 shrink-0 rounded-xl bg-gradient-to-br from-[#123a3f] to-[#0c1730] p-3">
-      <div className="relative mb-4 h-28">
-        {(covers.length > 0 ? covers : [playlist.coverUrl]).map((cover, index) => (
-          <div
-            key={`${cover ?? playlist.id}-${index}`}
-            className="absolute h-24 w-24 overflow-hidden rounded-lg bg-[#0b2038] shadow-lg"
-            style={{ left: index * 18, top: index * 6, zIndex: covers.length - index }}
-          >
-            {cover ? (
-              <img src={cover} alt="" className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <Music2 size={24} className="text-[#1CA2EA]" />
-              </div>
-            )}
-          </div>
-        ))}
+      <div className="relative mb-4 h-32">
+        <PlaylistCover
+          title={playlist.title}
+          trackCoverUrls={covers.length > 0 ? covers : playlist.trackCoverUrls}
+          fallbackCoverUrl={playlist.coverUrl}
+          className="shadow-lg"
+          roundedClassName="rounded-xl"
+        />
       </div>
       <p className="truncate text-lg font-semibold uppercase text-white">{playlist.title}</p>
       <p className="mt-1 truncate text-xs uppercase text-white/45">
@@ -327,7 +326,14 @@ function LibraryPage() {
           {allPlaylists.slice(0, 7).map((playlist) => (
             <SquareCard
               key={playlist.id}
-              image={playlist.coverUrl}
+              cover={
+                <PlaylistCover
+                  title={playlist.title}
+                  trackCoverUrls={playlist.trackCoverUrls}
+                  fallbackCoverUrl={playlist.coverUrl}
+                  roundedClassName="rounded-lg"
+                />
+              }
               title={playlist.title}
               subtitle={`${playlist.trackIds.length} ${copy.common.tracks}`}
               fallbackIcon={<Music2 size={30} className="text-[#1CA2EA]" />}

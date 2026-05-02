@@ -7,13 +7,13 @@ import {
   AlignJustify,
   RefreshCw,
   Clock,
-  Music2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePlayerStore } from '../../store/playerStore';
 import SongCoverImage from '../ui/SongCoverImage';
+import PlaylistCover from '../ui/PlaylistCover';
 import { staggerContainer, staggerItem } from '../../lib/motion';
 import { usePlaylistsQuery, useCreatePlaylistMutation } from '../../hooks/playlists';
 import { useI18n } from '../../lib/i18n';
@@ -223,15 +223,12 @@ export default function Sidebar() {
                   }`}
                 >
                   <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1CA2EA]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {playlist.coverUrl ? (
-                      <SongCoverImage
-                        src={playlist.coverUrl}
-                        alt={playlist.title}
-                        className="w-10 h-10 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <Music2 size={16} className="text-[#1CA2EA]/70" />
-                    )}
+                    <PlaylistCover
+                      title={playlist.title}
+                      trackCoverUrls={playlist.trackCoverUrls}
+                      fallbackCoverUrl={playlist.coverUrl}
+                      roundedClassName="rounded-lg"
+                    />
                   </div>
                   <div className="min-w-0">
                     <p className="text-white text-sm font-medium truncate">{playlist.title}</p>
@@ -269,15 +266,12 @@ export default function Sidebar() {
                   }`}
                 >
                   <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#30b7aa]/30 to-[#0a1929] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {playlist.coverUrl ? (
-                      <SongCoverImage
-                        src={playlist.coverUrl}
-                        alt={playlist.title}
-                        className="w-10 h-10 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <Music2 size={16} className="text-[#30b7aa]/80" />
-                    )}
+                    <PlaylistCover
+                      title={playlist.title}
+                      trackCoverUrls={playlist.trackCoverUrls}
+                      fallbackCoverUrl={playlist.coverUrl}
+                      roundedClassName="rounded-lg"
+                    />
                   </div>
                   <div className="min-w-0">
                     <p className="text-white text-sm font-medium truncate">{playlist.title}</p>
